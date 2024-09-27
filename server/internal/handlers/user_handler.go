@@ -3,12 +3,13 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/api"
-	"github.com/Geeeean/grow/internal/utils"
 	"github.com/Geeeean/grow/internal/dao"
 	"github.com/Geeeean/grow/internal/dto"
+	"github.com/Geeeean/grow/internal/utils"
 	"github.com/lib/pq"
 )
 
@@ -30,12 +31,10 @@ func (uHandler *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) api.
 		return api.NewAPIError(http.StatusBadRequest, err.Error())
 	}
 
-    hashed, err := utils.HashPassword(userSignup.Password)
+    userSignup.Password, err = utils.HashPassword(userSignup.Password)
     if err != nil {
         return api.NewAPIError(http.StatusInternalServerError, err.Error())
     }
-
-    userSignup.Password = hashed
 
 	user, err := uHandler.userDAO.CreateUser(&userSignup)
 	if err != nil {
@@ -74,10 +73,31 @@ func (uHandler *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) api.
         return api.NewAPIError(http.StatusInternalServerError, err.Error())
     }
 
-    if utils.VerifyPassword(userSignin.Password, user.Password) {
-        userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
-        return api.NewAPISuccess(http.StatusOK, "successful signin", userResponse)
+    if !utils.VerifyPassword(userSignin.Password, user.Password) {
+        return api.NewAPIError(http.StatusBadRequest, "bad credentials")
     }
 
-    return api.NewAPIError(http.StatusBadRequest, "bad credentials")
+    /*** SESSION TOKEN (JWT)  ***/
+    jwtToken, err := utils.CreateToken(user.ID)
+    if err != nil {
+        return api.NewAPIError(http.StatusInternalServerError, "error on creating session token")
+    }
+
+    sessionCookie := &http.Cookie{Name: "token", Value: jwtToken, Secure: true, HttpOnly: true}
+    http.SetCookie(w, sessionCookie)
+
+    userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
+    return api.NewAPISuccess(http.StatusOK, "successful signin", userResponse)
+}
+
+func (uHandler *UserHandler) GetInfo(w http.ResponseWriter, r *http.Request) api.APIResponse {
+    userID, ok := r.Context().Value("id").(string)
+
+    if !ok {
+        return api.NewAPIError(http.StatusInternalServerError, "ciao")
+    }
+
+    fmt.Println("ID:", userID)
+
+    return api.NewAPISuccess(http.StatusOK, "USER ID", userID)
 }

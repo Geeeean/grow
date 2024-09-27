@@ -16,11 +16,11 @@ type DBConfig struct {
 	SSLMode  string
 }
 
-func LoadDBConfig() (*DBConfig, error) {
-	if err := godotenv.Load(); err != nil {
-		return nil, err
-	}
+func LoadENV() error {
+    return godotenv.Load()
+}
 
+func LoadDBConfig() (*DBConfig, error) {
 	dbConfig := &DBConfig{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
