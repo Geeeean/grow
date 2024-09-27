@@ -3,7 +3,6 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/api"
@@ -13,17 +12,17 @@ import (
 	"github.com/lib/pq"
 )
 
-type UserHandler struct {
+type AuthHandler struct {
 	userDAO *dao.UserDAO
 }
 
-func NewUserHandler(db *sql.DB) *UserHandler {
+func NewAuthHandler(db *sql.DB) *AuthHandler {
 	userDAO := dao.NewUserDAO(db)
 
-	return &UserHandler{userDAO: userDAO}
+	return &AuthHandler{userDAO: userDAO}
 }
 
-func (uHandler *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) api.APIResponse {
+func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.APIResponse {
 	var userSignup dto.UserSignup
 
 	err := json.NewDecoder(r.Body).Decode(&userSignup)
@@ -36,7 +35,7 @@ func (uHandler *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) api.
         return api.NewAPIError(http.StatusInternalServerError, err.Error())
     }
 
-	user, err := uHandler.userDAO.CreateUser(&userSignup)
+	user, err := handler.userDAO.CreateUser(&userSignup)
 	if err != nil {
         if pqErr, ok := err.(*pq.Error); ok {
             switch pqErr.Code.Name() {
@@ -55,7 +54,7 @@ func (uHandler *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) api.
 	return api.NewAPISuccess(http.StatusOK, "successful signup", userResponse)
 }
 
-func (uHandler *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) api.APIResponse {
+func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.APIResponse {
     var userSignin dto.UserSignin
 
     err := json.NewDecoder(r.Body).Decode(&userSignin)
@@ -63,7 +62,7 @@ func (uHandler *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) api.
         return api.NewAPIError(http.StatusBadRequest, err.Error())
     }
 
-    user, err := uHandler.userDAO.GetUser(&userSignin)
+    user, err := handler.userDAO.GetUser(&userSignin)
 
     if err == sql.ErrNoRows {
         return api.NewAPIError(http.StatusBadRequest, "user not found")
@@ -90,14 +89,12 @@ func (uHandler *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) api.
     return api.NewAPISuccess(http.StatusOK, "successful signin", userResponse)
 }
 
-func (uHandler *UserHandler) GetInfo(w http.ResponseWriter, r *http.Request) api.APIResponse {
+func (handler *AuthHandler) GetInfo(w http.ResponseWriter, r *http.Request) api.APIResponse {
     userID, ok := r.Context().Value("id").(string)
 
     if !ok {
         return api.NewAPIError(http.StatusInternalServerError, "ciao")
     }
-
-    fmt.Println("ID:", userID)
 
     return api.NewAPISuccess(http.StatusOK, "USER ID", userID)
 }

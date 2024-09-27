@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Geeeean/grow/internal/db"
-	"github.com/Geeeean/grow/internal/handlers"
 	"github.com/Geeeean/grow/internal/config"
-	middleware "github.com/Geeeean/grow/internal/middlewares"
+	"github.com/Geeeean/grow/internal/db"
+	"github.com/Geeeean/grow/internal/routers"
 )
 
 func main() {
+    /*** .env LOADING ***/
     if err := config.LoadENV(); err != nil {
         panic(err)
     }
 
-	//db connection
+	/*** DB CONNECTION ***/
 	db := &db.Connection{}
 	err := db.Init()
 
@@ -25,21 +25,21 @@ func main() {
 
 	defer db.End()
 
-	fmt.Printf("[ DB CONNECTION SUCCESS ]\n")
+	fmt.Printf("db connection success ✅\n\n")
 
-	//handlers
-	userHandler := handlers.NewUserHandler(db.GetDB())
+    /*** ROUTERS INITIALIZATION ***/
+    authRouter := routers.NewAuthRouter(db.GetDB())
+    authRouter.Init()
 
-	//routes
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/signup", middleware.Wrapper(userHandler.SignUp))
-	mux.HandleFunc("/api/signin", middleware.Wrapper(userHandler.SignIn))
-	mux.HandleFunc("/api/userinfo", middleware.Wrapper(middleware.Auth(userHandler.GetInfo)))
+    /*** ROUTES HANDLING ***/
+    mux := http.NewServeMux()
+	mux.Handle("/api/auth/", http.StripPrefix("/api/auth", authRouter.Mux()))
 
+    /*** SERVER START ***/
 	port := "3000"
-	fmt.Printf("[ SERVER IN ASCOLTO SULLA PORTA %s... ]\n", port)
+	fmt.Printf("\nserver listening on port %s ✅\n", port)
 
 	if err := http.ListenAndServe(":"+port, mux); err != nil {
-		fmt.Printf("[ ERRORE NELL'AVVIO DEL SERVER: %s ]\n", err)
+		fmt.Printf("\nerror on server start (%s) ❌\n", err)
 	}
 }
