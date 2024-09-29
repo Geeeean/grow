@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/config"
-	"github.com/Geeeean/grow/internal/db"
 	"github.com/Geeeean/grow/internal/routers"
+	"github.com/Geeeean/grow/internal/storage"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
     }
 
 	/*** DB CONNECTION ***/
-	db := &db.Connection{}
+	db := &storage.Connection{}
 	err := db.Init()
 
 	if err != nil {
@@ -25,10 +25,13 @@ func main() {
 
 	defer db.End()
 
-	fmt.Printf("db connection success ✅\n\n")
+    fmt.Printf("\n✅ DB CONNECTION SUCCESS \n")
+
+    /*** SQLC ***/
+    storage := storage.New(db.GetDB())
 
     /*** ROUTERS INITIALIZATION ***/
-    authRouter := routers.NewAuthRouter(db.GetDB())
+    authRouter := routers.NewAuthRouter(storage)
     authRouter.Init()
 
     /*** ROUTES HANDLING ***/
@@ -36,10 +39,15 @@ func main() {
 	mux.Handle("/api/auth/", http.StripPrefix("/api/auth", authRouter.Mux()))
 
     /*** SERVER START ***/
-	port := "3000"
-	fmt.Printf("\nserver listening on port %s ✅\n", port)
+	serverConfig, err := config.LoadServerConfig()
+    if err != nil {
+        panic(err)
+    }
 
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
-		fmt.Printf("\nerror on server start (%s) ❌\n", err)
-	}
+    fmt.Printf("✅ SERVER LISTENING ON PORT %s\n\n", serverConfig.Port)
+
+    err = http.ListenAndServe(":"+serverConfig.Port, mux)
+    if err != nil {
+	    panic(err)
+    }
 }

@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"os"
+    "strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -14,6 +15,10 @@ type DBConfig struct {
 	Password string
 	DBName   string
 	SSLMode  string
+}
+
+type ServerConfig struct {
+    Port string
 }
 
 func LoadENV() error {
@@ -35,4 +40,16 @@ func LoadDBConfig() (*DBConfig, error) {
 	}
 
 	return dbConfig, nil
+}
+
+func LoadServerConfig() (*ServerConfig, error) {
+    serverConfig := &ServerConfig{
+        Port: os.Getenv("PORT"),
+    }
+
+    if x, err := strconv.Atoi(serverConfig.Port); serverConfig.Port == "" || err != nil || x < 0 {
+        return nil, errors.New("error on server port environment parameter")
+    }
+
+    return serverConfig, nil
 }

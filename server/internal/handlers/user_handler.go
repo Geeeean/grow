@@ -6,20 +6,18 @@ import (
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/api"
-	"github.com/Geeeean/grow/internal/dao"
 	"github.com/Geeeean/grow/internal/dto"
+	"github.com/Geeeean/grow/internal/storage"
 	"github.com/Geeeean/grow/internal/utils"
 	"github.com/lib/pq"
 )
 
 type AuthHandler struct {
-	userDAO *dao.UserDAO
+    storage *storage.Queries
 }
 
-func NewAuthHandler(db *sql.DB) *AuthHandler {
-	userDAO := dao.NewUserDAO(db)
-
-	return &AuthHandler{userDAO: userDAO}
+func NewAuthHandler(storage *storage.Queries) *AuthHandler {
+    return &AuthHandler{storage: storage}
 }
 
 func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.APIResponse {
@@ -35,7 +33,7 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.A
         return api.NewAPIError(http.StatusInternalServerError, err.Error())
     }
 
-	user, err := handler.userDAO.CreateUser(&userSignup)
+    user, err := handler.storage.CreateUser(r.Context(), storage.CreateUserParams(userSignup))
 	if err != nil {
         if pqErr, ok := err.(*pq.Error); ok {
             switch pqErr.Code.Name() {
@@ -50,7 +48,6 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.A
 	}
 
 	userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
-
 	return api.NewAPISuccess(http.StatusOK, "successful signup", userResponse)
 }
 
@@ -62,8 +59,7 @@ func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.A
         return api.NewAPIError(http.StatusBadRequest, err.Error())
     }
 
-    user, err := handler.userDAO.GetUser(&userSignin)
-
+    user, err := handler.storage.GetUser(r.Context(), userSignin.Email)
     if err == sql.ErrNoRows {
         return api.NewAPIError(http.StatusBadRequest, "user not found")
     }
