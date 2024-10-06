@@ -10,22 +10,23 @@ import (
 )
 
 func Auth(next api.Handler) api.Handler {
-    return func(w http.ResponseWriter, r *http.Request) api.APIResponse {
+    return func(w http.ResponseWriter, r *http.Request) api.Response {
         sessionCookie, err := r.Cookie("token")
+
         if err != nil {
-            return api.NewAPIError(http.StatusUnauthorized, "unable to get session cookie")
+            return api.NewError(http.StatusUnauthorized, "unable to get session cookie")
         }
 
         err = utils.VerifyToken(sessionCookie.Value)
         if err != nil {
-             return api.NewAPIError(http.StatusUnauthorized, "not valid session token (JWT)")
+             return api.NewError(http.StatusUnauthorized, "not valid session token (JWT)")
         }
 
         claims := jwt.MapClaims{}
         token, err := utils.GetPayload(sessionCookie.Value, claims)
 
         if err != nil || !token.Valid {
-            return api.NewAPIError(http.StatusUnauthorized, "not valid session token (JWT)")
+            return api.NewError(http.StatusUnauthorized, "not valid session token (JWT)")
         }
 
         userID := claims["sub"].(string)

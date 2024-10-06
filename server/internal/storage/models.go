@@ -5,15 +5,25 @@
 package storage
 
 import (
-	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
+
+type Harvest struct {
+	ID                int32
+	GrapeVariety      string
+	QuantityCollected string
+	QualityNotes      string
+	HarvestDate       time.Time
+	CreatedAt         time.Time
+	UserID            uuid.UUID
+}
 
 type User struct {
 	ID        uuid.UUID
 	Name      string
 	Email     string
 	Password  string
-	CreatedAt sql.NullTime
+	CreatedAt time.Time
 }

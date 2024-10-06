@@ -1,49 +1,49 @@
 package api
 
 import (
-    "net/http"
-    "github.com/Geeeean/grow/internal/utils"
+	"net/http"
+
+	"github.com/Geeeean/grow/internal/utils"
 )
 
-type Handler func (w http.ResponseWriter, r *http.Request) APIResponse
+type Handler func (w http.ResponseWriter, r *http.Request) Response
 
-type APIResponse interface {
+type Response interface {
     JSON(w http.ResponseWriter) error
     GetHttpStatus() int
 }
 
-type APIResponseBase struct {
+type ResponseBase struct {
     Status     string `json:"status"`
     Message    string `json:"message"`
+    Data interface{} `json:"data,omitempty"`
     httpStatus int    `json:"-"`
 }
 
-func (response *APIResponseBase) JSON(w http.ResponseWriter) error {
+func (response *ResponseBase) JSON(w http.ResponseWriter) error {
     return utils.WriteJSON(w, response.httpStatus, response)
 }
 
-func (response *APIResponseBase) GetHttpStatus() int {
+func (response *ResponseBase) GetHttpStatus() int {
     return response.httpStatus
 }
 
-type APISuccess struct {
-    APIResponseBase
-    Data interface{} `json:"data,omitempty"`
+type Success struct {
+    ResponseBase
 }
 
-func NewAPISuccess(status int, message string, data any) *APISuccess {
-    return &APISuccess{
-        APIResponseBase: APIResponseBase{Status: "success", Message: message, httpStatus: status},
-        Data:           data,
+func NewSuccess(status int, message string, data any) *Success {
+    return &Success{
+        ResponseBase: ResponseBase{Status: "success", Message: message, httpStatus: status, Data: data},
     }
 }
 
-type APIError struct {
-    APIResponseBase
+type Error struct {
+    ResponseBase
 }
 
-func NewAPIError(status int, message string) *APIError {
-    return &APIError{
-        APIResponseBase: APIResponseBase{Status: "error", Message: message, httpStatus: status},
+func NewError(status int, message string) *Error {
+    return &Error{
+        ResponseBase: ResponseBase{Status: "error", Message: message, httpStatus: status},
     }
 }

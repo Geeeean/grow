@@ -20,17 +20,17 @@ func NewAuthHandler(storage *storage.Queries) *AuthHandler {
     return &AuthHandler{storage: storage}
 }
 
-func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.APIResponse {
+func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.Response {
 	var userSignup dto.UserSignup
 
 	err := json.NewDecoder(r.Body).Decode(&userSignup)
 	if err != nil {
-		return api.NewAPIError(http.StatusBadRequest, err.Error())
+		return api.NewError(http.StatusBadRequest, err.Error())
 	}
 
     userSignup.Password, err = utils.HashPassword(userSignup.Password)
     if err != nil {
-        return api.NewAPIError(http.StatusInternalServerError, err.Error())
+        return api.NewError(http.StatusInternalServerError, err.Error())
     }
 
     user, err := handler.storage.CreateUser(r.Context(), storage.CreateUserParams(userSignup))
@@ -38,59 +38,58 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.A
         if pqErr, ok := err.(*pq.Error); ok {
             switch pqErr.Code.Name() {
                 case "unique_violation":
-                    return api.NewAPIError(http.StatusBadRequest, "email already exists")
+                    return api.NewError(http.StatusBadRequest, "email already exists")
                 case "not_null_violation":
-                    return api.NewAPIError(http.StatusBadRequest, "missing required fields")
+                    return api.NewError(http.StatusBadRequest, "missing required fields")
             }
         }
 
-		return api.NewAPIError(http.StatusInternalServerError, err.Error())
+		return api.NewError(http.StatusInternalServerError, err.Error())
 	}
 
 	userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
-	return api.NewAPISuccess(http.StatusOK, "successful signup", userResponse)
+	return api.NewSuccess(http.StatusOK, "successful signup", userResponse)
 }
 
-func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.APIResponse {
+func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.Response {
     var userSignin dto.UserSignin
 
     err := json.NewDecoder(r.Body).Decode(&userSignin)
     if err != nil {
-        return api.NewAPIError(http.StatusBadRequest, err.Error())
+        return api.NewError(http.StatusBadRequest, err.Error())
     }
 
     user, err := handler.storage.GetUser(r.Context(), userSignin.Email)
     if err == sql.ErrNoRows {
-        return api.NewAPIError(http.StatusBadRequest, "user not found")
+        return api.NewError(http.StatusBadRequest, "user not found")
     }
 
     if err != nil {
-        return api.NewAPIError(http.StatusInternalServerError, err.Error())
+        return api.NewError(http.StatusInternalServerError, err.Error())
     }
 
     if !utils.VerifyPassword(userSignin.Password, user.Password) {
-        return api.NewAPIError(http.StatusBadRequest, "bad credentials")
+        return api.NewError(http.StatusBadRequest, "bad credentials")
     }
 
     /*** SESSION TOKEN (JWT)  ***/
     jwtToken, err := utils.CreateToken(user.ID)
     if err != nil {
-        return api.NewAPIError(http.StatusInternalServerError, "error on creating session token")
+        return api.NewError(http.StatusInternalServerError, "error on creating session token")
     }
 
-    sessionCookie := &http.Cookie{Name: "token", Value: jwtToken, Secure: true, HttpOnly: true}
+    sessionCookie := &http.Cookie{Name: "token", Value: jwtToken, Secure: true, HttpOnly: true, Path: "/api"}
     http.SetCookie(w, sessionCookie)
 
     userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
-    return api.NewAPISuccess(http.StatusOK, "successful signin", userResponse)
+    return api.NewSuccess(http.StatusOK, "successful signin", userResponse)
 }
 
-func (handler *AuthHandler) GetInfo(w http.ResponseWriter, r *http.Request) api.APIResponse {
-    userID, ok := r.Context().Value("id").(string)
-
-    if !ok {
-        return api.NewAPIError(http.StatusInternalServerError, "ciao")
+func (handler *AuthHandler) GetInfo(w http.ResponseWriter, r *http.Request) api.Response {
+    userID, err := utils.GetUserID(r)
+    if err != nil {
+        return api.NewError(http.StatusInternalServerError, "unable to get user id")
     }
 
-    return api.NewAPISuccess(http.StatusOK, "USER ID", userID)
+    return api.NewSuccess(http.StatusOK, "USER ID", userID)
 }

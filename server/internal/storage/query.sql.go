@@ -7,9 +7,54 @@ package storage
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
+
+const createHarvest = `-- name: CreateHarvest :one
+INSERT INTO harvests (
+    grape_variety, quantity_collected, quality_notes, harvest_date, user_id
+) VALUES ($1, $2, $3, $4, $5)
+RETURNING id, grape_variety, quantity_collected, quality_notes, harvest_date, created_at
+`
+
+type CreateHarvestParams struct {
+	GrapeVariety      string
+	QuantityCollected string
+	QualityNotes      string
+	HarvestDate       time.Time
+	UserID            uuid.UUID
+}
+
+type CreateHarvestRow struct {
+	ID                int32
+	GrapeVariety      string
+	QuantityCollected string
+	QualityNotes      string
+	HarvestDate       time.Time
+	CreatedAt         time.Time
+}
+
+func (q *Queries) CreateHarvest(ctx context.Context, arg CreateHarvestParams) (CreateHarvestRow, error) {
+	row := q.db.QueryRowContext(ctx, createHarvest,
+		arg.GrapeVariety,
+		arg.QuantityCollected,
+		arg.QualityNotes,
+		arg.HarvestDate,
+		arg.UserID,
+	)
+	var i CreateHarvestRow
+	err := row.Scan(
+		&i.ID,
+		&i.GrapeVariety,
+		&i.QuantityCollected,
+		&i.QualityNotes,
+		&i.HarvestDate,
+		&i.CreatedAt,
+	)
+	return i, err
+}
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
@@ -38,7 +83,9 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, name, email, password FROM users WHERE email = $1
+SELECT id, name, email, password
+FROM users
+WHERE email = $1
 `
 
 type GetUserRow struct {
@@ -58,4 +105,49 @@ func (q *Queries) GetUser(ctx context.Context, email string) (GetUserRow, error)
 		&i.Password,
 	)
 	return i, err
+}
+
+const listHarvests = `-- name: ListHarvests :many
+SELECT id, grape_variety, quantity_collected, quality_notes, harvest_date, created_at
+FROM harvests
+WHERE user_id = $1
+`
+
+type ListHarvestsRow struct {
+	ID                int32
+	GrapeVariety      string
+	QuantityCollected string
+	QualityNotes      string
+	HarvestDate       time.Time
+	CreatedAt         time.Time
+}
+
+func (q *Queries) ListHarvests(ctx context.Context, userID uuid.UUID) ([]ListHarvestsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listHarvests, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListHarvestsRow
+	for rows.Next() {
+		var i ListHarvestsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.GrapeVariety,
+			&i.QuantityCollected,
+			&i.QualityNotes,
+			&i.HarvestDate,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
