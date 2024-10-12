@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/handlers"
@@ -10,27 +9,23 @@ import (
 )
 
 type AuthRouter struct {
-    mux *http.ServeMux
-    handler *handlers.AuthHandler
+	mux     *http.ServeMux
+	handler *handlers.AuthHandler
 }
 
 func NewAuthRouter(storage *storage.Queries) *AuthRouter {
-    return &AuthRouter{
-        mux: http.NewServeMux(),
-        handler: handlers.NewAuthHandler(storage),
-    }
-}
+	router := &AuthRouter{
+		mux:     http.NewServeMux(),
+		handler: handlers.NewAuthHandler(storage),
+	}
 
-func (router *AuthRouter) Init() {
-    router.mux.HandleFunc("/signup", middlewares.Wrapper(router.handler.SignUp))
-    router.mux.HandleFunc("/signin", middlewares.Wrapper(router.handler.SignIn))
-    router.mux.HandleFunc("/info", middlewares.Wrapper(middlewares.Auth(router.handler.GetInfo)))
+	router.mux.HandleFunc("/signup", middlewares.Wrapper(router.handler.SignUp))
+	router.mux.HandleFunc("/signin", middlewares.Wrapper(router.handler.SignIn))
+	router.mux.HandleFunc("/info", middlewares.Wrapper(middlewares.Auth(router.handler.GetInfo)))
 
-
-    fmt.Printf("✅ INITIALIZED AUTH ROUTES\n")
+    return router
 }
 
 func (router *AuthRouter) Mux() *http.ServeMux {
-    return router.mux
+	return router.mux
 }
-

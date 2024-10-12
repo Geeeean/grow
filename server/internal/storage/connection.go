@@ -13,10 +13,10 @@ type Connection struct {
 	db *sql.DB
 }
 
-func (c *Connection) Init() error {
+func NewConnection() (*Connection, error) {
 	dbConfig, err := config.LoadDBConfig()
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	dsn := fmt.Sprintf(
@@ -24,18 +24,18 @@ func (c *Connection) Init() error {
 		dbConfig.Host, dbConfig.Port, dbConfig.User, dbConfig.Password, dbConfig.DBName, dbConfig.SSLMode,
 	)
 
-	c.db, err = sql.Open("postgres", dsn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	//connection test
-	err = c.db.Ping()
+	err = db.Ping()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &Connection{db: db}, nil
 }
 
 func (c *Connection) End() error {
