@@ -50,6 +50,11 @@ func main() {
 	mux.Handle(authRouterApiPath+"/", http.StripPrefix(authRouterApiPath, authRouter.Mux()))
 	mux.Handle(harvestRouterApiPath+"/", http.StripPrefix(harvestRouterApiPath, harvestRouter.Mux()))
 
+    /*** CLIENT SERVING  ***/
+    fs := http.FileServer(http.Dir("./client"))
+    mux.Handle("/", fs)
+	logger.Info("served frontend [/]")
+
 	/*** SERVER START ***/
 	serverConfig, err := config.LoadServerConfig()
 	if err != nil {

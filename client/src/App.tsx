@@ -1,5 +1,5 @@
 function App() {
-    return <></>;
+    return <>GROW</>;
 }
 
 export default App;
