@@ -11,7 +11,7 @@ import (
 
 func main() {
 	/*** LOGGER ***/
-	logger, err := log.NewLogger("log.txt")
+	logger, err := log.NewLogger(".log")
 	if err != nil {
 		panic(err)
 	}
