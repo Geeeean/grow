@@ -20,7 +20,7 @@ func main() {
 	/*** .env LOADING ***/
 	if err := config.LoadENV(); err != nil {
 		logger.Error("while loading .env")
-        return
+		return
 	}
 	logger.Info("loaded env")
 
@@ -28,7 +28,7 @@ func main() {
 	db, err := storage.NewConnection()
 	if err != nil {
 		logger.Error("while connecting to db")
-        return
+		return
 	}
 	defer db.End()
 	logger.Info("connected to db")
@@ -38,35 +38,35 @@ func main() {
 
 	/*** ROUTERS INITIALIZATION ***/
 	authRouter := routers.NewAuthRouter(storage)
-	authRouterApiPath := "/api/auth"
-	logger.Info("auth router initialized [" + authRouterApiPath + "]")
+	authRouterPath := "/api/auth"
+	logger.Info("auth router initialized [" + authRouterPath + "]")
 
 	harvestRouter := routers.NewHarvestRouter(storage)
-	harvestRouterApiPath := "/api/harvest"
-	logger.Info("harvest router initialized [" + harvestRouterApiPath + "]")
+	harvestRouterPath := "/api/harvest"
+	logger.Info("harvest router initialized [" + harvestRouterPath + "]")
+
+	clientRouter := routers.NewClientRouter()
+    clientRouterPath := "/"
+	logger.Info("client router initialized [" + clientRouterPath + "]")
 
 	/*** ROUTES HANDLING ***/
 	mux := http.NewServeMux()
-	mux.Handle(authRouterApiPath+"/", http.StripPrefix(authRouterApiPath, authRouter.Mux()))
-	mux.Handle(harvestRouterApiPath+"/", http.StripPrefix(harvestRouterApiPath, harvestRouter.Mux()))
-
-    /*** CLIENT SERVING  ***/
-    fs := http.FileServer(http.Dir("./client"))
-    mux.Handle("/", fs)
-	logger.Info("served frontend [/]")
+	mux.Handle(authRouterPath+"/", http.StripPrefix(authRouterPath, authRouter.Mux()))
+	mux.Handle(harvestRouterPath+"/", http.StripPrefix(harvestRouterPath, harvestRouter.Mux()))
+	mux.Handle(clientRouterPath, clientRouter.Mux())
 
 	/*** SERVER START ***/
 	serverConfig, err := config.LoadServerConfig()
 	if err != nil {
-	    logger.Error("while starting the server")
-        return
+		logger.Error("while starting the server")
+		return
 	}
 
 	logger.Info("server listening on port [" + serverConfig.Port + "]")
 
 	err = http.ListenAndServe(":"+serverConfig.Port, mux)
 	if err != nil {
-	    logger.Error("while serving the mux")
-        return
+		logger.Error("while serving the mux")
+		return
 	}
 }
