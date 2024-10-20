@@ -21,6 +21,10 @@ type ServerConfig struct {
     Port string
 }
 
+type LoggerConfig struct {
+    Debug bool
+}
+
 func LoadENV() error {
     return godotenv.Load()
 }
@@ -52,4 +56,12 @@ func LoadServerConfig() (*ServerConfig, error) {
     }
 
     return serverConfig, nil
+}
+
+func LoadLoggerConfig() (*LoggerConfig, error) {
+    ServerConfig := &LoggerConfig{
+        Debug: os.Getenv("MODE") == "DEBUG",
+    }
+
+    return ServerConfig, nil
 }

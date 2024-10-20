@@ -4,17 +4,33 @@ import (
 	"fmt"
 	"os"
 	"time"
+
+	"github.com/Geeeean/grow/internal/config"
 )
 
 var (
-	Reset  = "\033[0m"
-	Red    = "\033[31m"
-	Yellow = "\033[33m"
-	Green  = "\033[32m"
+	Reset     = "\033[0m"
+	Red       = "\033[31m"
+	Yellow    = "\033[33m"
+	LightCyan = "\033[36m"
+	Green     = "\033[32m"
+)
+
+var (
+	loggerInstance *Logger
 )
 
 type Logger struct {
-	file *os.File
+	file         *os.File
+	loggerConfig *config.LoggerConfig
+}
+
+func Init(filename string) error {
+	var err error
+
+	loggerInstance, err = NewLogger(filename)
+
+	return err
 }
 
 func NewLogger(filename string) (*Logger, error) {
@@ -23,9 +39,19 @@ func NewLogger(filename string) (*Logger, error) {
 		return nil, err
 	}
 
+	loggerConfig, err := config.LoadLoggerConfig()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Logger{
-		file: file,
+		file:         file,
+		loggerConfig: loggerConfig,
 	}, nil
+}
+
+func GetLogger() *Logger {
+	return loggerInstance
 }
 
 func (logger *Logger) Error(msg string) {
@@ -36,6 +62,13 @@ func (logger *Logger) Error(msg string) {
 func (logger *Logger) Info(msg string) {
 	fmt.Fprintln(logger.file, "INFO [", getTimeString(), "]", msg)
 	fmt.Fprintln(os.Stdout, Green+"INFO"+Reset, "[", getTimeString(), "]", msg)
+}
+
+func (logger *Logger) Debug(msg string) {
+	//fmt.Fprintln(logger.file, "DEBUG [", getTimeString(), "]", msg)
+	if logger.loggerConfig.Debug {
+		fmt.Fprintln(os.Stdout, LightCyan+"DEBUG"+Reset, "[", getTimeString(), "]", msg)
+	}
 }
 
 func (logger *Logger) Warning(msg string) {

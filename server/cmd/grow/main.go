@@ -10,19 +10,19 @@ import (
 )
 
 func main() {
+	/*** .env LOADING ***/
+	if err := config.LoadENV(); err != nil {
+		panic("while loading .env")
+	}
+
 	/*** LOGGER ***/
-	logger, err := log.NewLogger(".log")
-	if err != nil {
+	err := log.Init(".log")
+    logger := log.GetLogger()
+
+	if logger == nil {
 		panic(err)
 	}
 	defer logger.Close()
-
-	/*** .env LOADING ***/
-	if err := config.LoadENV(); err != nil {
-		logger.Error("while loading .env")
-		return
-	}
-	logger.Info("loaded env")
 
 	/*** DB CONNECTION ***/
 	db, err := storage.NewConnection()

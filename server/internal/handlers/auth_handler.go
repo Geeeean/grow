@@ -7,17 +7,18 @@ import (
 
 	"github.com/Geeeean/grow/internal/api"
 	"github.com/Geeeean/grow/internal/dto"
+	"github.com/Geeeean/grow/internal/log"
 	"github.com/Geeeean/grow/internal/storage"
 	"github.com/Geeeean/grow/internal/utils"
 	"github.com/lib/pq"
 )
 
 type AuthHandler struct {
-    storage *storage.Queries
+	storage *storage.Queries
 }
 
 func NewAuthHandler(storage *storage.Queries) *AuthHandler {
-    return &AuthHandler{storage: storage}
+	return &AuthHandler{storage: storage}
 }
 
 func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.Response {
@@ -28,21 +29,21 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.R
 		return api.NewError(http.StatusBadRequest, err.Error())
 	}
 
-    userSignup.Password, err = utils.HashPassword(userSignup.Password)
-    if err != nil {
-        return api.NewError(http.StatusInternalServerError, err.Error())
-    }
-
-    user, err := handler.storage.CreateUser(r.Context(), storage.CreateUserParams(userSignup))
+	userSignup.Password, err = utils.HashPassword(userSignup.Password)
 	if err != nil {
-        if pqErr, ok := err.(*pq.Error); ok {
-            switch pqErr.Code.Name() {
-                case "unique_violation":
-                    return api.NewError(http.StatusBadRequest, "email already exists")
-                case "not_null_violation":
-                    return api.NewError(http.StatusBadRequest, "missing required fields")
-            }
-        }
+		return api.NewError(http.StatusInternalServerError, err.Error())
+	}
+
+	user, err := handler.storage.CreateUser(r.Context(), storage.CreateUserParams(userSignup))
+	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			switch pqErr.Code.Name() {
+			case "unique_violation":
+				return api.NewError(http.StatusBadRequest, "email already exists")
+			case "not_null_violation":
+				return api.NewError(http.StatusBadRequest, "missing required fields")
+			}
+		}
 
 		return api.NewError(http.StatusInternalServerError, err.Error())
 	}
@@ -52,44 +53,50 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.R
 }
 
 func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.Response {
-    var userSignin dto.UserSignin
+	logger := log.GetLogger()
 
-    err := json.NewDecoder(r.Body).Decode(&userSignin)
-    if err != nil {
-        return api.NewError(http.StatusBadRequest, err.Error())
-    }
+	var userSignin dto.UserSignin
 
-    user, err := handler.storage.GetUser(r.Context(), userSignin.Email)
-    if err == sql.ErrNoRows {
-        return api.NewError(http.StatusBadRequest, "user not found")
-    }
+	logger.Debug("handling signin from " + r.Header.Get("Origin"))
 
-    if err != nil {
-        return api.NewError(http.StatusInternalServerError, err.Error())
-    }
+	err := json.NewDecoder(r.Body).Decode(&userSignin)
+	if err != nil {
+		logger.Debug(err.Error())
 
-    if !utils.VerifyPassword(userSignin.Password, user.Password) {
-        return api.NewError(http.StatusBadRequest, "bad credentials")
-    }
+		return api.NewError(http.StatusBadRequest, "error on body decoding")
+	}
 
-    /*** SESSION TOKEN (JWT)  ***/
-    jwtToken, err := utils.CreateToken(user.ID)
-    if err != nil {
-        return api.NewError(http.StatusInternalServerError, "error on creating session token")
-    }
+	user, err := handler.storage.GetUser(r.Context(), userSignin.Email)
+	if err == sql.ErrNoRows {
+		return api.NewError(http.StatusBadRequest, "user not found")
+	}
 
-    sessionCookie := &http.Cookie{Name: "token", Value: jwtToken, Secure: true, HttpOnly: true, Path: "/api"}
-    http.SetCookie(w, sessionCookie)
+	if err != nil {
+		return api.NewError(http.StatusInternalServerError, err.Error())
+	}
 
-    userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
-    return api.NewSuccess(http.StatusOK, "successful signin", userResponse)
+	if !utils.VerifyPassword(userSignin.Password, user.Password) {
+		return api.NewError(http.StatusBadRequest, "bad credentials")
+	}
+
+	/*** SESSION TOKEN (JWT)  ***/
+	jwtToken, err := utils.CreateToken(user.ID)
+	if err != nil {
+		return api.NewError(http.StatusInternalServerError, "error on creating session token")
+	}
+
+	sessionCookie := &http.Cookie{Name: "token", Value: jwtToken, Secure: true, HttpOnly: true, Path: "/api"}
+	http.SetCookie(w, sessionCookie)
+
+	userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
+	return api.NewSuccess(http.StatusOK, "successful signin", userResponse)
 }
 
 func (handler *AuthHandler) GetInfo(w http.ResponseWriter, r *http.Request) api.Response {
-    userID, err := utils.GetUserID(r)
-    if err != nil {
-        return api.NewError(http.StatusInternalServerError, "unable to get user id")
-    }
+	userID, err := utils.GetUserID(r)
+	if err != nil {
+		return api.NewError(http.StatusInternalServerError, "unable to get user id")
+	}
 
-    return api.NewSuccess(http.StatusOK, "USER ID", userID)
+	return api.NewSuccess(http.StatusOK, "USER ID", userID)
 }
