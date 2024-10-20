@@ -5,6 +5,5 @@ export const Route = createFileRoute('/(app)/_layout/harvests')({
 });
 
 function LayoutComponent() {
-    return <div>
-    </div>;
+    return <div></div>;
 }
