@@ -57,6 +57,7 @@ func (q *Queries) CreateHarvest(ctx context.Context, arg CreateHarvestParams) (C
 }
 
 const createUser = `-- name: CreateUser :one
+
 INSERT INTO users (
     name, email, password
 ) VALUES ($1, $2, $3)
@@ -98,6 +99,31 @@ type GetUserRow struct {
 func (q *Queries) GetUser(ctx context.Context, email string) (GetUserRow, error) {
 	row := q.db.QueryRowContext(ctx, getUser, email)
 	var i GetUserRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+	)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+SELECT id, name, email, password
+FROM users
+WHERE id = $1
+`
+
+type GetUserByIdRow struct {
+	ID       uuid.UUID
+	Name     string
+	Email    string
+	Password string
+}
+
+func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserById, id)
+	var i GetUserByIdRow
 	err := row.Scan(
 		&i.ID,
 		&i.Name,

@@ -48,7 +48,7 @@ const VineyardsTable = ({ vineyards }: Props) => {
                         <TableCell>{vineyard.plants}</TableCell>
                         <TableCell className="hidden md:table-cell">{vineyard.altitude}m</TableCell>
                         <TableCell className="hidden md:table-cell">
-                            <VineyardVarietyTooltip varieties={vineyard.varieties} />
+                            <VineyardVarietyTooltip varieties={vineyard.varieties} full={false} />
                         </TableCell>
                         <TableCell>
                             <VineyardActions />

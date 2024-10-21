@@ -1,16 +1,53 @@
-import { Outlet, createFileRoute, Link, useLocation } from '@tanstack/react-router';
+import { Outlet, createFileRoute, Link, useLocation, redirect } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetTrigger, SheetContent, SheetClose } from '@/components/ui/sheet';
+import {
+    Sheet,
+    SheetTrigger,
+    SheetContent,
+    SheetClose,
+    SheetHeader,
+    SheetTitle,
+    SheetDescription,
+} from '@/components/ui/sheet';
 import { Menu, X, Settings2 } from 'lucide-react';
 import Nav from '@/components/nav';
 import { ModeToggle } from '@/components/mode-toggle';
 import BreadcrumbLocation from '@/components/breadcrumb-location';
+import { QUERY_KEY, queryClient } from '@/services/react-query/client';
+import { info } from '@/services/api/user';
+
+const fetchUser = async () => {
+    const cachedData = queryClient.getQueryData([QUERY_KEY.user]);
+
+    if (cachedData) {
+        return cachedData;
+    }
+
+    const { data } = await info();
+    queryClient.setQueryData([QUERY_KEY.user], data);
+    return data;
+};
 
 export const Route = createFileRoute('/(app)/_layout')({
-    component: LayoutComponent,
+    beforeLoad: async ({ location }) => {
+        try {
+            const user = await fetchUser();
+            if (!user) {
+                throw Error('user not logged');
+           }
+        } catch (e) {
+            throw redirect({
+                to: '/signin',
+                search: {
+                    redirect: location.href,
+                },
+            });
+        }
+    },
+    component: () => <Layout />,
 });
 
-function LayoutComponent() {
+const Layout = () => {
     const location = useLocation();
 
     return (
@@ -28,13 +65,18 @@ function LayoutComponent() {
                             <span className="sr-only">Toggle navigation menu</span>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="flex flex-col p-2">
-                        <div className="w-full flex items-center justify-between px-4">
-                            <span className="text-lg font-bold">grow.</span>
-                            <SheetClose>
-                                <X />
-                            </SheetClose>
-                        </div>
+                    <SheetContent side="left" className="flex flex-col p-2 py-4">
+                        <SheetHeader>
+                            <SheetTitle>
+                                <div className="w-full flex items-center justify-between px-4">
+                                    <span className="text-lg font-bold">grow.</span>
+                                    <SheetClose>
+                                        <X />
+                                    </SheetClose>
+                                </div>
+                            </SheetTitle>
+                            <SheetDescription className="hidden"></SheetDescription>
+                        </SheetHeader>
                         <Nav className="pt-0" />
                     </SheetContent>
                 </Sheet>
@@ -55,4 +97,4 @@ function LayoutComponent() {
             </main>
         </div>
     );
-}
+};

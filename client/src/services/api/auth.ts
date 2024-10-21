@@ -1,8 +1,7 @@
 import { apiClient } from '@/services/api/client';
-import { User } from '@/types/user';
+import { Credentials } from '@/types/auth';
 
-export const signIn = async (credentials: { email: string; password: string }) => {
-    const response = await apiClient.post<User>('/auth/signin', credentials);
-
+export const signIn = async (credentials: Credentials) => {
+    const response = await apiClient.post('/auth/signin', credentials);
     return response.data;
 };

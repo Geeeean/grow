@@ -68,7 +68,7 @@ func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.R
 
 	user, err := handler.storage.GetUser(r.Context(), userSignin.Email)
 	if err == sql.ErrNoRows {
-		return api.NewError(http.StatusBadRequest, "user not found")
+		return api.NewError(http.StatusNotFound, "user not found")
 	}
 
 	if err != nil {
@@ -76,7 +76,7 @@ func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.R
 	}
 
 	if !utils.VerifyPassword(userSignin.Password, user.Password) {
-		return api.NewError(http.StatusBadRequest, "bad credentials")
+		return api.NewError(http.StatusUnauthorized, "bad credentials")
 	}
 
 	/*** SESSION TOKEN (JWT)  ***/
@@ -85,18 +85,16 @@ func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.R
 		return api.NewError(http.StatusInternalServerError, "error on creating session token")
 	}
 
-	sessionCookie := &http.Cookie{Name: "token", Value: jwtToken, Secure: true, HttpOnly: true, Path: "/api"}
+	sessionCookie := &http.Cookie{
+		Name:     "grow.session-token",
+		Value:    jwtToken,
+		Secure:   false,
+		HttpOnly: true,
+		Path:     "/api",
+		SameSite: http.SameSiteLaxMode,
+	}
 	http.SetCookie(w, sessionCookie)
 
 	userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
 	return api.NewSuccess(http.StatusOK, "successful signin", userResponse)
-}
-
-func (handler *AuthHandler) GetInfo(w http.ResponseWriter, r *http.Request) api.Response {
-	userID, err := utils.GetUserID(r)
-	if err != nil {
-		return api.NewError(http.StatusInternalServerError, "unable to get user id")
-	}
-
-	return api.NewSuccess(http.StatusOK, "USER ID", userID)
 }

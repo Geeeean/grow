@@ -1,4 +1,4 @@
-import { FlaskRound, Grape, Info, MoreHorizontal, Pencil, Scissors, Shovel, TreeDeciduous } from 'lucide-react';
+import { FlaskRound, Grape, MoreHorizontal, Pencil, Scissors, Shovel, TreeDeciduous } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,

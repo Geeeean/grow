@@ -17,7 +17,7 @@ func main() {
 
 	/*** LOGGER ***/
 	err := log.Init(".log")
-    logger := log.GetLogger()
+	logger := log.GetLogger()
 
 	if logger == nil {
 		panic(err)
@@ -41,18 +41,23 @@ func main() {
 	authRouterPath := "/api/auth"
 	logger.Info("auth router initialized [" + authRouterPath + "]")
 
+	userRouter := routers.NewUserRouter(storage)
+	userRouterPath := "/api/user"
+	logger.Info("user router initialized [" + userRouterPath + "]")
+
 	harvestRouter := routers.NewHarvestRouter(storage)
 	harvestRouterPath := "/api/harvest"
 	logger.Info("harvest router initialized [" + harvestRouterPath + "]")
 
 	clientRouter := routers.NewClientRouter()
-    clientRouterPath := "/"
+	clientRouterPath := "/"
 	logger.Info("client router initialized [" + clientRouterPath + "]")
 
 	/*** ROUTES HANDLING ***/
 	mux := http.NewServeMux()
 	mux.Handle(authRouterPath+"/", http.StripPrefix(authRouterPath, authRouter.Mux()))
 	mux.Handle(harvestRouterPath+"/", http.StripPrefix(harvestRouterPath, harvestRouter.Mux()))
+	mux.Handle(userRouterPath+"/", http.StripPrefix(userRouterPath, userRouter.Mux()))
 	mux.Handle(clientRouterPath, clientRouter.Mux())
 
 	/*** SERVER START ***/

@@ -21,7 +21,6 @@ func NewAuthRouter(storage *storage.Queries) *AuthRouter {
 
 	router.mux.HandleFunc("/signup", middlewares.Wrapper(router.handler.SignUp))
 	router.mux.HandleFunc("/signin", middlewares.Wrapper(router.handler.SignIn))
-	router.mux.HandleFunc("/info", middlewares.Wrapper(middlewares.Auth(router.handler.GetInfo)))
 
     return router
 }

@@ -83,6 +83,8 @@ const Vineyards = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [view, setView] = useState<view>('grid');
 
+    console.log(open);
+
     return (
         <div className="h-full flex flex-col gap-2">
             <div>

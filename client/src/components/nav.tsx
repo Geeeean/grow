@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
-import { User } from './ui/user';
+import { User } from '@/components/user';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
@@ -54,13 +54,7 @@ const Nav: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...pro
                     </div>
                 ))}
             </div>
-
-            <User
-                main="Violoni Gianluca"
-                sub="violoni.gianluca@gmail.com"
-                image="https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=luca"
-                fallback="VG"
-            />
+            <User />
         </nav>
     );
 };

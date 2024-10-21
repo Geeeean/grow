@@ -11,7 +11,7 @@ import (
 
 func Auth(next api.Handler) api.Handler {
     return func(w http.ResponseWriter, r *http.Request) api.Response {
-        sessionCookie, err := r.Cookie("token")
+        sessionCookie, err := r.Cookie("grow.session-token")
 
         if err != nil {
             return api.NewError(http.StatusUnauthorized, "unable to get session cookie")
