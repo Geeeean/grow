@@ -55,25 +55,24 @@ func GetLogger() *Logger {
 }
 
 func (logger *Logger) Error(msg string) {
-	fmt.Fprintln(logger.file, "ERROR [", getTimeString(), "]", msg)
-	fmt.Fprintln(os.Stderr, Red+"ERROR"+Reset, "[", getTimeString(), "]", msg)
+	fmt.Fprintln(logger.file, "ERROR ["+getTimeString()+"]", msg)
+	fmt.Fprintln(os.Stderr, Red+"ERROR"+Reset, "["+getTimeString()+"]", msg)
 }
 
 func (logger *Logger) Info(msg string) {
-	fmt.Fprintln(logger.file, "INFO [", getTimeString(), "]", msg)
-	fmt.Fprintln(os.Stdout, Green+"INFO"+Reset, "[", getTimeString(), "]", msg)
+	fmt.Fprintln(logger.file, "INFO ["+getTimeString()+"]", msg)
+	fmt.Fprintln(os.Stdout, Green+"INFO"+Reset, "["+getTimeString()+"]", msg)
 }
 
 func (logger *Logger) Debug(msg string) {
-	//fmt.Fprintln(logger.file, "DEBUG [", getTimeString(), "]", msg)
 	if logger.loggerConfig.Debug {
-		fmt.Fprintln(os.Stdout, LightCyan+"DEBUG"+Reset, "[", getTimeString(), "]", msg)
+		fmt.Fprintln(os.Stdout, LightCyan+"DEBUG"+Reset, "["+getTimeString()+"]", msg)
 	}
 }
 
 func (logger *Logger) Warning(msg string) {
-	fmt.Fprintln(logger.file, "WARNING [", getTimeString(), "]", msg)
-	fmt.Fprintln(os.Stdout, Yellow+"WARNING"+Reset, "[", getTimeString(), "]", msg)
+	fmt.Fprintln(logger.file, "WARNING ["+getTimeString()+"]", msg)
+	fmt.Fprintln(os.Stdout, Yellow+"WARNING"+Reset, "["+getTimeString()+"]", msg)
 }
 
 func (logger *Logger) Close() {
