@@ -1,14 +1,13 @@
-import { Dispatch, useState } from 'react';
+import { Dispatch } from 'react';
 import { VineyardAction } from './vineyard-add';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
-import { Button } from './ui/button';
 type Props = {
     dispatch: Dispatch<VineyardAction>;
     varieties: variety[];
 };
 
-import { CircleMinus, CirclePlus, Plus, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { variety } from '@/types/vineyard';
 
 const VineyardAddVarieties = ({ varieties, dispatch }: Props) => {
@@ -17,16 +16,16 @@ const VineyardAddVarieties = ({ varieties, dispatch }: Props) => {
             <div className="space-y-1">
                 <Label htmlFor="name">Varieties</Label>
 
-                <div className="bg-black/10 p-2 rounded-md space-y-2 relative">
+                <div className="bg-secondary/30 ring-1 p-2 rounded-md space-y-2 relative">
                     {varieties.length > 0 && (
-                        <div className="max-h-52 overflow-auto space-y-1">
-                            <div className="backdrop-blur-lg grid items-center grid-cols-[1fr_60px_60px_30px] gap-1 sticky top-0 bg-black/10 py-2 rounded-md">
-                                <Label className="ml-3">Name</Label>
-                                <Label className="ml-3">Rows</Label>
-                                <Label className="ml-3">Age</Label>
+                        <div className="p-1 max-h-52 overflow-auto space-y-1">
+                            <div className="backdrop-blur-lg grid items-center grid-cols-[1fr_60px_60px_30px] gap-1 sticky top-0 py-2 rounded-md">
+                                <Label className="">Name</Label>
+                                <Label className="">Rows</Label>
+                                <Label className="">Age</Label>
                             </div>
                             {varieties.map((variety: variety, index: number) => (
-                                <div key={index} className="p-1 grid items-center grid-cols-[1fr_60px_60px_30px] gap-1">
+                                <div key={index} className="grid items-center grid-cols-[1fr_60px_60px_30px] gap-1">
                                     <Input
                                         value={variety.variety}
                                         className="bg-background-dark"
