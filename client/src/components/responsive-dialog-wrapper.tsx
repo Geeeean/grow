@@ -22,6 +22,7 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from '@/components/ui/drawer';
+import { Loader } from 'lucide-react';
 
 type Props = {
     children: ReactNode;
@@ -31,10 +32,21 @@ type Props = {
     description: string;
     confirmCopy: string;
     disabled: boolean;
+    overlay: boolean;
     handleBtn: () => void;
 };
 
-const DialogWrapper = ({ open, setOpen, children, title, description, confirmCopy, disabled, handleBtn }: Props) => {
+const DialogWrapper = ({
+    open,
+    setOpen,
+    children,
+    title,
+    description,
+    confirmCopy,
+    disabled,
+    overlay,
+    handleBtn,
+}: Props) => {
     const [ref, bounds] = useMeasure();
     const isDesktop = useMediaQuery('(min-width: 768px)');
 
@@ -49,6 +61,11 @@ const DialogWrapper = ({ open, setOpen, children, title, description, confirmCop
             <MotionConfig transition={{ duration: 0.5, type: 'spring', bounce: 0 }}>
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogContent className="overflow-hidden sm:max-w-[425px]">
+                        {overlay ? (
+                            <div className="animate-in fade-in-0 backdrop-blur-sm h-full w-full absolute top-0 left-0 bg-black/50 z-40 flex flex-col justify-center items-center">
+                                <Loader className="animate-spin" />
+                            </div>
+                        ) : null}
                         <motion.div animate={{ height: bounds.height }}>
                             <div className="space-y-5" ref={ref}>
                                 <DialogHeader>

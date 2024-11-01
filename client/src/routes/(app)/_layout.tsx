@@ -15,10 +15,9 @@ import { ModeToggle } from '@/components/mode-toggle';
 import BreadcrumbLocation from '@/components/breadcrumb-location';
 import { QUERY_KEY, queryClient } from '@/services/react-query/client';
 import { info } from '@/services/api/user';
+import { Toaster } from '@/components/ui/toaster';
 
 const fetchUser = async () => {
-    console.log("ROUTE GUARD HANDLING")
-
     const cachedData = queryClient.getQueryData([QUERY_KEY.user]);
 
     if (cachedData) {
@@ -97,6 +96,7 @@ const Layout = () => {
             <main className="flex-1 p-4 overflow-hidden">
                 <Outlet />
             </main>
+            <Toaster />
         </div>
     );
 };

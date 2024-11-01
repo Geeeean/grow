@@ -2,13 +2,14 @@ import { Dispatch } from 'react';
 import { VineyardAction } from './vineyard-add';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
-type Props = {
-    dispatch: Dispatch<VineyardAction>;
-    varieties: variety[];
-};
 
 import { Plus, X } from 'lucide-react';
-import { variety } from '@/types/vineyard';
+import { Variety } from '@/types/vineyard';
+
+type Props = {
+    dispatch: Dispatch<VineyardAction>;
+    varieties: Variety[];
+};
 
 const VineyardAddVarieties = ({ varieties, dispatch }: Props) => {
     return (
@@ -24,7 +25,7 @@ const VineyardAddVarieties = ({ varieties, dispatch }: Props) => {
                                 <Label className="">Rows</Label>
                                 <Label className="">Age</Label>
                             </div>
-                            {varieties.map((variety: variety, index: number) => (
+                            {varieties.map((variety: Variety, index: number) => (
                                 <div key={index} className="grid items-center grid-cols-[1fr_60px_60px_30px] gap-1">
                                     <Input
                                         value={variety.variety}

@@ -1,11 +1,11 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { vineyard } from '@/types/vineyard';
+import { Vineyard } from '@/types/vineyard';
 import VineyardActions from './vineyard-actions';
 import VineyardVarietyTooltip from './vineyard-variety-tooltip';
 
 type Props = {
-    vineyards: vineyard[];
+    vineyards: Vineyard[];
 };
 
 const VineyardsTable = ({ vineyards }: Props) => {
@@ -27,7 +27,7 @@ const VineyardsTable = ({ vineyards }: Props) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {vineyards.map((vineyard: vineyard, index: number) => (
+                {vineyards.map((vineyard: Vineyard, index: number) => (
                     <TableRow key={index}>
                         <TableCell className="hidden sm:table-cell">
                             {

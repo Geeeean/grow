@@ -1,4 +1,4 @@
-import { vineyard } from '@/types/vineyard';
+import { Vineyard } from '@/types/vineyard';
 import { Badge } from '@/components/ui/badge';
 
 import VineyardActions from './vineyard-actions';
@@ -6,13 +6,13 @@ import { Grape, Mountain } from 'lucide-react';
 import VineyardVarietyTooltip from './vineyard-variety-tooltip';
 
 type Props = {
-    vineyard: vineyard;
+    vineyard: Vineyard;
     preview?: boolean;
 };
 
 const VineyardCard = ({ vineyard, preview = false }: Props) => {
     return (
-        <div className="border flex flex-col gap-2 p-3 rounded-md">
+        <div className="border flex flex-col gap-2 p-3 rounded-md animate-in fade-in">
             <div className="flex justify-between items-center">
                 <Badge variant="outline">{vineyard.soil}</Badge>
                 {!preview && <VineyardActions />}

@@ -9,16 +9,16 @@ export const soilValues = [
     'Alluvial',
     '',
 ] as const;
-export type soils = (typeof soilValues)[number];
-export type variety = { variety: string; rows: number | null; age: number | null };
+export type Soil = (typeof soilValues)[number];
+export type Variety = { variety: string; rows: number | null; age: number | null };
 
-export type vineyard = {
+export type Vineyard = {
     name: string;
     altitude: number | null;
-    soil: soils;
+    soil: Soil;
     plants: number | null;
-    varieties: variety[];
+    varieties: Variety[];
 };
 
 //interface types
-export type view = 'table' | 'grid';
+export type View = 'table' | 'grid';

@@ -9,7 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { soils, soilValues } from '@/types/vineyard';
+import { Soil, soilValues } from '@/types/vineyard';
 
 type Props = {
     dispatch: Dispatch<VineyardAction>;
@@ -32,7 +32,7 @@ const VineyardAddInformations = ({ dispatch }: Props) => {
             <div className="space-y-1">
                 <Label htmlFor="soil">Soil type</Label>
                 <Select
-                    onValueChange={(val: soils) => {
+                    onValueChange={(val: Soil) => {
                         dispatch({ type: 'SET_SOIL', payload: val });
                     }}
                 >

@@ -12,8 +12,12 @@ export const Route = createRootRoute({
         <QueryClientProvider client={queryClient}>
             <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
                 <Outlet />
-                <TanStackRouterDevtools />
-                <ReactQueryDevtools />
+                {
+                    //<>
+                    //    <TanStackRouterDevtools />
+                    //    <ReactQueryDevtools />
+                    //</>
+                }
             </ThemeProvider>
         </QueryClientProvider>
     ),

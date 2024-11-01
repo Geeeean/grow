@@ -5,19 +5,19 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileOutput, ListFilter, CirclePlus, Search } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 
-import { view } from '@/types/vineyard';
+import { View } from '@/types/vineyard';
 
 type Props = {
     setOpen: Dispatch<SetStateAction<boolean>>;
-    view: view;
-    setView: Dispatch<SetStateAction<view>>;
+    view: View;
+    setView: Dispatch<SetStateAction<View>>;
 };
 
 const VineyardControls = ({ setOpen, view, setView }: Props) => {
     return (
         <div className="flex gap-2 flex-col md:flex-row-reverse w-full justify-between items-center mt-2 mb-4">
             <div className="flex gap-2 items-center self-end">
-                <Tabs defaultValue="grid" value={view} onValueChange={(newVal) => setView(newVal as view)}>
+                <Tabs defaultValue="grid" value={view} onValueChange={(newVal) => setView(newVal as View)}>
                     <TabsList>
                         <TabsTrigger value="grid">Grid</TabsTrigger>
                         <TabsTrigger value="table">Table</TabsTrigger>
