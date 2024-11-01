@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useUser } from '@/hooks/useUser';
+import { useUser } from '@/hooks/use-user';
 
 const getInitials = (fullName: string) => {
     const splitted = fullName.split(' ');
@@ -15,7 +15,7 @@ const getInitials = (fullName: string) => {
 export const User = () => {
     const { user, isLoading, error } = useUser();
 
-    if (error || isLoading) return <div className="w-full h-16 bg-muted"></div>;
+    if (error || isLoading || !user) return <div className="w-full h-16 bg-muted"></div>;
 
     return (
         <div className="w-full grid grid-cols-[2.5rem_1fr] gap-2 p-2 bg-secondary border border-border rounded-lg shadow-sm">
@@ -31,4 +31,4 @@ export const User = () => {
         </div>
     );
 };
-User.displayName = 'User'
+User.displayName = 'User';

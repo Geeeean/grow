@@ -5,6 +5,7 @@ import { view, vineyard } from '@/types/vineyard';
 import VineyardControls from '@/components/vineyards-controls';
 import { useState } from 'react';
 import VineyardsGrid from '@/components/vineyards-grid';
+import VineyardAdd from '@/components/vineyard-add';
 
 const VINEYARDS: vineyard[] = [
     {
@@ -83,8 +84,6 @@ const Vineyards = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [view, setView] = useState<view>('grid');
 
-    console.log(open);
-
     return (
         <div className="h-full flex flex-col gap-2">
             <div>
@@ -92,12 +91,15 @@ const Vineyards = () => {
                 <p className="text-muted-foreground text-sm">Manage your vinewyards and view their infos.</p>
             </div>
             <VineyardControls setOpen={setOpen} view={view} setView={setView} />
+
             <div className="flex-1 overflow-y-auto">
                 {view === 'grid' ? <VineyardsGrid vineyards={VINEYARDS} /> : <VineyardsTable vineyards={VINEYARDS} />}
             </div>
             <div className="text-xs text-muted-foreground">
                 Showing <strong>1-10</strong> of <strong>32</strong> vineyards
             </div>
+
+            <VineyardAdd open={open} setOpen={setOpen} />
         </div>
     );
 };

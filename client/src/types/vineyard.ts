@@ -1,13 +1,22 @@
-//data types
-export type soils = 'Calcareous' | 'Clay' | 'Sandy' | 'Gravelly' | 'Volcanic' | 'Schist' | 'Silty' | 'Alluvial';
-
-export type variety = { variety: string; rows: number; age: number };
+export const soilValues = [
+    'Calcareous',
+    'Clay',
+    'Sandy',
+    'Gravelly',
+    'Volcanic',
+    'Schist',
+    'Silty',
+    'Alluvial',
+    '',
+] as const;
+export type soils = (typeof soilValues)[number];
+export type variety = { variety: string; rows: number | null; age: number | null };
 
 export type vineyard = {
     name: string;
-    altitude: number;
+    altitude: number | null;
     soil: soils;
-    plants: number;
+    plants: number | null;
     varieties: variety[];
 };
 

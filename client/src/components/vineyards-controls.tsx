@@ -23,7 +23,7 @@ const VineyardControls = ({ setOpen, view, setView }: Props) => {
                         <TabsTrigger value="table">Table</TabsTrigger>
                     </TabsList>
                 </Tabs>
-                <div className='border-r h-10' />
+                <div className="border-r h-10" />
                 <Button variant="outline" className="font-normal flex items-center gap-1">
                     <FileOutput className="h-[1.2rem] w-[1.2rem]" />
                     Export

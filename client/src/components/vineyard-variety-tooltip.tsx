@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { variety } from '@/types/vineyard';
 
 import { Info } from 'lucide-react';
+import { Fragment } from 'react/jsx-runtime';
 
 type Props = {
     varieties: variety[];
@@ -19,7 +20,7 @@ const VineyardVarietyTooltip = ({ varieties, full = false }: Props) => {
                         full && 'justify-center w-full',
                     )}
                 >
-                    {varieties.length} variet{varieties.length > 1 ? "ies" : "y"}
+                    {varieties.length} variet{varieties.length > 1 ? 'ies' : 'y'}
                     <Info />
                 </TooltipTrigger>
                 <TooltipContent className="grid grid-cols-[repeat(3,auto)] bg-background-dark border">
@@ -27,17 +28,11 @@ const VineyardVarietyTooltip = ({ varieties, full = false }: Props) => {
                     <p className="font-medium text-primary/70">Age</p>
                     <p className="font-medium text-primary/70">Rows</p>
                     {varieties.map((variety: variety, index: number) => (
-                        <>
-                            <p key={'v-' + index} className="text-primary text-sm mr-6 font-medium">
-                                {variety.variety}
-                            </p>
-                            <p key={'r-' + index} className="text-primary text-sm w-10 truncate">
-                                {variety.rows}
-                            </p>
-                            <p key={'a-' + index} className="text-primary text-sm w-10 truncate">
-                                {variety.rows}
-                            </p>
-                        </>
+                        <Fragment key={index}>
+                            <p className="text-primary text-sm mr-6 font-medium">{variety.variety}</p>
+                            <p className="text-primary text-sm w-10 truncate">{variety.age}</p>
+                            <p className="text-primary text-sm w-10 truncate">{variety.rows}</p>
+                        </Fragment>
                     ))}
                 </TooltipContent>
             </Tooltip>

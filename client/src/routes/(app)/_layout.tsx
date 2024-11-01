@@ -17,6 +17,8 @@ import { QUERY_KEY, queryClient } from '@/services/react-query/client';
 import { info } from '@/services/api/user';
 
 const fetchUser = async () => {
+    console.log("ROUTE GUARD HANDLING")
+
     const cachedData = queryClient.getQueryData([QUERY_KEY.user]);
 
     if (cachedData) {
@@ -31,10 +33,10 @@ const fetchUser = async () => {
 export const Route = createFileRoute('/(app)/_layout')({
     beforeLoad: async ({ location }) => {
         try {
-            const user = await fetchUser();
+            const user = await fetchUser(); //can throw
             if (!user) {
                 throw Error('user not logged');
-           }
+            }
         } catch (e) {
             throw redirect({
                 to: '/signin',

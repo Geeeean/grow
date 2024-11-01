@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { QUERY_KEY } from "@/services/react-query/client";
-import { info } from "@/services/api/user";
-import { User } from "@/types/user";
+import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEY } from '@/services/react-query/client';
+import { info } from '@/services/api/user';
+import { User } from '@/types/user';
 
 export const userFn = async (): Promise<User> => {
     const result = await info();
@@ -25,4 +25,4 @@ export const useUser = () => {
     return { user, isLoading, error };
 };
 
-export type UserContext = ReturnType<typeof useUser>
+export type UserContext = ReturnType<typeof useUser>;

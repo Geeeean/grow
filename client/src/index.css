@@ -75,3 +75,7 @@
     width: 1rem;
     height: 1rem;
 }
+
+[data-state='open'] {
+    --tw-enter-scale: 1!important; /* Disabilita lo scaling */
+}

@@ -4,4 +4,3 @@ export const info = async () => {
     const response = await apiClient.get('/user/info');
     return response.data;
 };
-
