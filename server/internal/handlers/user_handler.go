@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/api"
@@ -10,11 +11,12 @@ import (
 )
 
 type UserHandler struct {
+	db      *sql.DB
 	storage *storage.Queries
 }
 
-func NewUserHandler(storage *storage.Queries) *UserHandler {
-	return &UserHandler{storage: storage}
+func NewUserHandler(db *sql.DB, storage *storage.Queries) *UserHandler {
+	return &UserHandler{db: db, storage: storage}
 }
 
 func (handler *UserHandler) Info(w http.ResponseWriter, r *http.Request) api.Response {

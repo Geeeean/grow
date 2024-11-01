@@ -14,11 +14,12 @@ import (
 )
 
 type AuthHandler struct {
+	db      *sql.DB
 	storage *storage.Queries
 }
 
-func NewAuthHandler(storage *storage.Queries) *AuthHandler {
-	return &AuthHandler{storage: storage}
+func NewAuthHandler(db *sql.DB, storage *storage.Queries) *AuthHandler {
+    return &AuthHandler{db: db, storage: storage}
 }
 
 func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.Response {
@@ -65,7 +66,7 @@ func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.R
 		return api.NewError(http.StatusBadRequest, "error on body decoding")
 	}
 
-	user, err := handler.storage.GetUser(r.Context(), userSignin.Email)
+	user, err := handler.storage.GetUserByEmail(r.Context(), userSignin.Email)
 	if err == sql.ErrNoRows {
 		return api.NewError(http.StatusNotFound, "user not found")
 	}

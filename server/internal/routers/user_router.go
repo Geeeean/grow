@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/handlers"
@@ -14,10 +15,10 @@ type UserRouter struct {
 	handler *handlers.UserHandler
 }
 
-func NewUserRouter(storage *storage.Queries, prefix string) *UserRouter {
+func NewUserRouter(db *sql.DB, storage *storage.Queries, prefix string) *UserRouter {
 	router := &UserRouter {
 		mux:     http.NewServeMux(),
-		handler: handlers.NewUserHandler(storage),
+		handler: handlers.NewUserHandler(db, storage),
 	}
 
     infoEndpoint := "/info"

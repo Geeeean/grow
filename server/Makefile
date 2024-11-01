@@ -1,6 +1,12 @@
+BINARY_NAME=server
+OUTPUT_DIR=../dist
+MAIN_SOURCE=./cmd/grow
+MIGRATION_SOURCE=./internal/db/migrations
+MIGRATION_TARGET=$(OUTPUT_DIR)/migrations
+
 run: build
-	@../dist/server
+	@$(OUTPUT_DIR)/$(BINARY_NAME)
 
 build:
-	@go build -o ../dist/server ./cmd/grow/
-	@cp -r ./internal/db/migrations ../dist/migrations
+	@go build -o $(OUTPUT_DIR)/$(BINARY_NAME) $(MAIN_SOURCE)
+	@cp -r $(MIGRATION_SOURCE) $(MIGRATION_TARGET)

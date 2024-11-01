@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -11,58 +12,58 @@ import (
 )
 
 type HarvestHandler struct {
-    storage *storage.Queries
+	db      *sql.DB
+	storage *storage.Queries
 }
 
-func NewHarvestHandler(storage *storage.Queries) *HarvestHandler {
-    return &HarvestHandler{storage: storage}
+func NewHarvestHandler(db *sql.DB, storage *storage.Queries) *HarvestHandler {
+	return &HarvestHandler{db: db, storage: storage}
 }
 
 func (handler *HarvestHandler) GetAll(w http.ResponseWriter, r *http.Request) api.Response {
-    userID, err := utils.GetUserID(r)
-    if err != nil {
-        return api.NewError(http.StatusInternalServerError, "unable to get user id")
-    }
+	userID, err := utils.GetUserID(r)
+	if err != nil {
+		return api.NewError(http.StatusInternalServerError, "unable to get user id")
+	}
 
-    harvests, err := handler.storage.ListHarvests(r.Context(), *userID)
-    if err != nil {
-        return api.NewError(http.StatusInternalServerError, "unable to get harvest list")
-    }
+	harvests, err := handler.storage.ListHarvests(r.Context(), *userID)
+	if err != nil {
+		return api.NewError(http.StatusInternalServerError, "unable to get harvest list")
+	}
 
-    var harvestResponseList dto.HarvestResponseList
+	var harvestResponseList dto.HarvestResponseList
 
-    harvestResponseList.Harvests = make([]dto.HarvestResponse, len(harvests))
-    for i, h := range(harvests) {
-        harvestResponseList.Harvests[i] = dto.HarvestListItemToResponse(h)
-    }
+	harvestResponseList.Harvests = make([]dto.HarvestResponse, len(harvests))
+	for i, h := range harvests {
+		harvestResponseList.Harvests[i] = dto.HarvestListItemToResponse(h)
+	}
 
-    return api.NewSuccess(http.StatusOK, "harvest list", harvestResponseList)
+	return api.NewSuccess(http.StatusOK, "harvest list", harvestResponseList)
 }
 
 func (handler *HarvestHandler) Add(w http.ResponseWriter, r *http.Request) api.Response {
-    userID, err := utils.GetUserID(r)
-    if err != nil {
-        return api.NewError(http.StatusInternalServerError, "unable to get user id")
-    }
+	userID, err := utils.GetUserID(r)
+	if err != nil {
+		return api.NewError(http.StatusInternalServerError, "unable to get user id")
+	}
 
 	var harvestAddRequest dto.HarvestAddRequest
-    err = json.NewDecoder(r.Body).Decode(&harvestAddRequest)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&harvestAddRequest); err != nil {
 		return api.NewError(http.StatusBadRequest, err.Error())
 	}
 
-    harvestAddParam := storage.CreateHarvestParams{
-        GrapeVariety: harvestAddRequest.GrapeVariety,
-        QuantityCollected: harvestAddRequest.QuantityCollected,
-        QualityNotes: harvestAddRequest.QualityNotes,
-        HarvestDate: harvestAddRequest.HarvestDate,
-        UserID: *userID,
-    }
+	harvestAddParam := storage.CreateHarvestParams{
+		GrapeVariety:      harvestAddRequest.GrapeVariety,
+		QuantityCollected: harvestAddRequest.QuantityCollected,
+		QualityNotes:      harvestAddRequest.QualityNotes,
+		HarvestDate:       harvestAddRequest.HarvestDate,
+		UserID:            *userID,
+	}
 
-    harvest, err := handler.storage.CreateHarvest(r.Context(), storage.CreateHarvestParams(harvestAddParam))
-    if err != nil {
-        return api.NewError(http.StatusInternalServerError, "cant create new harvest")
-    }
+	harvest, err := handler.storage.CreateHarvest(r.Context(), harvestAddParam)
+	if err != nil {
+		return api.NewError(http.StatusInternalServerError, "cant create new harvest")
+	}
 
-    return api.NewSuccess(http.StatusOK, "harvest created", dto.HarvestResponse(harvest))
+	return api.NewSuccess(http.StatusOK, "harvest created", dto.HarvestResponse(harvest))
 }

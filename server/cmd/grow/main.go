@@ -45,13 +45,16 @@ func main() {
 
 	/*** ROUTERS INITIALIZATION ***/
 	authRouterPath := "/api/auth"
-	authRouter := routers.NewAuthRouter(storage, authRouterPath)
+	authRouter := routers.NewAuthRouter(db.GetDB(), storage, authRouterPath)
 
 	userRouterPath := "/api/user"
-	userRouter := routers.NewUserRouter(storage, userRouterPath)
+	userRouter := routers.NewUserRouter(db.GetDB(), storage, userRouterPath)
+
+	vineyardRouterPath := "/api/vineyard"
+	vineyardRouter := routers.NewVineyardRouter(db.GetDB(), storage, vineyardRouterPath)
 
 	harvestRouterPath := "/api/harvest"
-	harvestRouter := routers.NewHarvestRouter(storage, harvestRouterPath)
+	harvestRouter := routers.NewHarvestRouter(db.GetDB(), storage, harvestRouterPath)
 
 	clientRouterPath := "/"
 	clientRouter := routers.NewClientRouter(clientRouterPath)
@@ -59,6 +62,7 @@ func main() {
 	/*** ROUTES HANDLING ***/
 	mux := http.NewServeMux()
 	mux.Handle(authRouterPath+"/", http.StripPrefix(authRouterPath, authRouter.Mux()))
+	mux.Handle(vineyardRouterPath+"/", http.StripPrefix(vineyardRouterPath, vineyardRouter.Mux()))
 	mux.Handle(harvestRouterPath+"/", http.StripPrefix(harvestRouterPath, harvestRouter.Mux()))
 	mux.Handle(userRouterPath+"/", http.StripPrefix(userRouterPath, userRouter.Mux()))
 	mux.Handle(clientRouterPath, clientRouter.Mux())

@@ -1,0 +1,8 @@
+ALTER TABLE vineyards
+    ALTER COLUMN altitude SET NOT NULL,
+    ALTER COLUMN soil SET NOT NULL,
+    ALTER COLUMN plants SET NOT NULL;
+
+ALTER TABLE grape_varieties
+    ALTER COLUMN rows SET NOT NULL,
+    ALTER COLUMN age SET NOT NULL;

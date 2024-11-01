@@ -10,15 +10,15 @@ import (
 	"github.com/Geeeean/grow/internal/storage"
 )
 
-type HarvestRouter struct {
+type VineyardRouter struct {
     mux *http.ServeMux
-    handler *handlers.HarvestHandler
+    handler *handlers.VineyardHandler
 }
 
-func NewHarvestRouter(db *sql.DB, storage *storage.Queries, prefix string) *HarvestRouter {
-    router := &HarvestRouter{
+func NewVineyardRouter(db *sql.DB, storage *storage.Queries, prefix string) *VineyardRouter {
+    router := &VineyardRouter{
         mux: http.NewServeMux(),
-        handler: handlers.NewHarvestHandler(db, storage),
+        handler: handlers.NewVineyardHandler(db, storage),
     }
 
     getAllEndpoint := "/get/all"
@@ -28,7 +28,7 @@ func NewHarvestRouter(db *sql.DB, storage *storage.Queries, prefix string) *Harv
     router.mux.HandleFunc(addEndpoint, middlewares.Wrapper(middlewares.Auth(router.handler.Add)))
 
     /*** LOGGING ***/
-    log.GetLogger().Info("HARVEST ROUTER")
+    log.GetLogger().Info("VINEYARD ROUTER")
 	log.GetLogger().Info("get all endpoint available at " + prefix + getAllEndpoint)
 	log.GetLogger().Info("add endpoint available at " + prefix + addEndpoint)
     log.GetLogger().NewLine()
@@ -36,7 +36,6 @@ func NewHarvestRouter(db *sql.DB, storage *storage.Queries, prefix string) *Harv
     return router
 }
 
-func (router *HarvestRouter) Mux() *http.ServeMux {
+func (router *VineyardRouter) Mux() *http.ServeMux {
     return router.mux
 }
-

@@ -7,10 +7,51 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+const createGrapeVariety = `-- name: CreateGrapeVariety :one
+INSERT INTO grape_varieties (
+    name, rows, age, user_id, vineyard_id
+) VALUES ($1, $2, $3, $4, $5)
+RETURNING id, name, rows, age
+`
+
+type CreateGrapeVarietyParams struct {
+	Name       string
+	Rows       int32
+	Age        int32
+	UserID     uuid.UUID
+	VineyardID int32
+}
+
+type CreateGrapeVarietyRow struct {
+	ID   int32
+	Name string
+	Rows int32
+	Age  int32
+}
+
+func (q *Queries) CreateGrapeVariety(ctx context.Context, arg CreateGrapeVarietyParams) (CreateGrapeVarietyRow, error) {
+	row := q.db.QueryRowContext(ctx, createGrapeVariety,
+		arg.Name,
+		arg.Rows,
+		arg.Age,
+		arg.UserID,
+		arg.VineyardID,
+	)
+	var i CreateGrapeVarietyRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Rows,
+		&i.Age,
+	)
+	return i, err
+}
 
 const createHarvest = `-- name: CreateHarvest :one
 INSERT INTO harvests (
@@ -57,7 +98,6 @@ func (q *Queries) CreateHarvest(ctx context.Context, arg CreateHarvestParams) (C
 }
 
 const createUser = `-- name: CreateUser :one
-
 INSERT INTO users (
     name, email, password
 ) VALUES ($1, $2, $3)
@@ -83,22 +123,66 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 	return i, err
 }
 
-const getUser = `-- name: GetUser :one
+const createVineyard = `-- name: CreateVineyard :one
+INSERT INTO vineyards (
+    name, altitude, soil, plants, user_id
+) VALUES ($1, $2, $3, $4, $5)
+RETURNING id, name, altitude, soil, plants, created_at
+`
+
+type CreateVineyardParams struct {
+	Name     string
+	Altitude int32
+	Soil     SoilType
+	Plants   int32
+	UserID   uuid.UUID
+}
+
+type CreateVineyardRow struct {
+	ID        int32
+	Name      string
+	Altitude  int32
+	Soil      SoilType
+	Plants    int32
+	CreatedAt time.Time
+}
+
+func (q *Queries) CreateVineyard(ctx context.Context, arg CreateVineyardParams) (CreateVineyardRow, error) {
+	row := q.db.QueryRowContext(ctx, createVineyard,
+		arg.Name,
+		arg.Altitude,
+		arg.Soil,
+		arg.Plants,
+		arg.UserID,
+	)
+	var i CreateVineyardRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Altitude,
+		&i.Soil,
+		&i.Plants,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, name, email, password
 FROM users
 WHERE email = $1
 `
 
-type GetUserRow struct {
+type GetUserByEmailRow struct {
 	ID       uuid.UUID
 	Name     string
 	Email    string
 	Password string
 }
 
-func (q *Queries) GetUser(ctx context.Context, email string) (GetUserRow, error) {
-	row := q.db.QueryRowContext(ctx, getUser, email)
-	var i GetUserRow
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	var i GetUserByEmailRow
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
@@ -129,6 +213,62 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow
 		&i.Name,
 		&i.Email,
 		&i.Password,
+	)
+	return i, err
+}
+
+const getVineyardById = `-- name: GetVineyardById :one
+SELECT
+    v.id AS vineyard_id,
+    v.name AS vineyard_name,
+    v.altitude,
+    v.soil,
+    v.plants,
+    v.created_at,
+    gv.id AS grape_variety_id,
+    gv.name AS grape_variety_name,
+    gv.rows,
+    gv.age
+FROM
+    vineyards v
+LEFT JOIN
+    grape_varieties gv ON gv.vineyard_id = v.id
+WHERE
+    v.id = $1 AND v.user_id = $2
+`
+
+type GetVineyardByIdParams struct {
+	ID     int32
+	UserID uuid.UUID
+}
+
+type GetVineyardByIdRow struct {
+	VineyardID       int32
+	VineyardName     string
+	Altitude         int32
+	Soil             SoilType
+	Plants           int32
+	CreatedAt        time.Time
+	GrapeVarietyID   sql.NullInt32
+	GrapeVarietyName sql.NullString
+	Rows             sql.NullInt32
+	Age              sql.NullInt32
+}
+
+func (q *Queries) GetVineyardById(ctx context.Context, arg GetVineyardByIdParams) (GetVineyardByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getVineyardById, arg.ID, arg.UserID)
+	var i GetVineyardByIdRow
+	err := row.Scan(
+		&i.VineyardID,
+		&i.VineyardName,
+		&i.Altitude,
+		&i.Soil,
+		&i.Plants,
+		&i.CreatedAt,
+		&i.GrapeVarietyID,
+		&i.GrapeVarietyName,
+		&i.Rows,
+		&i.Age,
 	)
 	return i, err
 }
@@ -164,6 +304,73 @@ func (q *Queries) ListHarvests(ctx context.Context, userID uuid.UUID) ([]ListHar
 			&i.QualityNotes,
 			&i.HarvestDate,
 			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listVineyards = `-- name: ListVineyards :many
+SELECT
+    v.id AS vineyard_id,
+    v.name AS vineyard_name,
+    v.altitude,
+    v.soil,
+    v.plants,
+    v.created_at,
+    gv.id AS grape_variety_id,
+    gv.name AS grape_variety_name,
+    gv.rows,
+    gv.age
+FROM
+    vineyards v
+LEFT JOIN
+    grape_varieties gv ON gv.vineyard_id = v.id
+WHERE
+    v.user_id = $1
+`
+
+type ListVineyardsRow struct {
+	VineyardID       int32
+	VineyardName     string
+	Altitude         int32
+	Soil             SoilType
+	Plants           int32
+	CreatedAt        time.Time
+	GrapeVarietyID   sql.NullInt32
+	GrapeVarietyName sql.NullString
+	Rows             sql.NullInt32
+	Age              sql.NullInt32
+}
+
+func (q *Queries) ListVineyards(ctx context.Context, userID uuid.UUID) ([]ListVineyardsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listVineyards, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListVineyardsRow
+	for rows.Next() {
+		var i ListVineyardsRow
+		if err := rows.Scan(
+			&i.VineyardID,
+			&i.VineyardName,
+			&i.Altitude,
+			&i.Soil,
+			&i.Plants,
+			&i.CreatedAt,
+			&i.GrapeVarietyID,
+			&i.GrapeVarietyName,
+			&i.Rows,
+			&i.Age,
 		); err != nil {
 			return nil, err
 		}

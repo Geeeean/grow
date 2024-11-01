@@ -5,10 +5,70 @@
 package storage
 
 import (
+	"database/sql/driver"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type SoilType string
+
+const (
+	SoilTypeCalcareous SoilType = "Calcareous"
+	SoilTypeClay       SoilType = "Clay"
+	SoilTypeSandy      SoilType = "Sandy"
+	SoilTypeGravelly   SoilType = "Gravelly"
+	SoilTypeVolcanic   SoilType = "Volcanic"
+	SoilTypeSchist     SoilType = "Schist"
+	SoilTypeSilty      SoilType = "Silty"
+	SoilTypeAlluvial   SoilType = "Alluvial"
+)
+
+func (e *SoilType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = SoilType(s)
+	case string:
+		*e = SoilType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for SoilType: %T", src)
+	}
+	return nil
+}
+
+type NullSoilType struct {
+	SoilType SoilType
+	Valid    bool // Valid is true if SoilType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullSoilType) Scan(value interface{}) error {
+	if value == nil {
+		ns.SoilType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.SoilType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullSoilType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.SoilType), nil
+}
+
+type GrapeVariety struct {
+	ID         int32
+	Name       string
+	Rows       int32
+	Age        int32
+	VineyardID int32
+	CreatedAt  time.Time
+	UserID     uuid.UUID
+}
 
 type Harvest struct {
 	ID                int32
@@ -25,5 +85,15 @@ type User struct {
 	Name      string
 	Email     string
 	Password  string
+	CreatedAt time.Time
+}
+
+type Vineyard struct {
+	ID        int32
+	Name      string
+	Altitude  int32
+	Soil      SoilType
+	Plants    int32
+	UserID    uuid.UUID
 	CreatedAt time.Time
 }

@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/handlers"
@@ -14,10 +15,10 @@ type AuthRouter struct {
 	handler *handlers.AuthHandler
 }
 
-func NewAuthRouter(storage *storage.Queries, prefix string) *AuthRouter {
+func NewAuthRouter(db *sql.DB, storage *storage.Queries, prefix string) *AuthRouter {
 	router := &AuthRouter{
 		mux:     http.NewServeMux(),
-		handler: handlers.NewAuthHandler(storage),
+		handler: handlers.NewAuthHandler(db, storage),
 	}
 
 	signupEndpoint := "/signup"
