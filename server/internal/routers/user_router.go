@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/handlers"
+	"github.com/Geeeean/grow/internal/log"
 	"github.com/Geeeean/grow/internal/middlewares"
 	"github.com/Geeeean/grow/internal/storage"
 )
@@ -13,13 +14,20 @@ type UserRouter struct {
 	handler *handlers.UserHandler
 }
 
-func NewUserRouter(storage *storage.Queries) *UserRouter {
+func NewUserRouter(storage *storage.Queries, prefix string) *UserRouter {
 	router := &UserRouter {
 		mux:     http.NewServeMux(),
 		handler: handlers.NewUserHandler(storage),
 	}
 
-	router.mux.HandleFunc("/info", middlewares.Wrapper(middlewares.Auth(router.handler.Info)))
+    infoEndpoint := "/info"
+
+	router.mux.HandleFunc(infoEndpoint, middlewares.Wrapper(middlewares.Auth(router.handler.Info)))
+
+    /*** LOGGING ***/
+    log.GetLogger().Info("USER ROUTER")
+	log.GetLogger().Info("info endpoint available at " + prefix + infoEndpoint)
+    log.GetLogger().NewLine()
 
     return router
 }

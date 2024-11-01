@@ -9,7 +9,7 @@ type ClientRouter struct {
 	mux *http.ServeMux
 }
 
-func NewClientRouter() *ClientRouter {
+func NewClientRouter(prefix string) *ClientRouter {
 	router := &ClientRouter{
 		mux: http.NewServeMux(),
 	}

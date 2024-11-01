@@ -75,6 +75,11 @@ func (logger *Logger) Warning(msg string) {
 	fmt.Fprintln(os.Stdout, Yellow+"WARNING"+Reset, "["+getTimeString()+"]", msg)
 }
 
+func (logger *Logger) NewLine() {
+	fmt.Fprintln(logger.file, "")
+	fmt.Fprintln(os.Stdout, "")
+}
+
 func (logger *Logger) Close() {
 	fmt.Fprintln(logger.file, "")
 	logger.file.Close()

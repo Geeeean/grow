@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Geeeean/grow/internal/config"
+	"github.com/Geeeean/grow/internal/db"
 	"github.com/Geeeean/grow/internal/log"
 	"github.com/Geeeean/grow/internal/routers"
 	"github.com/Geeeean/grow/internal/storage"
@@ -25,33 +26,35 @@ func main() {
 	defer logger.Close()
 
 	/*** DB CONNECTION ***/
-	db, err := storage.NewConnection()
+	db, err := db.NewDB()
 	if err != nil {
-		logger.Error("while connecting to db")
+		logger.Error("while connecting to db:" + err.Error())
 		return
 	}
 	defer db.End()
-	logger.Info("connected to db")
+
+	/*** DB MIGRATIONS ***/
+	err = db.ApplyMigration()
+	if err != nil {
+		logger.Error("while applying migrations: " + err.Error())
+		return
+	}
 
 	/*** SQLC ***/
 	storage := storage.New(db.GetDB())
 
 	/*** ROUTERS INITIALIZATION ***/
-	authRouter := routers.NewAuthRouter(storage)
 	authRouterPath := "/api/auth"
-	logger.Info("auth router initialized [" + authRouterPath + "]")
+	authRouter := routers.NewAuthRouter(storage, authRouterPath)
 
-	userRouter := routers.NewUserRouter(storage)
 	userRouterPath := "/api/user"
-	logger.Info("user router initialized [" + userRouterPath + "]")
+	userRouter := routers.NewUserRouter(storage, userRouterPath)
 
-	harvestRouter := routers.NewHarvestRouter(storage)
 	harvestRouterPath := "/api/harvest"
-	logger.Info("harvest router initialized [" + harvestRouterPath + "]")
+	harvestRouter := routers.NewHarvestRouter(storage, harvestRouterPath)
 
-	clientRouter := routers.NewClientRouter()
 	clientRouterPath := "/"
-	logger.Info("client router initialized [" + clientRouterPath + "]")
+	clientRouter := routers.NewClientRouter(clientRouterPath)
 
 	/*** ROUTES HANDLING ***/
 	mux := http.NewServeMux()
@@ -63,7 +66,7 @@ func main() {
 	/*** SERVER START ***/
 	serverConfig, err := config.LoadServerConfig()
 	if err != nil {
-		logger.Error("while starting the server")
+		logger.Error("while starting the server: " + err.Error())
 		return
 	}
 
@@ -71,7 +74,7 @@ func main() {
 
 	err = http.ListenAndServe(":"+serverConfig.Port, mux)
 	if err != nil {
-		logger.Error("while serving the mux")
+		logger.Error("while serving the mux: " + err.Error())
 		return
 	}
 }

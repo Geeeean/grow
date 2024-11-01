@@ -53,15 +53,14 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.R
 }
 
 func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.Response {
-	logger := log.GetLogger()
 
 	var userSignin dto.UserSignin
 
-	logger.Debug("handling signin from " + r.Header.Get("Origin"))
+	log.GetLogger().Debug("handling signin from " + r.Header.Get("Origin"))
 
 	err := json.NewDecoder(r.Body).Decode(&userSignin)
 	if err != nil {
-		logger.Debug(err.Error())
+		log.GetLogger().Debug(err.Error())
 
 		return api.NewError(http.StatusBadRequest, "error on body decoding")
 	}
