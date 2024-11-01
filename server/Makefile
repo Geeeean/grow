@@ -2,7 +2,7 @@ BINARY_NAME=server
 OUTPUT_DIR=../dist
 MAIN_SOURCE=./cmd/grow
 MIGRATION_SOURCE=./internal/db/migrations
-MIGRATION_TARGET=$(OUTPUT_DIR)/migrations
+MIGRATION_TARGET=$(OUTPUT_DIR)/
 
 run: build
 	@$(OUTPUT_DIR)/$(BINARY_NAME)

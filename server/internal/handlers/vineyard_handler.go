@@ -64,6 +64,7 @@ func (handler *VineyardHandler) GetAll(w http.ResponseWriter, r *http.Request) a
 }
 
 func (handler *VineyardHandler) Add(w http.ResponseWriter, r *http.Request) api.Response {
+    time.Sleep(1 * time.Second)
 	userID, err := utils.GetUserID(r)
 	if err != nil {
 		return api.NewError(http.StatusInternalServerError, "unable to get user id")
