@@ -1,13 +1,13 @@
 import {
     Breadcrumb,
     BreadcrumbItem,
-    BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Link } from '@tanstack/react-router';
 
-import React from 'react';
+import { Fragment } from 'react';
 
 type Props = {
     location: string;
@@ -34,17 +34,17 @@ const BreadcrumbLocation = ({ location }: Props) => {
         <Breadcrumb>
             <BreadcrumbList>
                 <BreadcrumbItem>
-                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                    <Link to="/">Home</Link>
                 </BreadcrumbItem>
                 {parts.map((part, index) => (
-                    <React.Fragment key={index}>
+                    <Fragment key={index}>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href={`/${parts.slice(0, index + 1).join('/')}`}>
+                            <Link to={`/${parts.slice(0, index + 1).join('/')}`} key={index}>
                                 {capitalize(part)}
-                            </BreadcrumbLink>
+                            </Link>
                         </BreadcrumbItem>
-                    </React.Fragment>
+                    </Fragment>
                 ))}
                 {lastPart != '' && (
                     <>
