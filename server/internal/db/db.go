@@ -61,8 +61,13 @@ func (db *DB) ApplyMigration() error {
 		return err
 	}
 
+	migrationConfig, err := config.LoadMigrationConfig()
+	if err != nil {
+		return err
+	}
+
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://internal/db/migrations",
+		"file://"+migrationConfig.MigrationPath,
 		"postgres", driver)
 	if err != nil {
 		return err

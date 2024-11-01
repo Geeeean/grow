@@ -25,6 +25,10 @@ type LoggerConfig struct {
     Debug bool
 }
 
+type MigrationConfig struct {
+    MigrationPath string
+}
+
 func LoadENV() error {
     return godotenv.Load()
 }
@@ -46,13 +50,25 @@ func LoadDBConfig() (*DBConfig, error) {
 	return dbConfig, nil
 }
 
+func LoadMigrationConfig() (*MigrationConfig, error) {
+    serverConfig := &MigrationConfig{
+        MigrationPath: os.Getenv("MIGRATION_PATH"),
+    }
+
+    if serverConfig.MigrationPath == "" {
+        return nil, errors.New("missing migration path environment parameter")
+    }
+
+    return serverConfig, nil
+}
+
 func LoadServerConfig() (*ServerConfig, error) {
     serverConfig := &ServerConfig{
         Port: os.Getenv("PORT"),
     }
 
     if x, err := strconv.Atoi(serverConfig.Port); serverConfig.Port == "" || err != nil || x < 0 {
-        return nil, errors.New("error on server port environment parameter")
+        return nil, errors.New("invalid server port environment parameter")
     }
 
     return serverConfig, nil
