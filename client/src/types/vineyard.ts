@@ -10,7 +10,7 @@ export const soilValues = [
     '',
 ] as const;
 export type Soil = (typeof soilValues)[number];
-export type Variety = { variety: string; rows: number | null; age: number | null };
+export type Variety = { variety: string; rows: number | null; age: number | null; id?: number };
 
 export type Vineyard = {
     name: string;
@@ -18,6 +18,7 @@ export type Vineyard = {
     soil: Soil;
     plants: number | null;
     varieties: Variety[];
+    id?: number;
 };
 
 //interface types

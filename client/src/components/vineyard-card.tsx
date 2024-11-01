@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import VineyardActions from './vineyard-actions';
 import { Grape, Mountain } from 'lucide-react';
 import VineyardVarietyTooltip from './vineyard-variety-tooltip';
+import { Link } from '@tanstack/react-router';
 
 type Props = {
     vineyard: Vineyard;
@@ -11,8 +12,10 @@ type Props = {
 };
 
 const VineyardCard = ({ vineyard, preview = false }: Props) => {
+    console.log(vineyard);
+
     return (
-        <div className="border flex flex-col gap-2 p-3 rounded-md animate-in fade-in">
+        <Link to={`/vineyards/${vineyard.id}`} className="border flex flex-col gap-2 p-3 rounded-md animate-in fade-in">
             <div className="flex justify-between items-center">
                 <Badge variant="outline">{vineyard.soil}</Badge>
                 {!preview && <VineyardActions />}
@@ -43,7 +46,7 @@ const VineyardCard = ({ vineyard, preview = false }: Props) => {
                 </div>
                 <VineyardVarietyTooltip varieties={vineyard.varieties} full />
             </div>
-        </div>
+        </Link>
     );
 };
 
