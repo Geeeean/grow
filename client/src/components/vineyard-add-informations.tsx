@@ -41,7 +41,7 @@ const VineyardAddInformations = ({ dispatch }: Props) => {
                     </SelectTrigger>
                     <SelectContent>
                         {soilValues.map(
-                            (val: soils, index: number) =>
+                            (val: Soil, index: number) =>
                                 val != '' && (
                                     <SelectItem key={index} value={val}>
                                         {val}

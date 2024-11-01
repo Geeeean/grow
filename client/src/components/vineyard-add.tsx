@@ -134,7 +134,7 @@ export type VineyardAction =
     | { type: 'REMOVE_VARIETY'; payload: number }
     | { type: 'RESET' };
 
-const vineyardReducer = (state: vineyard, action: VineyardAction): Vineyard => {
+const vineyardReducer = (state: Vineyard, action: VineyardAction): Vineyard => {
     switch (action.type) {
         case 'SET_NAME':
             return { ...state, name: action.payload };
