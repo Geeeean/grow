@@ -23,13 +23,13 @@ const VineyardVarietyTooltip = ({ varieties, full = false }: Props) => {
                     {varieties.length} variet{varieties.length > 1 ? 'ies' : 'y'}
                     <Info />
                 </TooltipTrigger>
-                <TooltipContent className="grid grid-cols-[repeat(3,auto)] bg-background-dark border">
+                <TooltipContent className="grid grid-cols-[repeat(3,auto)] bg-background-dark border items-start">
                     <p className="font-medium text-primary/70">Variety</p>
                     <p className="font-medium text-primary/70">Age</p>
                     <p className="font-medium text-primary/70">Rows</p>
                     {varieties.map((variety: Variety, index: number) => (
                         <Fragment key={index}>
-                            <p className="text-primary text-sm mr-6 font-medium">{variety.variety}</p>
+                            <p className="text-primary text-sm mr-6 font-medium">{variety.name}</p>
                             <p className="text-primary text-sm w-10 truncate">{variety.age}</p>
                             <p className="text-primary text-sm w-10 truncate">{variety.rows}</p>
                         </Fragment>

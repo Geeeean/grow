@@ -1,4 +1,4 @@
-import { ReactNode, Dispatch, SetStateAction, useState } from 'react';
+import { ReactNode, Dispatch, SetStateAction, useState, JSXElementConstructor } from 'react';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import useMeasure from 'react-use-measure';
@@ -59,7 +59,9 @@ const DialogWrapper = ({
     const [height, setHeight] = useState<number>(0);
     const isDesktop = useMediaQuery('(min-width: 768px)');
 
-    const ConfirmBtn = (
+    const CloseBtn = () => <Button variant="ghost">Cancel</Button>;
+
+    const ConfirmBtn = () => (
         <Button
             type="submit"
             disabled={disabled}
@@ -91,12 +93,7 @@ const DialogWrapper = ({
         return (
             <MotionConfig transition={{ duration: 0.5, type: 'spring', bounce: 0 }}>
                 <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogContent
-                        className="overflow-hidden sm:max-w-[425px] p-0"
-                        onCloseAutoFocus={() => {
-                            reset();
-                        }}
-                    >
+                    <DialogContent className="overflow-hidden sm:max-w-[425px] p-0" onCloseAutoFocus={reset}>
                         <AnimatePresence mode="popLayout">
                             {formState == 'success' || formState == 'error' ? (
                                 <motion.div
@@ -147,10 +144,10 @@ const DialogWrapper = ({
                                             </motion.div>
                                         </AnimatePresence>
                                         <DialogFooter>
-                                            <DialogClose asChild>
-                                                <Button variant="ghost">Cancel</Button>
+                                            <DialogClose>
+                                                <CloseBtn />
                                             </DialogClose>
-                                            {ConfirmBtn}
+                                            <ConfirmBtn />
                                         </DialogFooter>
                                     </div>
                                 </motion.div>
@@ -163,21 +160,74 @@ const DialogWrapper = ({
     }
 
     return (
-        <Drawer open={open} onOpenChange={setOpen}>
-            <DrawerContent>
-                <DrawerHeader className="text-left">
-                    <DrawerTitle className="capitalize">{title}</DrawerTitle>
-                    <DrawerDescription>{description}</DrawerDescription>
-                </DrawerHeader>
-                <div className="px-4">{children}</div>
-                <DrawerFooter className="pt-2">
-                    <DrawerClose asChild>
-                        <Button variant="ghost">Cancel</Button>
-                    </DrawerClose>
-                    {ConfirmBtn}
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
+        <MotionConfig transition={{ duration: 0.5, type: 'spring', bounce: 0 }}>
+            <Drawer open={open} onOpenChange={setOpen}>
+                <DrawerContent onCloseAutoFocus={reset} className="overflow-hidden">
+                    <AnimatePresence mode="popLayout">
+                        {formState == 'success' || formState == 'error' ? (
+                            <motion.div
+                                key="completed"
+                                initial={{ y: -42, opacity: 0, filter: 'blur(4px)', height: height }}
+                                animate={{ y: 0, opacity: 1, filter: 'blur(0px)', height: 250 }}
+                                transition={{ type: 'spring', duration: 0.6, bounce: 0 }}
+                                className="w-full z-40 p-4 flex flex-col items-center justify-center text-center"
+                            >
+                                {formState == 'success' ? (
+                                    <>
+                                        <CircleCheck className="text-secondary-foreground !h-10 !w-10" />
+                                        <p className="text-lg font-semibold mt-2 text-secondary-foreground">
+                                            {successCopy.title}
+                                        </p>
+                                        <p className="px-10 font-medium">{successCopy.desc}</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <XCircle className="text-destructive !h-10 !w-10" />
+                                        <p className="text-lg font-semibold mt-2 text-destructive">{errorCopy.title}</p>
+                                        <p className="px-10 font-medium">{errorCopy.desc}</p>
+                                    </>
+                                )}
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                exit={{ y: 24, opacity: 0, filter: 'blur(4px)' }}
+                                transition={{ type: 'spring', duration: 0.6, bounce: 0 }}
+                                animate={{ height: bounds.height }}
+                                key="in-progress"
+                                className="overflow-hidden"
+                            >
+                                <div className="space-y-5 p-4" ref={ref}>
+                                    <DrawerHeader className="p-0">
+                                        <DrawerTitle className="capitalize">{title}</DrawerTitle>
+                                        <DrawerDescription>{description}</DrawerDescription>
+                                    </DrawerHeader>
+                                    <AnimatePresence initial={false} mode="popLayout">
+                                        <motion.div
+                                            key={title}
+                                            initial={{ y: '-110%', opacity: 0 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ y: '110%', opacity: 0 }}
+                                        >
+                                            {children}
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                    {formState == 'idle' || formState == 'loading' ? (
+                        <div className="p-4">
+                            <DrawerFooter className="p-0">
+                                <DrawerClose>
+                                    <CloseBtn />
+                                </DrawerClose>
+                                <ConfirmBtn />
+                            </DrawerFooter>
+                        </div>
+                    ) : null}
+                </DrawerContent>
+            </Drawer>
+        </MotionConfig>
     );
 };
 

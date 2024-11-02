@@ -10,7 +10,7 @@ export const soilValues = [
     '',
 ] as const;
 export type Soil = (typeof soilValues)[number];
-export type Variety = { variety: string; rows: number | null; age: number | null; id?: number };
+export type Variety = { name: string; rows: number | null; age: number | null; id?: number };
 
 export type VineyardCreate = {
     name: string;

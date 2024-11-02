@@ -28,7 +28,7 @@ const VineyardAddVarieties = ({ varieties, dispatch }: Props) => {
                             {varieties.map((variety: Variety, index: number) => (
                                 <div key={index} className="grid items-center grid-cols-[1fr_60px_60px_30px] gap-1">
                                     <Input
-                                        value={variety.variety}
+                                        value={variety.name}
                                         className="bg-background-dark"
                                         placeholder={`Variety ${String.fromCharCode(97 + index).toUpperCase()}`}
                                         onChange={(e) => {
@@ -39,7 +39,7 @@ const VineyardAddVarieties = ({ varieties, dispatch }: Props) => {
                                                     index: index,
                                                     variety: {
                                                         ...variety,
-                                                        variety: inp,
+                                                        name: inp,
                                                     },
                                                 },
                                             });

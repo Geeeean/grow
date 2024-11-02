@@ -26,7 +26,7 @@ const vineyardReducer = (state: VineyardCreate, action: VineyardAction): Vineyar
         case 'SET_PLANTS':
             return { ...state, plants: action.payload };
         case 'APPEND_VARIETY':
-            return { ...state, varieties: [...state.varieties, { variety: '', age: null, rows: null }] };
+            return { ...state, varieties: [...state.varieties, { name: '', age: null, rows: null }] };
         case 'UPDATE_VARIETY': {
             const updatedVarieties = state.varieties;
             updatedVarieties[action.payload.index] = action.payload.variety;

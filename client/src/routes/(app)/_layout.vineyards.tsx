@@ -50,8 +50,8 @@ const Vineyards = () => {
                 ) : (
                     <>
                         <img src={plant} className="h-56" />
-                        <p className="text-4xl mt-8 font-medium">No vineyards currently registered.</p>
-                        <p className="text-xl text-muted-foreground mt-1 mb-4">
+                        <p className="text-4xl mt-8 font-medium text-center">No vineyards currently registered.</p>
+                        <p className="text-xl text-muted-foreground mt-1 mb-4 text-center">
                             To manage your operations effectively, consider adding your first vineyard.
                         </p>
                         <AddButton setOpen={setOpen} />

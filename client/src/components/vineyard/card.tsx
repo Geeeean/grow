@@ -11,7 +11,7 @@ type Props = {
     vineyard: Vineyard | VineyardCreate;
 };
 
-const wrapperClassName = 'border flex flex-col gap-2 p-3 rounded-md animate-in fade-in';
+const wrapperClassName = 'border flex flex-col gap-2 p-3 rounded-md animate-in fade-in bg-secondary/10';
 
 const VineyardCard = ({ vineyard }: Props) => {
     return 'id' in vineyard ? (
@@ -39,7 +39,7 @@ const CardContent = ({ vineyard, preview = false }: Props & { preview: boolean }
             </div>
             <div className="w-full h-20 bg-muted rounded-md" />
 
-            <div className="border rounded-md p-3 bg-background-dark flex flex-col gap-3 items-end">
+            <div className="rounded-md p-3 bg-muted flex flex-col gap-3 items-end">
                 <div className="flex justify-between w-full">
                     <div>
                         <p className="text-xs text-muted-foreground font-bold">Total Plants</p>
@@ -56,8 +56,8 @@ const CardContent = ({ vineyard, preview = false }: Props & { preview: boolean }
                         </p>
                     </div>
                 </div>
-                <VineyardVarietyTooltip varieties={vineyard.varieties} full />
             </div>
+            <VineyardVarietyTooltip varieties={vineyard.varieties} full />
         </>
     );
 };
