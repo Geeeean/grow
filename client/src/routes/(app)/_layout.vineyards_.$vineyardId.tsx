@@ -4,6 +4,11 @@ export const Route = createFileRoute('/(app)/_layout/vineyards/$vineyardId')({
     // In a loader
     //loader: ({ params }) => fetchPost(params.postId),
     // Or in a component
+    validateSearch: (search: Record<string, string>): { bcLast: string } => {
+        return {
+            bcLast: search.bcLast,
+        };
+    },
     component: () => <VineyardComponent />,
 });
 

@@ -11,6 +11,7 @@ import { Fragment } from 'react';
 
 type Props = {
     location: string;
+    bcLast: string | undefined;
 };
 
 function splitPath(path: string): { parts: string[]; lastPart: string } {
@@ -27,7 +28,7 @@ function splitPath(path: string): { parts: string[]; lastPart: string } {
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-const BreadcrumbLocation = ({ location }: Props) => {
+const BreadcrumbLocation = ({ location, bcLast }: Props) => {
     const { parts, lastPart } = splitPath(location);
 
     return (
@@ -50,7 +51,7 @@ const BreadcrumbLocation = ({ location }: Props) => {
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>{capitalize(lastPart)}</BreadcrumbPage>
+                            <BreadcrumbPage>{bcLast ? bcLast : capitalize(lastPart)}</BreadcrumbPage>
                         </BreadcrumbItem>{' '}
                     </>
                 )}

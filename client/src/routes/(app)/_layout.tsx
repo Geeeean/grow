@@ -82,7 +82,7 @@ const Layout = () => {
                     </SheetContent>
                 </Sheet>
                 <div className="w-full flex-1">
-                    <BreadcrumbLocation location={location.pathname} />
+                    <BreadcrumbLocation location={location.pathname} bcLast={location.search.bcLast}/>
                 </div>
                 <div className="flex items-center gap-2">
                     <ModeToggle />

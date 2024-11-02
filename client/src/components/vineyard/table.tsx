@@ -3,12 +3,15 @@ import { Badge } from '@/components/ui/badge';
 import { Vineyard } from '@/types/vineyard';
 import VineyardActions from './actions';
 import VineyardVarietyTooltip from './variety-tooltip';
+import { useNavigate } from '@tanstack/react-router';
 
 type Props = {
     vineyards: Vineyard[];
 };
 
 const VineyardsTable = ({ vineyards }: Props) => {
+    const navigate = useNavigate();
+
     return (
         <Table>
             <TableHeader>
@@ -28,7 +31,16 @@ const VineyardsTable = ({ vineyards }: Props) => {
             </TableHeader>
             <TableBody>
                 {vineyards.map((vineyard: Vineyard, index: number) => (
-                    <TableRow key={index}>
+                    <TableRow
+                        key={index}
+                        onClick={() => {
+                            navigate({
+                                to: `/vineyards/${vineyard.id}`,
+                                search: { bcLast: vineyard.name },
+                            });
+                        }}
+                        className='cursor-pointer'
+                    >
                         <TableCell className="hidden sm:table-cell">
                             {
                                 //<img

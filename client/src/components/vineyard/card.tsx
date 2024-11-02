@@ -11,11 +11,12 @@ type Props = {
     vineyard: Vineyard | VineyardCreate;
 };
 
-const wrapperClassName = 'border flex flex-col gap-2 p-3 rounded-md animate-in fade-in bg-secondary/10';
+const wrapperClassName =
+    'border flex flex-col gap-2 p-3 rounded-md animate-in fade-in bg-muted/20 hover:border-ring transition-colors';
 
 const VineyardCard = ({ vineyard }: Props) => {
     return 'id' in vineyard ? (
-        <Link to={`/vineyards/${vineyard.id}`} className={wrapperClassName}>
+        <Link to={`/vineyards/${vineyard.id}`} search={{ bcLast: vineyard.name }} className={wrapperClassName}>
             <CardContent vineyard={vineyard} preview={false} />
         </Link>
     ) : (
