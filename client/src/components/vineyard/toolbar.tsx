@@ -7,13 +7,25 @@ import { Dispatch, SetStateAction } from 'react';
 
 import { View } from '@/types/vineyard';
 
-type Props = {
+type AddProps = {
     setOpen: Dispatch<SetStateAction<boolean>>;
-    view: View;
-    setView: Dispatch<SetStateAction<View>>;
 };
 
-const VineyardControls = ({ setOpen, view, setView }: Props) => {
+type Props = {
+    view: View;
+    setView: Dispatch<SetStateAction<View>>;
+} & AddProps;
+
+export const AddButton = ({ setOpen }: AddProps) => {
+    return (
+        <Button className="font-normal flex items-center gap-1" onClick={() => setOpen(true)}>
+            <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
+            Add vineyard
+        </Button>
+    );
+};
+
+const VineyardToolbar = ({ setOpen, view, setView }: Props) => {
     return (
         <div className="flex gap-2 flex-col md:flex-row-reverse w-full justify-between items-center mt-2 mb-4">
             <div className="flex gap-2 items-center self-end">
@@ -32,10 +44,7 @@ const VineyardControls = ({ setOpen, view, setView }: Props) => {
                     <ListFilter className="h-[1.2rem] w-[1.2rem]" />
                     Filter
                 </Button>
-                <Button className="font-normal flex items-center gap-1" onClick={() => setOpen(true)}>
-                    <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
-                    Add vineyard
-                </Button>
+                <AddButton setOpen={setOpen} />
             </div>
             <div className="relative flex-1 md:grow-0 w-full">
                 <Search className="absolute left-2.5 top-2.5 text-muted-foreground" />
@@ -49,4 +58,4 @@ const VineyardControls = ({ setOpen, view, setView }: Props) => {
     );
 };
 
-export default VineyardControls;
+export default VineyardToolbar;

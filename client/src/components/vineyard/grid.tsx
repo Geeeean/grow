@@ -1,5 +1,5 @@
 import { Vineyard } from '@/types/vineyard';
-import VineyardCard from './vineyard-card';
+import VineyardCard from './card';
 
 type Props = { vineyards: Vineyard[] };
 

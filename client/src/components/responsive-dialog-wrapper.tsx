@@ -1,4 +1,4 @@
-import { ReactNode, Dispatch, SetStateAction } from 'react';
+import { ReactNode, Dispatch, SetStateAction, useState } from 'react';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import useMeasure from 'react-use-measure';
@@ -22,7 +22,9 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from '@/components/ui/drawer';
-import { Loader } from 'lucide-react';
+import { CircleCheck, Loader, XCircle } from 'lucide-react';
+
+export type FormState = 'idle' | 'loading' | 'error' | 'success';
 
 type Props = {
     children: ReactNode;
@@ -31,9 +33,12 @@ type Props = {
     title: string;
     description: string;
     confirmCopy: string;
+    successCopy: { title: string; desc: string };
+    errorCopy: { title: string; desc: string };
     disabled: boolean;
-    overlay: boolean;
-    handleBtn: () => void;
+    formState: FormState;
+    handle: () => void;
+    reset: () => void;
 };
 
 const DialogWrapper = ({
@@ -43,16 +48,42 @@ const DialogWrapper = ({
     title,
     description,
     confirmCopy,
+    successCopy,
+    errorCopy,
     disabled,
-    overlay,
-    handleBtn,
+    formState,
+    handle,
+    reset,
 }: Props) => {
     const [ref, bounds] = useMeasure();
+    const [height, setHeight] = useState<number>(0);
     const isDesktop = useMediaQuery('(min-width: 768px)');
 
     const ConfirmBtn = (
-        <Button type="submit" disabled={disabled} onClick={handleBtn}>
-            {confirmCopy}
+        <Button
+            type="submit"
+            disabled={disabled}
+            onClick={() => {
+                setHeight(bounds.height);
+                handle();
+            }}
+            className="md:w-36"
+        >
+            <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                    transition={{
+                        type: 'spring',
+                        duration: 0.3,
+                        bounce: 0,
+                    }}
+                    initial={{ opacity: 0, y: -25 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 25 }}
+                    key={formState}
+                >
+                    {formState === 'loading' ? <Loader className="animate-spin" /> : <span>{confirmCopy}</span>}
+                </motion.span>
+            </AnimatePresence>
         </Button>
     );
 
@@ -60,36 +91,71 @@ const DialogWrapper = ({
         return (
             <MotionConfig transition={{ duration: 0.5, type: 'spring', bounce: 0 }}>
                 <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogContent className="overflow-hidden sm:max-w-[425px]">
-                        {overlay ? (
-                            <div className="animate-in fade-in-0 backdrop-blur-sm h-full w-full absolute top-0 left-0 bg-black/50 z-40 flex flex-col justify-center items-center">
-                                <Loader className="animate-spin" />
-                            </div>
-                        ) : null}
-                        <motion.div animate={{ height: bounds.height }}>
-                            <div className="space-y-5" ref={ref}>
-                                <DialogHeader>
-                                    <DialogTitle className="capitalize">{title}</DialogTitle>
-                                    <DialogDescription>{description}</DialogDescription>
-                                </DialogHeader>
-                                <AnimatePresence initial={false} mode="popLayout">
-                                    <motion.div
-                                        key={title}
-                                        initial={{ x: '110%', opacity: 0 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ x: '-110%', opacity: 0 }}
-                                    >
-                                        {children}
-                                    </motion.div>
-                                </AnimatePresence>
-                                <DialogFooter>
-                                    <DialogClose asChild>
-                                        <Button variant="ghost">Cancel</Button>
-                                    </DialogClose>
-                                    {ConfirmBtn}
-                                </DialogFooter>
-                            </div>
-                        </motion.div>
+                    <DialogContent
+                        className="overflow-hidden sm:max-w-[425px] p-0"
+                        onCloseAutoFocus={() => {
+                            reset();
+                        }}
+                    >
+                        <AnimatePresence mode="popLayout">
+                            {formState == 'success' || formState == 'error' ? (
+                                <motion.div
+                                    key="completed"
+                                    initial={{ y: -42, opacity: 0, filter: 'blur(4px)', height: height }}
+                                    animate={{ y: 0, opacity: 1, filter: 'blur(0px)', height: 250 }}
+                                    transition={{ type: 'spring', duration: 0.6, bounce: 0 }}
+                                    className="w-full z-40 bg-secondary/30 p-6 flex flex-col items-center justify-center text-center"
+                                >
+                                    {formState == 'success' ? (
+                                        <>
+                                            <CircleCheck className="text-secondary-foreground !h-10 !w-10" />
+                                            <p className="text-lg font-semibold mt-2 text-secondary-foreground">
+                                                {successCopy.title}
+                                            </p>
+                                            <p className="px-10 font-medium">{successCopy.desc}</p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <XCircle className="text-destructive !h-10 !w-10" />
+                                            <p className="text-lg font-semibold mt-2 text-destructive">
+                                                {errorCopy.title}
+                                            </p>
+                                            <p className="px-10 font-medium">{errorCopy.desc}</p>
+                                        </>
+                                    )}
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    exit={{ y: 24, opacity: 0, filter: 'blur(4px)' }}
+                                    transition={{ type: 'spring', duration: 0.6, bounce: 0 }}
+                                    animate={{ height: bounds.height }}
+                                    key="in-progress"
+                                >
+                                    <div className="space-y-5 p-6" ref={ref}>
+                                        <DialogHeader>
+                                            <DialogTitle className="capitalize">{title}</DialogTitle>
+                                            <DialogDescription>{description}</DialogDescription>
+                                        </DialogHeader>
+                                        <AnimatePresence initial={false} mode="popLayout">
+                                            <motion.div
+                                                key={title}
+                                                initial={{ x: '110%', opacity: 0 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ x: '-110%', opacity: 0 }}
+                                            >
+                                                {children}
+                                            </motion.div>
+                                        </AnimatePresence>
+                                        <DialogFooter>
+                                            <DialogClose asChild>
+                                                <Button variant="ghost">Cancel</Button>
+                                            </DialogClose>
+                                            {ConfirmBtn}
+                                        </DialogFooter>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </DialogContent>
                 </Dialog>
             </MotionConfig>

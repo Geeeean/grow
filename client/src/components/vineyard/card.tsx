@@ -1,21 +1,33 @@
-import { Vineyard } from '@/types/vineyard';
-import { Badge } from '@/components/ui/badge';
-
-import VineyardActions from './vineyard-actions';
-import { Grape, Mountain } from 'lucide-react';
-import VineyardVarietyTooltip from './vineyard-variety-tooltip';
 import { Link } from '@tanstack/react-router';
 
+import VineyardVarietyTooltip from './variety-tooltip';
+import VineyardActions from './actions';
+import { Badge } from '@/components/ui/badge';
+import { Grape, Mountain } from 'lucide-react';
+
+import { Vineyard, VineyardCreate } from '@/types/vineyard';
+
 type Props = {
-    vineyard: Vineyard;
-    preview?: boolean;
+    vineyard: Vineyard | VineyardCreate;
 };
 
-const VineyardCard = ({ vineyard, preview = false }: Props) => {
-    console.log(vineyard);
+const wrapperClassName = 'border flex flex-col gap-2 p-3 rounded-md animate-in fade-in';
 
+const VineyardCard = ({ vineyard }: Props) => {
+    return 'id' in vineyard ? (
+        <Link to={`/vineyards/${vineyard.id}`} className={wrapperClassName}>
+            <CardContent vineyard={vineyard} preview={false} />
+        </Link>
+    ) : (
+        <div className={wrapperClassName}>
+            <CardContent vineyard={vineyard} preview={true} />
+        </div>
+    );
+};
+
+const CardContent = ({ vineyard, preview = false }: Props & { preview: boolean }) => {
     return (
-        <Link to={`/vineyards/${vineyard.id}`} className="border flex flex-col gap-2 p-3 rounded-md animate-in fade-in">
+        <>
             <div className="flex justify-between items-center">
                 <Badge variant="outline">{vineyard.soil}</Badge>
                 {!preview && <VineyardActions />}
@@ -46,7 +58,7 @@ const VineyardCard = ({ vineyard, preview = false }: Props) => {
                 </div>
                 <VineyardVarietyTooltip varieties={vineyard.varieties} full />
             </div>
-        </Link>
+        </>
     );
 };
 

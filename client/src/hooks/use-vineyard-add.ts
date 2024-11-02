@@ -1,28 +1,29 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/services/react-query/client';
-import { Vineyard } from '@/types/vineyard';
+import { VineyardCreate } from '@/types/vineyard';
 import { addVineyard } from '@/services/api/vineyard';
 
-const addVineyardFn = async (vineyard: Vineyard) => {
+const vineyardAddFn = async (vineyard: VineyardCreate) => {
     const result = await addVineyard(vineyard);
     return result.data;
 };
 
-export const useAddVineyard = () => {
+export const useVineyardAdd = () => {
     const client = useQueryClient();
 
     const {
-        mutate: addVineyard,
+        mutate: vineyardAdd,
         error,
         isPending,
         isSuccess,
+        reset,
     } = useMutation({
-        mutationFn: addVineyardFn,
+        mutationFn: vineyardAddFn,
         onSuccess: () => {
             client.invalidateQueries({ queryKey: [QUERY_KEY.vineyards] });
         },
         retry: false,
     });
 
-    return { addVineyard, error, isPending, isSuccess };
+    return { vineyardAdd, error, isPending, isSuccess, reset };
 };

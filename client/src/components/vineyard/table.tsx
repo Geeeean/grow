@@ -1,8 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Vineyard } from '@/types/vineyard';
-import VineyardActions from './vineyard-actions';
-import VineyardVarietyTooltip from './vineyard-variety-tooltip';
+import VineyardActions from './actions';
+import VineyardVarietyTooltip from './variety-tooltip';
 
 type Props = {
     vineyards: Vineyard[];

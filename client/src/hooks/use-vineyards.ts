@@ -24,3 +24,21 @@ export const useVineyards = () => {
 
     return { vineyards, isLoading, error };
 };
+
+export const useVineyardById = (vineyardId: number) => {
+    const {
+        isLoading,
+        error,
+        data: vineyard,
+    } = useQuery({
+        queryKey: [QUERY_KEY.vineyards],
+        queryFn: vineyardsFn,
+        retry: false,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        staleTime: Infinity,
+        select: (data) => data.find((v) => v.id === vineyardId),
+    });
+
+    return { vineyard, isLoading, error };
+};

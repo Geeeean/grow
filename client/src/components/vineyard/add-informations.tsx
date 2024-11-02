@@ -1,14 +1,8 @@
 import { Dispatch } from 'react';
-import { VineyardAction } from './vineyard-add';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { VineyardAction } from '@/hooks/use-vineyard-form';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Soil, soilValues } from '@/types/vineyard';
 
 type Props = {
@@ -17,7 +11,7 @@ type Props = {
 
 const VineyardAddInformations = ({ dispatch }: Props) => {
     return (
-        <div className="w-full space-y-3">
+        <form className="w-full space-y-3">
             <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -81,7 +75,7 @@ const VineyardAddInformations = ({ dispatch }: Props) => {
                     }}
                 />
             </div>
-        </div>
+        </form>
     );
 };
 
