@@ -55,6 +55,7 @@ const DialogWrapper = ({
 }: Props) => {
     const [ref, bounds] = useMeasure();
     const [height, setHeight] = useState<number>(0);
+    const [animationCompleted, setAnimationCompleted] = useState<boolean>(false);
     const isDesktop = useMediaQuery('(min-width: 768px)');
 
     const CloseBtn = () => (
@@ -95,7 +96,14 @@ const DialogWrapper = ({
         return (
             <MotionConfig transition={{ duration: 0.5, type: 'spring', bounce: 0 }}>
                 <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogContent className="overflow-hidden sm:max-w-[425px] p-0" onCloseAutoFocus={reset}>
+                    <DialogContent
+                        onAnimationEnd={() => setAnimationCompleted(true)}
+                        className="overflow-hidden sm:max-w-[425px] p-0"
+                        onCloseAutoFocus={() => {
+                            setAnimationCompleted(false);
+                            reset();
+                        }}
+                    >
                         <AnimatePresence mode="popLayout">
                             {formState == 'success' || formState == 'error' ? (
                                 <motion.div
@@ -127,7 +135,7 @@ const DialogWrapper = ({
                                 <motion.div
                                     exit={{ y: 24, opacity: 0, filter: 'blur(4px)' }}
                                     transition={{ type: 'spring', duration: 0.6, bounce: 0 }}
-                                    animate={{ height: bounds.height }}
+                                    animate={animationCompleted ? { height: bounds.height } : {}}
                                     key="in-progress"
                                 >
                                     <div className="space-y-5 p-6" ref={ref}>
