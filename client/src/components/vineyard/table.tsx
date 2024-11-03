@@ -62,7 +62,7 @@ const VineyardsTable = ({ vineyards }: Props) => {
                             <VineyardVarietyTooltip varieties={vineyard.varieties} full={false} />
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                            <VineyardActions vineyardId={vineyard.id} />
+                            <VineyardActions vineyardId={vineyard.id} dropdown />
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                             <Link

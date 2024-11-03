@@ -71,11 +71,32 @@
     }
 }
 
+@layer utilities {
+    .scrollbar-default {
+        -ms-overflow-style: auto;
+        scrollbar-width: auto;
+    }
+
+    .scrollbar-default::-webkit-scrollbar {
+        display: block;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}
+
 .lucide {
     width: 1rem;
     height: 1rem;
 }
 
 [data-state='open'] {
-    --tw-enter-scale: 1 !important; /* Disabilita lo scaling */
+    --tw-enter-scale: 1 !important;
+    /* disable scaling */
 }

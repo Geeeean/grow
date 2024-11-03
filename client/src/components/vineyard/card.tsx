@@ -24,7 +24,7 @@ const VineyardCard = ({ vineyard }: Props) => {
             )}
             <div className="flex justify-between items-center">
                 <Badge variant="outline">{vineyard.soil}</Badge>
-                {'id' in vineyard && <VineyardActions vineyardId={vineyard.id} />}
+                {'id' in vineyard && <VineyardActions vineyardId={vineyard.id} dropdown />}
             </div>
 
             <div>

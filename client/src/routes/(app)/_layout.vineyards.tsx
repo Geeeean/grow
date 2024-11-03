@@ -26,25 +26,28 @@ const Vineyards = () => {
         return (
             <>
                 {vineyards.length > 0 ? (
-                    <div className="h-full flex flex-col gap-2">
+                    <div className="h-full flex flex-col gap-2 md:gap-4">
                         <div>
                             <p className="font-medium text-lg">Vineyards</p>
                             <p className="text-muted-foreground text-sm">Manage your vineyards and view their infos.</p>
                         </div>
                         <VineyardControls setOpen={setOpen} view={view} setView={setView} />
 
-                        <div className="flex-1 overflow-y-auto">
+                        <div className="flex-1 overflow-y-auto scrollbar-hide">
                             {view === 'grid' ? (
                                 <VineyardsGrid vineyards={vineyards} />
                             ) : (
                                 <VineyardsTable vineyards={vineyards} />
                             )}
                         </div>
+                        <AddButton setOpen={setOpen} className='flex md:hidden' />
                     </div>
                 ) : (
                     <div className="px-2 rounded-lg border-dashed border-2 w-full h-full flex flex-col items-center justify-center bg-background-dark">
                         <img src={plant} className="h-56" />
-                        <p className="text-2xl md:text-4xl mt-8 font-medium text-center">No vineyards currently registered.</p>
+                        <p className="text-2xl md:text-4xl mt-8 font-medium text-center">
+                            No vineyards currently registered.
+                        </p>
                         <p className="text-lg md:text-xl text-muted-foreground mt-1 mb-4 text-center">
                             To manage your operations effectively, consider adding your first vineyard.
                         </p>

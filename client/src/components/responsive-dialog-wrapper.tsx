@@ -224,12 +224,10 @@ const DialogWrapper = ({
                         )}
                     </AnimatePresence>
                     {formState == 'idle' || formState == 'loading' ? (
-                        <div className="p-4">
-                            <DrawerFooter className="p-0">
-                                <CloseBtn />
-                                <ConfirmBtn />
-                            </DrawerFooter>
-                        </div>
+                        <DrawerFooter className="p-4 bg-background z-20">
+                            <CloseBtn />
+                            <ConfirmBtn />
+                        </DrawerFooter>
                     ) : null}
                 </DrawerContent>
             </Drawer>

@@ -6,7 +6,7 @@ import { FileOutput, ListFilter, CirclePlus, Search } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 
 import { View } from '@/types/vineyard';
-import { useMediaQuery } from '@/hooks/use-media-query';
+import { cn } from '@/utils/shared';
 
 type AddProps = {
     setOpen: Dispatch<SetStateAction<boolean>>;
@@ -17,9 +17,9 @@ type Props = {
     setView: Dispatch<SetStateAction<View>>;
 } & AddProps;
 
-export const AddButton = ({ setOpen }: AddProps) => {
+export const AddButton = ({ setOpen, className }: AddProps & { className: string }) => {
     return (
-        <Button className="font-normal flex items-center gap-1" onClick={() => setOpen(true)}>
+        <Button className={cn('font-normal flex items-center gap-2', className)} onClick={() => setOpen(true)}>
             <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
             Add vineyard
         </Button>
@@ -27,10 +27,8 @@ export const AddButton = ({ setOpen }: AddProps) => {
 };
 
 const VineyardToolbar = ({ setOpen, view, setView }: Props) => {
-    const isDesktop = useMediaQuery('(min-width: 768px)');
-
     return (
-        <div className="flex gap-2 flex-col md:flex-row-reverse w-full justify-between items-center mt-2 mb-4">
+        <div className="flex gap-2 flex-col md:flex-row-reverse w-full justify-between items-center">
             <div className="w-full md:w-fit flex gap-2 items-center justify-between self-end">
                 <Tabs defaultValue="grid" value={view} onValueChange={(newVal) => setView(newVal as View)}>
                     <TabsList>
@@ -40,26 +38,21 @@ const VineyardToolbar = ({ setOpen, view, setView }: Props) => {
                 </Tabs>
                 <div className="border-r h-10 hidden md:block" />
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" className="font-normal flex items-center gap-1">
+                    <Button disabled variant="outline" className="font-normal flex items-center gap-2">
                         <FileOutput className="h-[1.2rem] w-[1.2rem]" />
                         Export
                     </Button>
-                    <Button variant="outline" className="font-normal flex items-center gap-1">
+                    <Button disabled variant="outline" className="font-normal flex items-center gap-2">
                         <ListFilter className="h-[1.2rem] w-[1.2rem]" />
                         Filter
                     </Button>
                 </div>
-                {isDesktop ? (
-                    <AddButton setOpen={setOpen} />
-                ) : (
-                    <div className="absolute bottom-2 right-4">
-                        <AddButton setOpen={setOpen} />
-                    </div>
-                )}
+                <AddButton setOpen={setOpen} className="hidden md:flex" />
             </div>
             <div className="relative flex-1 md:grow-0 w-full">
                 <Search className="absolute left-2.5 top-2.5 text-muted-foreground" />
                 <Input
+                    disabled
                     type="search"
                     placeholder="Search..."
                     className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
