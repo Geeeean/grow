@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
 import { User } from '@/components/user';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/shared';
 
 const NAV_ITEMS = [
     { sectionName: 'Analytics', refs: [{ copy: 'Dashboard', ref: '/' }] },

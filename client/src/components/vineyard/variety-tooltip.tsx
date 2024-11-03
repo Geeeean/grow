@@ -1,5 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/shared';
 import { Variety } from '@/types/vineyard';
 
 import { Info } from 'lucide-react';

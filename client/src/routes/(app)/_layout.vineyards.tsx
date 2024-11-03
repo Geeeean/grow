@@ -42,10 +42,10 @@ const Vineyards = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center">
+                    <div className="px-2 rounded-lg border-dashed border-2 w-full h-full flex flex-col items-center justify-center bg-background-dark">
                         <img src={plant} className="h-56" />
-                        <p className="text-4xl mt-8 font-medium text-center">No vineyards currently registered.</p>
-                        <p className="text-xl text-muted-foreground mt-1 mb-4 text-center">
+                        <p className="text-2xl md:text-4xl mt-8 font-medium text-center">No vineyards currently registered.</p>
+                        <p className="text-lg md:text-xl text-muted-foreground mt-1 mb-4 text-center">
                             To manage your operations effectively, consider adding your first vineyard.
                         </p>
                         <AddButton setOpen={setOpen} />

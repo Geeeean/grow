@@ -1,4 +1,4 @@
-import { ReactNode, Dispatch, SetStateAction, useState, JSXElementConstructor } from 'react';
+import { ReactNode, Dispatch, SetStateAction, useState } from 'react';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import useMeasure from 'react-use-measure';
@@ -11,11 +11,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-    DialogClose,
 } from '@/components/ui/dialog';
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerDescription,
     DrawerFooter,

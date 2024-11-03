@@ -17,7 +17,7 @@ const VineyardCard = ({ vineyard }: Props) => {
             {'id' in vineyard && (
                 <Link
                     aria-label="Open Vineyard"
-                    className="absolute w-full h-full z-10"
+                    className="absolute w-full h-full z-10 left-0 top-0"
                     to={`/vineyards/${vineyard.id}`}
                     search={{ bcLast: vineyard.name }}
                 />

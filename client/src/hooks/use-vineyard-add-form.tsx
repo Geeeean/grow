@@ -77,11 +77,7 @@ export const useVineyardAddForm = () => {
                 {
                     const valid = vineyard.varieties.every(
                         (cur) =>
-                            cur.name !== '' &&
-                            cur.rows !== null &&
-                            cur.rows >= 0 &&
-                            cur.age !== null &&
-                            cur.age >= 0,
+                            cur.name !== '' && cur.rows !== null && cur.rows >= 0 && cur.age !== null && cur.age >= 0,
                     );
                     setDisabled(!(valid && vineyard.varieties.length > 0));
                 }

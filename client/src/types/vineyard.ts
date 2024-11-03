@@ -35,5 +35,17 @@ export type VineyardTrim = VineyardTrimAdd & {
     id: number;
 };
 
-//interface types
+export type VineyardCutAdd = {
+    vineyardId: VineyardId;
+    date: Date;
+};
+
+export type VineyardCut = VineyardCutAdd & {
+    id: number;
+};
+
+//only ui types
 export type View = 'table' | 'grid';
+
+export const vineyardActionStr = ['trimming', 'cutting', 'explantation', 'treatment', 'harvest'] as const;
+export type vineyardAction = (typeof vineyardActionStr)[number];

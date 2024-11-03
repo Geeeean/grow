@@ -3,7 +3,7 @@
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/shared';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -22,7 +22,10 @@ export function DatePicker({ date, setDate, id }: Props) {
                 <Button
                     id={id}
                     variant={'outline'}
-                    className={cn('justify-start text-left font-normal flex flex-row items-center gap-2', !date && 'text-muted-foreground')}
+                    className={cn(
+                        'justify-start text-left font-normal flex flex-row items-center gap-2',
+                        !date && 'text-muted-foreground',
+                    )}
                 >
                     <CalendarIcon />
                     {date ? format(date, 'PPP') : <span>Pick a date</span>}

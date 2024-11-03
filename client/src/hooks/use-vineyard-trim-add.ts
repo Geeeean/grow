@@ -7,7 +7,7 @@ export const useVineyardTrimAdd = () => {
     const isSuccess = false;
     const error = false;
     const isPending = false;
-    const reset = () => {}
+    const reset = () => {};
 
     return { trim, isSuccess, error, isPending, reset };
 };

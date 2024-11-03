@@ -5,6 +5,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { Link } from '@tanstack/react-router';
 
 import { Fragment } from 'react';
@@ -29,6 +30,7 @@ function splitPath(path: string): { parts: string[]; lastPart: string } {
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const BreadcrumbLocation = ({ location, bcLast }: Props) => {
+    const isDesktop = useMediaQuery('(min-width: 768px)');
     const { parts, lastPart } = splitPath(location);
 
     return (
@@ -37,16 +39,23 @@ const BreadcrumbLocation = ({ location, bcLast }: Props) => {
                 <BreadcrumbItem>
                     <Link to="/">Home</Link>
                 </BreadcrumbItem>
-                {parts.map((part, index) => (
-                    <Fragment key={index}>
+                {isDesktop ? (
+                    parts.map((part, index) => (
+                        <Fragment key={index}>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <Link to={`/${parts.slice(0, index + 1).join('/')}`} key={index}>
+                                    {capitalize(part)}
+                                </Link>
+                            </BreadcrumbItem>
+                        </Fragment>
+                    ))
+                ) : parts.length > 0 ? (
+                    <>
                         <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <Link to={`/${parts.slice(0, index + 1).join('/')}`} key={index}>
-                                {capitalize(part)}
-                            </Link>
-                        </BreadcrumbItem>
-                    </Fragment>
-                ))}
+                        <BreadcrumbItem>...</BreadcrumbItem>
+                    </>
+                ) : null}
                 {lastPart != '' && (
                     <>
                         <BreadcrumbSeparator />

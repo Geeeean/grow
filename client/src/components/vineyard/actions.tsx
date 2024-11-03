@@ -1,4 +1,4 @@
-import { FlaskRound, Grape, MoreHorizontal, Pencil, Scissors, Shovel, TreeDeciduous } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,67 +11,14 @@ import { Button } from '@/components/ui/button';
 import VineyardTrimAddForm from './trim-add-form';
 import { VineyardId } from '@/types/vineyard';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
-
-const operationStr = ['trimming', 'cutting_grass', 'explantation', 'treatmenst', 'harvest'] as const;
-type operation = (typeof operationStr)[number];
-
-const actionStr = ['edit', 'delete'] as const;
-type action = (typeof actionStr)[number];
+import { vineyardAction, vineyardActionStr } from '@/types/vineyard';
+import { action, actionStr } from '@/types/shared';
+import { actionCopy, getActionIcon } from '@/utils/shared';
+import { vineyardActionCopy, getVineyardActionIcon } from '@/utils/vineyard';
+import VineyardCutAddForm from './cut-add-form';
 
 type Props = {
     vineyardId: VineyardId;
-};
-
-const getContent = (
-    action: action | operation,
-    vineyardId: VineyardId,
-    open: boolean,
-    setOpen: Dispatch<SetStateAction<boolean>>,
-) => {
-    switch (action) {
-        case 'trimming':
-            return (
-                <>
-                    <TreeDeciduous /> Trimming
-                </>
-            );
-        case 'cutting_grass':
-            return (
-                <>
-                    <Scissors /> Cutting grass
-                </>
-            );
-        case 'explantation':
-            return (
-                <>
-                    <Shovel /> Explantation
-                </>
-            );
-        case 'treatmenst':
-            return (
-                <>
-                    <FlaskRound /> Treatments
-                </>
-            );
-        case 'harvest':
-            return (
-                <>
-                    <Grape /> Harvest
-                </>
-            );
-        case 'edit':
-            return (
-                <>
-                    <Pencil /> Edit
-                </>
-            );
-        case 'delete':
-            return (
-                <>
-                    <Scissors /> Delete
-                </>
-            );
-    }
 };
 
 const VineyardActions = ({ vineyardId }: Props) => {
@@ -84,15 +31,15 @@ const VineyardActions = ({ vineyardId }: Props) => {
     const [isDeleteOpen, setDeleteOpen] = useState<boolean>(false);
 
     const getOpenStateProps = useCallback(
-        (action: operation | action): [boolean, Dispatch<SetStateAction<boolean>>] => {
+        (action: vineyardAction | action): [boolean, Dispatch<SetStateAction<boolean>>] => {
             switch (action) {
                 case 'trimming':
                     return [isTrimmingOpen, setTrimmingOpen];
-                case 'cutting_grass':
+                case 'cutting':
                     return [isCuttingGrassOpen, setCuttingGrassOpen];
                 case 'explantation':
                     return [isExplantationOpen, setExplantationOpen];
-                case 'treatmenst':
+                case 'treatment':
                     return [isTreatmentOpen, setTreatmentOpen];
                 case 'harvest':
                     return [isHarvestOpen, setHarvestOpen];
@@ -118,6 +65,7 @@ const VineyardActions = ({ vineyardId }: Props) => {
     return (
         <>
             <VineyardTrimAddForm vineyardId={vineyardId} open={isTrimmingOpen} setOpen={setTrimmingOpen} />
+            <VineyardCutAddForm vineyardId={vineyardId} open={isCuttingGrassOpen} setOpen={setCuttingGrassOpen} />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button className="z-20" aria-haspopup="true" size="icon" variant="ghost">
@@ -127,8 +75,8 @@ const VineyardActions = ({ vineyardId }: Props) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-20">
                     <DropdownMenuLabel>Operations</DropdownMenuLabel>
-                    {operationStr.map((operation: operation, index) => {
-                        const [open, setOpen] = getOpenStateProps(operation);
+                    {vineyardActionStr.map((action: vineyardAction, index: number) => {
+                        const [, setOpen] = getOpenStateProps(action);
 
                         return (
                             <DropdownMenuItem
@@ -136,18 +84,24 @@ const VineyardActions = ({ vineyardId }: Props) => {
                                 key={index}
                                 onClick={() => setOpen(true)}
                             >
-                                {getContent(operation, vineyardId, open, setOpen)}
+                                {getVineyardActionIcon(action)}
+                                {vineyardActionCopy[action]}
                             </DropdownMenuItem>
                         );
                     })}
                     <DropdownMenuSeparator />
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     {actionStr.map((action: action, index) => {
-                        const [open, setOpen] = getOpenStateProps(action);
+                        const [, setOpen] = getOpenStateProps(action);
 
                         return (
-                            <DropdownMenuItem className="flex items-center gap-1" key={index}>
-                                {getContent(action, vineyardId, open, setOpen)}
+                            <DropdownMenuItem
+                                className="flex items-center gap-1"
+                                key={index}
+                                onClick={() => setOpen(true)}
+                            >
+                                {getActionIcon(action)}
+                                {actionCopy[action]}
                             </DropdownMenuItem>
                         );
                     })}

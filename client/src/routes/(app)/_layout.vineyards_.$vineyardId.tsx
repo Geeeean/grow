@@ -21,11 +21,7 @@ const VineyardComponent = () => {
     if (vineyard)
         return (
             <div>
-                <p
-                    className='text-2xl'
-                >
-                    {vineyard.name}
-                </p>
+                <p className="text-2xl">{vineyard.name}</p>
                 <p>vineyard stats</p>
             </div>
         );
