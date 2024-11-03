@@ -1,15 +1,15 @@
 import { Dispatch } from 'react';
 import { Input } from '@/components/ui/input';
-import { VineyardAction } from '@/hooks/use-vineyard-form';
+import { VineyardAddAction } from '@/hooks/use-vineyard-add-form';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Soil, soilValues } from '@/types/vineyard';
 
 type Props = {
-    dispatch: Dispatch<VineyardAction>;
+    dispatch: Dispatch<VineyardAddAction>;
 };
 
-const VineyardAddInformations = ({ dispatch }: Props) => {
+const VineyardAddInformationsForm = ({ dispatch }: Props) => {
     return (
         <form className="w-full space-y-3">
             <div className="space-y-1">
@@ -79,4 +79,4 @@ const VineyardAddInformations = ({ dispatch }: Props) => {
     );
 };
 
-export default VineyardAddInformations;
+export default VineyardAddInformationsForm;

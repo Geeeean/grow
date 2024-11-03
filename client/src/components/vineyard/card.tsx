@@ -5,33 +5,26 @@ import VineyardActions from './actions';
 import { Badge } from '@/components/ui/badge';
 import { Grape, Mountain } from 'lucide-react';
 
-import { Vineyard, VineyardCreate } from '@/types/vineyard';
+import { Vineyard, VineyardAdd } from '@/types/vineyard';
 
 type Props = {
-    vineyard: Vineyard | VineyardCreate;
+    vineyard: Vineyard | VineyardAdd;
 };
-
-const wrapperClassName =
-    'border flex flex-col gap-2 p-3 rounded-md animate-in fade-in bg-muted/20 hover:border-ring transition-colors';
 
 const VineyardCard = ({ vineyard }: Props) => {
-    return 'id' in vineyard ? (
-        <Link to={`/vineyards/${vineyard.id}`} search={{ bcLast: vineyard.name }} className={wrapperClassName}>
-            <CardContent vineyard={vineyard} preview={false} />
-        </Link>
-    ) : (
-        <div className={wrapperClassName}>
-            <CardContent vineyard={vineyard} preview={true} />
-        </div>
-    );
-};
-
-const CardContent = ({ vineyard, preview = false }: Props & { preview: boolean }) => {
     return (
-        <>
+        <div className="relative border flex flex-col gap-2 p-3 rounded-md animate-in fade-in bg-muted/20 hover:border-ring transition-colors z-0">
+            {'id' in vineyard && (
+                <Link
+                    aria-label="Open Vineyard"
+                    className="absolute w-full h-full z-10"
+                    to={`/vineyards/${vineyard.id}`}
+                    search={{ bcLast: vineyard.name }}
+                />
+            )}
             <div className="flex justify-between items-center">
                 <Badge variant="outline">{vineyard.soil}</Badge>
-                {!preview && <VineyardActions />}
+                {'id' in vineyard && <VineyardActions vineyardId={vineyard.id} />}
             </div>
 
             <div>
@@ -59,7 +52,7 @@ const CardContent = ({ vineyard, preview = false }: Props & { preview: boolean }
                 </div>
             </div>
             <VineyardVarietyTooltip varieties={vineyard.varieties} full />
-        </>
+        </div>
     );
 };
 

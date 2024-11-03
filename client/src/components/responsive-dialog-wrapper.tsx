@@ -59,7 +59,11 @@ const DialogWrapper = ({
     const [height, setHeight] = useState<number>(0);
     const isDesktop = useMediaQuery('(min-width: 768px)');
 
-    const CloseBtn = () => <Button variant="ghost">Cancel</Button>;
+    const CloseBtn = () => (
+        <Button variant="ghost" onClick={() => setOpen(false)}>
+            Cancel
+        </Button>
+    );
 
     const ConfirmBtn = () => (
         <Button
@@ -144,9 +148,7 @@ const DialogWrapper = ({
                                             </motion.div>
                                         </AnimatePresence>
                                         <DialogFooter>
-                                            <DialogClose>
-                                                <CloseBtn />
-                                            </DialogClose>
+                                            <CloseBtn />
                                             <ConfirmBtn />
                                         </DialogFooter>
                                     </div>
@@ -218,9 +220,7 @@ const DialogWrapper = ({
                     {formState == 'idle' || formState == 'loading' ? (
                         <div className="p-4">
                             <DrawerFooter className="p-0">
-                                <DrawerClose>
-                                    <CloseBtn />
-                                </DrawerClose>
+                                <CloseBtn />
                                 <ConfirmBtn />
                             </DrawerFooter>
                         </div>

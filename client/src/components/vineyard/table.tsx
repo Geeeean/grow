@@ -3,13 +3,17 @@ import { Badge } from '@/components/ui/badge';
 import { Vineyard } from '@/types/vineyard';
 import VineyardActions from './actions';
 import VineyardVarietyTooltip from './variety-tooltip';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { Button } from '../ui/button';
+import { Eye } from 'lucide-react';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 type Props = {
     vineyards: Vineyard[];
 };
 
 const VineyardsTable = ({ vineyards }: Props) => {
+    const isDesktop = useMediaQuery('(min-width: 768px)');
     const navigate = useNavigate();
 
     return (
@@ -24,8 +28,11 @@ const VineyardsTable = ({ vineyards }: Props) => {
                     <TableHead>Total plants</TableHead>
                     <TableHead className="hidden md:table-cell">Altitude</TableHead>
                     <TableHead className="hidden md:table-cell">Varieties</TableHead>
-                    <TableHead>
+                    <TableHead className="hidden md:table-cell">
                         <span className="sr-only">Actions</span>
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                        <span className="sr-only">Open</span>
                     </TableHead>
                 </TableRow>
             </TableHeader>
@@ -34,23 +41,15 @@ const VineyardsTable = ({ vineyards }: Props) => {
                     <TableRow
                         key={index}
                         onClick={() => {
-                            navigate({
-                                to: `/vineyards/${vineyard.id}`,
-                                search: { bcLast: vineyard.name },
-                            });
+                            if (!isDesktop) {
+                                navigate({
+                                    to: `/vineyards/${vineyard.id}`,
+                                    search: { bcLast: vineyard.name },
+                                });
+                            }
                         }}
-                        className='cursor-pointer'
                     >
                         <TableCell className="hidden sm:table-cell">
-                            {
-                                //<img
-                                //    alt="Product image"
-                                //    className="aspect-square rounded-md object-cover"
-                                //    height="64"
-                                //    src="/placeholder.svg"
-                                //    width="64"
-                                ///>
-                            }
                             <div className="w-16 h-16 rounded-md bg-muted"></div>
                         </TableCell>
                         <TableCell className="font-medium">{vineyard.name}</TableCell>
@@ -62,8 +61,19 @@ const VineyardsTable = ({ vineyards }: Props) => {
                         <TableCell className="hidden md:table-cell">
                             <VineyardVarietyTooltip varieties={vineyard.varieties} full={false} />
                         </TableCell>
-                        <TableCell>
-                            <VineyardActions />
+                        <TableCell className="hidden md:table-cell">
+                            <VineyardActions vineyardId={vineyard.id} />
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                            <Link
+                                aria-label="Open Vineyard"
+                                to={`/vineyards/${vineyard.id}`}
+                                search={{ bcLast: vineyard.name }}
+                            >
+                                <Button variant="ghost">
+                                    <Eye />
+                                </Button>
+                            </Link>
                         </TableCell>
                     </TableRow>
                 ))}

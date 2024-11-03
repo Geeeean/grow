@@ -6,7 +6,7 @@ import { useVineyards } from '@/hooks/use-vineyards';
 import VineyardsTable from '@/components/vineyard/table';
 import VineyardsGrid from '@/components/vineyard/grid';
 import VineyardControls, { AddButton } from '@/components/vineyard/toolbar';
-import VineyardAdd from '@/components/vineyard/add';
+import VineyardAddForm from '@/components/vineyard/add-form';
 
 import plant from '/plant.svg';
 
@@ -24,15 +24,9 @@ const Vineyards = () => {
 
     if (vineyards != undefined)
         return (
-            <div
-                className={
-                    vineyards.length > 0
-                        ? 'h-full flex flex-col gap-2'
-                        : 'w-full h-full flex flex-col items-center justify-center'
-                }
-            >
+            <>
                 {vineyards.length > 0 ? (
-                    <>
+                    <div className="h-full flex flex-col gap-2">
                         <div>
                             <p className="font-medium text-lg">Vineyards</p>
                             <p className="text-muted-foreground text-sm">Manage your vineyards and view their infos.</p>
@@ -46,19 +40,19 @@ const Vineyards = () => {
                                 <VineyardsTable vineyards={vineyards} />
                             )}
                         </div>
-                    </>
+                    </div>
                 ) : (
-                    <>
+                    <div className="w-full h-full flex flex-col items-center justify-center">
                         <img src={plant} className="h-56" />
                         <p className="text-4xl mt-8 font-medium text-center">No vineyards currently registered.</p>
                         <p className="text-xl text-muted-foreground mt-1 mb-4 text-center">
                             To manage your operations effectively, consider adding your first vineyard.
                         </p>
                         <AddButton setOpen={setOpen} />
-                    </>
+                    </div>
                 )}
-                <VineyardAdd open={open} setOpen={setOpen} />
-            </div>
+                <VineyardAddForm open={open} setOpen={setOpen} />
+            </>
         );
 
     return <p>loading...</p>;

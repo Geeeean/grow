@@ -1,14 +1,10 @@
-import { SetStateAction, Dispatch, useMemo } from 'react';
+import { useMemo } from 'react';
 import DialogWrapper from '@/components/responsive-dialog-wrapper';
-import VineyardAddInformations from './add-informations';
-import VineyardAddVarieties from './add-varieties';
+import VineyardAddInformationsForm from './add-informations-form';
+import VineyardAddVarietiesForm from './add-varieties-form';
 import VineyardCard from './card';
-import { useVineyardForm } from '@/hooks/use-vineyard-form';
-
-type Props = {
-    open: boolean;
-    setOpen: Dispatch<SetStateAction<boolean>>;
-};
+import { useVineyardAddForm } from '@/hooks/use-vineyard-add-form';
+import { BasicFormProps } from '@/types/shared';
 
 const DESC = {
     informations: 'Enter the basic details for the vineyard.',
@@ -16,16 +12,16 @@ const DESC = {
     review: 'Review all entered information to ensure accuracy before submitting the vineyard data to the system.',
 };
 
-const VineyardAdd = ({ open, setOpen }: Props) => {
+const VineyardAddForm = ({ open, setOpen }: BasicFormProps) => {
     const { step, disabled, vineyard, vineyardDispatch, handleBtn, resetForm, isPending, isSuccess, error } =
-        useVineyardForm();
+        useVineyardAddForm();
 
     const content = useMemo(() => {
         switch (step) {
             case 'informations':
-                return <VineyardAddInformations dispatch={vineyardDispatch} />;
+                return <VineyardAddInformationsForm dispatch={vineyardDispatch} />;
             case 'varieties':
-                return <VineyardAddVarieties varieties={vineyard.varieties} dispatch={vineyardDispatch} />;
+                return <VineyardAddVarietiesForm varieties={vineyard.varieties} dispatch={vineyardDispatch} />;
             case 'review':
                 return <VineyardCard vineyard={vineyard} />;
             default:
@@ -57,4 +53,4 @@ const VineyardAdd = ({ open, setOpen }: Props) => {
         </DialogWrapper>
     );
 };
-export default VineyardAdd;
+export default VineyardAddForm;

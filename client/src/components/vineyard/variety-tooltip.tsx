@@ -16,14 +16,14 @@ const VineyardVarietyTooltip = ({ varieties, full = false }: Props) => {
             <Tooltip delayDuration={0}>
                 <TooltipTrigger
                     className={cn(
-                        'flex items-center gap-2 bg-secondary text-secondary-foreground px-2 py-1 rounded-sm',
+                        'z-20 flex items-center gap-2 bg-secondary text-secondary-foreground px-2 py-1 rounded-sm',
                         full && 'justify-center w-full',
                     )}
                 >
                     {varieties.length} variet{varieties.length > 1 ? 'ies' : 'y'}
                     <Info />
                 </TooltipTrigger>
-                <TooltipContent className="grid grid-cols-[repeat(3,auto)] bg-background-dark border items-start">
+                <TooltipContent className="z-20 grid grid-cols-[repeat(3,auto)] bg-background-dark border items-start">
                     <p className="font-medium text-primary/70">Variety</p>
                     <p className="font-medium text-primary/70">Age</p>
                     <p className="font-medium text-primary/70">Rows</p>

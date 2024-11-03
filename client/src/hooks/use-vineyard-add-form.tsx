@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useReducer, useState } from 'react';
 
-import { Soil, VineyardCreate, Variety } from '@/types/vineyard';
+import { Soil, VineyardAdd, Variety } from '@/types/vineyard';
 import { useVineyardAdd } from './use-vineyard-add';
 
 type step = 'informations' | 'varieties' | 'review';
 
-export type VineyardAction =
+export type VineyardAddAction =
     | { type: 'SET_NAME'; payload: string }
     | { type: 'SET_SOIL'; payload: Soil }
     | { type: 'SET_ALTITUDE'; payload: number | null }
@@ -15,7 +15,7 @@ export type VineyardAction =
     | { type: 'REMOVE_VARIETY'; payload: number }
     | { type: 'RESET' };
 
-const vineyardReducer = (state: VineyardCreate, action: VineyardAction): VineyardCreate => {
+const vineyardReducer = (state: VineyardAdd, action: VineyardAddAction): VineyardAdd => {
     switch (action.type) {
         case 'SET_NAME':
             return { ...state, name: action.payload };
@@ -45,14 +45,15 @@ const vineyardReducer = (state: VineyardCreate, action: VineyardAction): Vineyar
     }
 };
 
-const initialVineyardState: VineyardCreate = {
+const initialVineyardState: VineyardAdd = {
     name: '',
     altitude: null,
     soil: '',
     plants: null,
     varieties: [],
 };
-export const useVineyardForm = () => {
+
+export const useVineyardAddForm = () => {
     const [step, setStep] = useState<step>('informations');
     const [vineyard, vineyardDispatch] = useReducer(vineyardReducer, initialVineyardState);
     const [disabled, setDisabled] = useState<boolean>(true);
@@ -76,7 +77,7 @@ export const useVineyardForm = () => {
                 {
                     const valid = vineyard.varieties.every(
                         (cur) =>
-                            cur.variety !== '' &&
+                            cur.name !== '' &&
                             cur.rows !== null &&
                             cur.rows >= 0 &&
                             cur.age !== null &&
