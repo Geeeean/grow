@@ -1,19 +1,25 @@
 import { Link } from '@tanstack/react-router';
 
 import VineyardVarietyTooltip from './variety-tooltip';
-import VineyardActions from './actions';
 import { Badge } from '@/components/ui/badge';
 import { Grape, Mountain } from 'lucide-react';
 
-import { Vineyard, VineyardAdd } from '@/types/vineyard';
+import { Vineyard, vineyardAction, VineyardAdd, VineyardId } from '@/types/vineyard';
+import { Card } from '../ui/card';
+import VineyardActionsDropdown from './actions-dropdown';
+import { Dispatch, SetStateAction } from 'react';
+import { action } from '@/types/shared';
 
 type Props = {
     vineyard: Vineyard | VineyardAdd;
+    setSelectedVineyard?: Dispatch<SetStateAction<VineyardId>>;
+    getVineyardActionSetter?: (action: vineyardAction) => React.Dispatch<React.SetStateAction<boolean>>;
+    getActionSetter?: (action: action) => Dispatch<SetStateAction<boolean>>;
 };
 
-const VineyardCard = ({ vineyard }: Props) => {
+const VineyardCard = ({ vineyard, setSelectedVineyard, getVineyardActionSetter, getActionSetter }: Props) => {
     return (
-        <div className="relative border flex flex-col gap-2 p-3 rounded-md animate-in fade-in bg-muted/20 hover:border-ring transition-colors z-0">
+        <Card className="relative flex flex-col gap-2 hover:border-ring transition-colors">
             {'id' in vineyard && (
                 <Link
                     aria-label="Open Vineyard"
@@ -22,9 +28,16 @@ const VineyardCard = ({ vineyard }: Props) => {
                     search={{ bcLast: vineyard.name }}
                 />
             )}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-start">
                 <Badge variant="outline">{vineyard.soil}</Badge>
-                {'id' in vineyard && <VineyardActions vineyardId={vineyard.id} dropdown />}
+                {'id' in vineyard && setSelectedVineyard && getVineyardActionSetter && getActionSetter && (
+                    <VineyardActionsDropdown
+                        vineyardId={vineyard.id}
+                        setSelectedVineyard={setSelectedVineyard}
+                        getVineyardActionSetter={getVineyardActionSetter}
+                        getActionSetter={getActionSetter}
+                    />
+                )}
             </div>
 
             <div>
@@ -52,7 +65,7 @@ const VineyardCard = ({ vineyard }: Props) => {
                 </div>
             </div>
             <VineyardVarietyTooltip varieties={vineyard.varieties} full />
-        </div>
+        </Card>
     );
 };
 

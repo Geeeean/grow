@@ -1,18 +1,23 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Vineyard } from '@/types/vineyard';
-import VineyardActions from './actions';
+import { Vineyard, vineyardAction, VineyardId } from '@/types/vineyard';
 import VineyardVarietyTooltip from './variety-tooltip';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Button } from '../ui/button';
 import { Eye } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import VineyardActionsDropdown from './actions-dropdown';
+import { Dispatch, SetStateAction } from 'react';
+import { action } from '@/types/shared';
 
 type Props = {
     vineyards: Vineyard[];
+    setSelectedVineyard: Dispatch<SetStateAction<VineyardId>>;
+    getVineyardActionSetter: (action: vineyardAction) => React.Dispatch<React.SetStateAction<boolean>>;
+    getActionSetter: (action: action) => Dispatch<SetStateAction<boolean>>;
 };
 
-const VineyardsTable = ({ vineyards }: Props) => {
+const VineyardsTable = ({ vineyards, setSelectedVineyard, getVineyardActionSetter, getActionSetter }: Props) => {
     const isDesktop = useMediaQuery('(min-width: 768px)');
     const navigate = useNavigate();
 
@@ -62,7 +67,12 @@ const VineyardsTable = ({ vineyards }: Props) => {
                             <VineyardVarietyTooltip varieties={vineyard.varieties} full={false} />
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                            <VineyardActions vineyardId={vineyard.id} dropdown />
+                            <VineyardActionsDropdown
+                                vineyardId={vineyard.id}
+                                setSelectedVineyard={setSelectedVineyard}
+                                getVineyardActionSetter={getVineyardActionSetter}
+                                getActionSetter={getActionSetter}
+                            />
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                             <Link

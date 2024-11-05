@@ -22,8 +22,6 @@ const VineyardCutAddForm = ({ vineyardId, open, setOpen }: Props) => {
     const { step, handleBtn, resetForm, isPending, isSuccess, error, cutDate, setCutDate } =
         useVineyardCutAddForm(vineyardId);
 
-    console.log(setCutDate);
-
     const content = useMemo(() => {
         switch (step) {
             case 'informations':

@@ -17,7 +17,7 @@ type Props = {
     setView: Dispatch<SetStateAction<View>>;
 } & AddProps;
 
-export const AddButton = ({ setOpen, className }: AddProps & { className: string }) => {
+export const AddButton = ({ setOpen, className }: AddProps & { className?: string }) => {
     return (
         <Button className={cn('font-normal flex items-center gap-2', className)} onClick={() => setOpen(true)}>
             <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
