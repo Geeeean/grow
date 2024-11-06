@@ -47,7 +47,7 @@ const VineyardAddVarietiesForm = ({ varieties, dispatch }: Props) => {
                                     />
                                     <Input
                                         value={variety.age ?? ''}
-                                        type='number'
+                                        type="number"
                                         className="bg-background-dark"
                                         placeholder="0"
                                         onChange={(e) => {
@@ -68,7 +68,7 @@ const VineyardAddVarietiesForm = ({ varieties, dispatch }: Props) => {
                                     />
                                     <Input
                                         value={variety.rows ?? ''}
-                                        type='number'
+                                        type="number"
                                         className="bg-background-dark"
                                         placeholder="0"
                                         onChange={(e) => {

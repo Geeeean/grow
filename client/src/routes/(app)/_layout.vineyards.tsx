@@ -12,6 +12,7 @@ import plant from '/plant.svg';
 import { useVineyardAction } from '@/hooks/use-vineyard-action';
 import VineyardTrimAddForm from '@/components/vineyard/trim-add-form';
 import { useSharedAction } from '@/hooks/use-shared-action';
+import VineyardCutAddForm from '@/components/vineyard/cut-add-form';
 
 export const Route = createFileRoute('/(app)/_layout/vineyards')({
     component: () => <Vineyards />,
@@ -75,6 +76,11 @@ const Vineyards = () => {
                 <VineyardTrimAddForm
                     open={getVineyardActionState('trimming')}
                     setOpen={getVineyardActionSetter('trimming')}
+                    vineyardId={selectedVineyard}
+                />
+                <VineyardCutAddForm
+                    open={getVineyardActionState('cutting')}
+                    setOpen={getVineyardActionSetter('cutting')}
                     vineyardId={selectedVineyard}
                 />
             </>

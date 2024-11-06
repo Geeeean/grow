@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { VineyardId } from '@/types/vineyard';
 import { vineyardAction, vineyardActionStr } from '@/types/vineyard';
 import { action, actionStr } from '@/types/shared';
-import { actionCopy, getActionIcon } from '@/utils/shared';
+import { actionCopy, cn, getActionIcon } from '@/utils/shared';
 import { vineyardActionCopy, getVineyardActionIcon } from '@/utils/vineyard';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -21,6 +21,7 @@ type Props = {
     getVineyardActionSetter: (action: vineyardAction) => React.Dispatch<React.SetStateAction<boolean>>;
     getActionSetter: (action: action) => Dispatch<SetStateAction<boolean>>;
     primary?: boolean;
+    className?: string;
 };
 
 const VineyardActionsDropdown = ({
@@ -29,15 +30,16 @@ const VineyardActionsDropdown = ({
     getVineyardActionSetter,
     getActionSetter,
     primary = false,
+    className = '',
 }: Props) => {
     return (
         <DropdownMenu onOpenChange={(open) => open && setSelectedVineyard && setSelectedVineyard(vineyardId)}>
             <DropdownMenuTrigger asChild>
                 <Button
                     aria-haspopup="true"
-                    size={primary ? 'default' : 'icon'}
+                    size={primary ? 'default' : 'sm'}
                     variant={primary ? 'default' : 'outline'}
-                    className="z-20 flex items-center gap-2"
+                    className={cn('z-20 flex items-center gap-2', className)}
                 >
                     {primary ? (
                         <>
