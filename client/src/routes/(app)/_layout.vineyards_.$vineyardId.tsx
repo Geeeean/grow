@@ -97,21 +97,21 @@ const VineyardComponent = () => {
                                 <CardDescription>Key characteristics of your vineyard.</CardDescription>
                             </CardHeader>
                             <CardContent className="flex flex-col gap-2 pt-3">
-                                <div className="bg-secondary/50 p-2 pr-4 rounded-md border ring-1 flex items-center justify-between">
+                                <div className="bg-secondary/50 p-2 pr-4 rounded-md ring-1 flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-muted-foreground">Soil type</p>
                                         <p className="font-semibold text-lg">{vineyard.soil}</p>
                                     </div>
                                     <Earth className="!w-6 !h-6 text-secondary-foreground" />
                                 </div>
-                                <div className="bg-secondary/50 p-2 pr-4 rounded-md border ring-1 flex items-center justify-between">
+                                <div className="bg-secondary/50 p-2 pr-4 rounded-md ring-1 flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-muted-foreground">Altitude</p>
-                                        <p className="font-semibold text-lg">{vineyard.altitude}m</p>
+                                            <p className="font-semibold text-lg">{vineyard.altitude}m</p>
                                     </div>
                                     <Mountain className="!w-6 !h-6 text-secondary-foreground" />
                                 </div>
-                                <div className="bg-secondary/50 p-2 pr-4 rounded-md border ring-1 flex items-center justify-between">
+                                <div className="bg-secondary/50 p-2 pr-4 rounded-md ring-1 flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-muted-foreground">Plants</p>
                                         <p className="font-semibold text-lg">{vineyard.plants}</p>
