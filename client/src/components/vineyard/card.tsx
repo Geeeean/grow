@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import VineyardVarietyTooltip from './variety-tooltip';
+import VineyardVarietiesTooltip from './varieties-tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Sprout } from 'lucide-react';
 
@@ -65,7 +65,7 @@ const VineyardCard = ({ vineyard, setSelectedVineyard, getVineyardActionSetter, 
                         </div>
                     </div>
                 </div>
-                <VineyardVarietyTooltip varieties={vineyard.varieties} full />
+                <VineyardVarietiesTooltip varieties={vineyard.varieties} full />
             </CardContent>
         </Card>
     );

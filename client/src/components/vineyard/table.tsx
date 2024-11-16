@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Vineyard, vineyardAction, VineyardId } from '@/types/vineyard';
-import VineyardVarietyTooltip from './variety-tooltip';
+import VineyardVarietiesTooltip from './varieties-tooltip';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Button } from '../ui/button';
 import { Eye } from 'lucide-react';
@@ -64,7 +64,7 @@ const VineyardsTable = ({ vineyards, setSelectedVineyard, getVineyardActionSette
                         <TableCell>{vineyard.plants}</TableCell>
                         <TableCell className="hidden md:table-cell">{vineyard.altitude}m</TableCell>
                         <TableCell className="hidden md:table-cell">
-                            <VineyardVarietyTooltip varieties={vineyard.varieties} full={false} />
+                            <VineyardVarietiesTooltip varieties={vineyard.varieties} full={false} />
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                             <VineyardActionsDropdown

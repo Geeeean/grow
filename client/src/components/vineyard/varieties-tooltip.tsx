@@ -10,7 +10,7 @@ type Props = {
     full: boolean;
 };
 
-const VineyardVarietyTooltip = ({ varieties, full = false }: Props) => {
+const VineyardVarietiesTooltip = ({ varieties, full = false }: Props) => {
     return (
         <TooltipProvider>
             <Tooltip delayDuration={0}>
@@ -40,4 +40,4 @@ const VineyardVarietyTooltip = ({ varieties, full = false }: Props) => {
     );
 };
 
-export default VineyardVarietyTooltip;
+export default VineyardVarietiesTooltip;

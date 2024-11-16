@@ -13,13 +13,16 @@ import {
     MenubarSeparator,
     MenubarTrigger,
 } from '@/components/ui/menubar';
-import { Earth, Mountain, MousePointer2, MousePointerClick, Sprout } from 'lucide-react';
+import { Earth, Maximize, Mountain, MousePointer2, MousePointerClick, Sprout } from 'lucide-react';
 import VineyardActionsDropdown from '@/components/vineyard/actions-dropdown';
 import { useVineyardAction } from '@/hooks/use-vineyard-action';
 import { useSharedAction } from '@/hooks/use-shared-action';
 import VineyardCutAddForm from '@/components/vineyard/cut-add-form';
 import VineyardTrimAddForm from '@/components/vineyard/trim-add-form';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { DetailCard, DetailCardContent, DetailCardHeader, DetailCardTitle } from '@/components/ui/detail-card';
+import VarietiesChart from '@/components/vineyard/varieties-chart';
 
 export const Route = createFileRoute('/(app)/_layout/vineyards/$vineyardId')({
     validateSearch: (search: Record<string, string>): { bcLast: string } => {
@@ -91,64 +94,68 @@ const VineyardComponent = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 overflow-y-auto scrollbar-hide">
-                        <Card>
-                            <CardHeader className="border-b">
-                                <CardTitle>General informations</CardTitle>
-                                <CardDescription>Key characteristics of your vineyard.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex flex-col gap-2 pt-3">
-                                <div className="bg-secondary/50 p-2 pr-4 rounded-md ring-1 flex items-center justify-between">
+                        <DetailCard className="md:col-span-2 lg:col-span-1">
+                            <DetailCardHeader>
+                                <DetailCardTitle>Basic informations</DetailCardTitle>
+                                <Maximize />
+                            </DetailCardHeader>
+                            <div className="flex flex-col gap-1">
+                                <DetailCardContent className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-muted-foreground">Soil type</p>
-                                        <p className="font-semibold text-lg">{vineyard.soil}</p>
+                                        <p className="text-xs text-muted-foreground">Soil type</p>
+                                        <p className="font-medium">{vineyard.soil}</p>
                                     </div>
                                     <Earth className="!w-6 !h-6 text-secondary-foreground" />
-                                </div>
-                                <div className="bg-secondary/50 p-2 pr-4 rounded-md ring-1 flex items-center justify-between">
+                                </DetailCardContent>
+                                <DetailCardContent className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-muted-foreground">Altitude</p>
-                                            <p className="font-semibold text-lg">{vineyard.altitude}m</p>
+                                        <p className="font-medium">{vineyard.altitude}m</p>
                                     </div>
                                     <Mountain className="!w-6 !h-6 text-secondary-foreground" />
-                                </div>
-                                <div className="bg-secondary/50 p-2 pr-4 rounded-md ring-1 flex items-center justify-between">
+                                </DetailCardContent>
+                                <DetailCardContent className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-muted-foreground">Plants</p>
-                                        <p className="font-semibold text-lg">{vineyard.plants}</p>
+                                        <p className="font-medium">{vineyard.plants}</p>
                                     </div>
                                     <Sprout className="!w-6 !h-6 text-secondary-foreground" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="lg:col-span-2">
-                            <CardHeader className="border-b">
-                                <CardTitle>Varieties</CardTitle>
-                                <CardDescription>Grapewine varieties in the vineyard.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex flex-col md:flex-row pt-3">
-                                <div className="md:h-full overflow-y-auto w-full">
-                                    <Table className="border w-full">
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Name</TableHead>
-                                                <TableHead>Rows</TableHead>
-                                                <TableHead>Age</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {vineyard.varieties.map((variety, index: number) => (
-                                                <TableRow key={index}>
-                                                    <TableCell className="font-medium">{variety.name}</TableCell>
-                                                    <TableCell>{variety.rows}</TableCell>
-                                                    <TableCell>{variety.age}</TableCell>
+                                </DetailCardContent>
+                            </div>
+                        </DetailCard>
+                        <DetailCard className="md:col-span-2 lg:col-span-3">
+                            <DetailCardHeader>
+                                <DetailCardTitle>Variants</DetailCardTitle>
+                                <Maximize />
+                            </DetailCardHeader>
+                            <div className="flex flex-col lg:flex-row gap-1 w-full h-full">
+                                <DetailCardContent className="h-full p-0 grow">
+                                    <div className="max-h-[270px] overflow-y-auto">
+                                        <Table className="p-0 w-full">
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>Name</TableHead>
+                                                    <TableHead>Rows</TableHead>
+                                                    <TableHead>Age</TableHead>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                                <div className="md:h-full"></div>
-                            </CardContent>
-                        </Card>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {vineyard.varieties.map((variety, index: number) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell className="font-medium">{variety.name}</TableCell>
+                                                        <TableCell>{variety.rows}</TableCell>
+                                                        <TableCell>{variety.age}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                </DetailCardContent>
+                                <DetailCardContent>
+                                    <VarietiesChart varieties={vineyard.varieties}/>
+                                </DetailCardContent>
+                            </div>
+                        </DetailCard>
                     </div>
                 </div>
                 <VineyardTrimAddForm
