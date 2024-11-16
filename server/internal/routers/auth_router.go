@@ -24,14 +24,14 @@ func NewAuthRouter(db *sql.DB, storage *storage.Queries, prefix string) *AuthRou
 	signupEndpoint := "/signup"
 	signinEndpoint := "/signin"
 
-	router.mux.HandleFunc(signupEndpoint, middlewares.Wrapper(router.handler.SignUp))
-	router.mux.HandleFunc(signinEndpoint, middlewares.Wrapper(router.handler.SignIn))
+	router.mux.HandleFunc(signupEndpoint, middlewares.Wrapper(http.MethodPost, router.handler.SignUp))
+	router.mux.HandleFunc(signinEndpoint, middlewares.Wrapper(http.MethodPost, router.handler.SignIn))
 
-    /*** LOGGING ***/
-    log.GetLogger().Info("AUTH ROUTER")
+	/*** LOGGING ***/
+	log.GetLogger().Info("AUTH ROUTER")
 	log.GetLogger().Info("signup endpoint available at " + prefix + signupEndpoint)
 	log.GetLogger().Info("signin endpoint available at " + prefix + signinEndpoint)
-    log.GetLogger().NewLine()
+	log.GetLogger().NewLine()
 
 	return router
 }

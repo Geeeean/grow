@@ -26,11 +26,13 @@ func NewVineyardHandler(db *sql.DB, storage *storage.Queries) *VineyardHandler {
 func (handler *VineyardHandler) GetAll(w http.ResponseWriter, r *http.Request) api.Response {
 	userID, err := utils.GetUserID(r)
 	if err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "unable to get user id")
 	}
 
 	vineyards, err := handler.storage.ListVineyards(r.Context(), *userID)
 	if err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "unable to get vineyard list")
 	}
 
@@ -55,30 +57,33 @@ func (handler *VineyardHandler) GetAll(w http.ResponseWriter, r *http.Request) a
 		}
 	}
 
-    result := slices.Collect(maps.Values(vineyardResponseMap))
-    if result == nil {
-        result = []*dto.VineyardResponse{}
-    }
+	result := slices.Collect(maps.Values(vineyardResponseMap))
+	if result == nil {
+		result = []*dto.VineyardResponse{}
+	}
 	return api.NewSuccess(http.StatusOK, "vineyard list", result)
 }
 
 func (handler *VineyardHandler) Add(w http.ResponseWriter, r *http.Request) api.Response {
 	userID, err := utils.GetUserID(r)
 	if err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "unable to get user id")
 	}
 
 	var vineyardAddRequest dto.VineyardAddRequest
 	if err := json.NewDecoder(r.Body).Decode(&vineyardAddRequest); err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "cant create new vineyard")
 	}
 
 	varietiesAddRequest := vineyardAddRequest.Varieties
 
-	log.GetLogger().Debug("STARTING TRANSACTION")
+	log.GetLogger().Debug("START TRANSACTION")
 
 	tx, err := handler.db.Begin()
 	if err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "cant create new vineyard")
 	}
 	defer tx.Rollback()
@@ -96,7 +101,7 @@ func (handler *VineyardHandler) Add(w http.ResponseWriter, r *http.Request) api.
 
 	vineyard, err := qtx.CreateVineyard(r.Context(), vineyardAddParam)
 	if err != nil {
-		log.GetLogger().Debug("VINEYARD INSERT ERROR" + err.Error())
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "cant create new vineyard")
 	}
 
@@ -123,6 +128,7 @@ func (handler *VineyardHandler) Add(w http.ResponseWriter, r *http.Request) api.
 
 		variety, err := qtx.CreateGrapeVariety(r.Context(), varietyAddParam)
 		if err != nil {
+			log.GetLogger().Error(err.Error())
 			return api.NewError(http.StatusInternalServerError, "cant create new vineyard")
 		}
 
@@ -135,8 +141,11 @@ func (handler *VineyardHandler) Add(w http.ResponseWriter, r *http.Request) api.
 	}
 
 	if err := tx.Commit(); err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "cant create new vineyard")
 	}
+
+	log.GetLogger().Debug("END TRANSACTION")
 
 	return api.NewSuccess(http.StatusOK, "vineyard created", vineyardResponse)
 }

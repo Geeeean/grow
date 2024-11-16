@@ -19,7 +19,7 @@ type AuthHandler struct {
 }
 
 func NewAuthHandler(db *sql.DB, storage *storage.Queries) *AuthHandler {
-    return &AuthHandler{db: db, storage: storage}
+	return &AuthHandler{db: db, storage: storage}
 }
 
 func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.Response {
@@ -27,16 +27,20 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.R
 
 	err := json.NewDecoder(r.Body).Decode(&userSignup)
 	if err != nil {
-		return api.NewError(http.StatusBadRequest, err.Error())
+		log.GetLogger().Error(err.Error())
+		return api.NewError(http.StatusBadRequest, "invalid request body format")
 	}
 
 	userSignup.Password, err = utils.HashPassword(userSignup.Password)
 	if err != nil {
-		return api.NewError(http.StatusInternalServerError, err.Error())
+		log.GetLogger().Error(err.Error())
+		return api.NewError(http.StatusInternalServerError, "internal server error")
 	}
 
 	user, err := handler.storage.CreateUser(r.Context(), storage.CreateUserParams(userSignup))
 	if err != nil {
+		log.GetLogger().Error(err.Error())
+
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
 			case "unique_violation":
@@ -46,7 +50,7 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.R
 			}
 		}
 
-		return api.NewError(http.StatusInternalServerError, err.Error())
+		return api.NewError(http.StatusInternalServerError, "internal server error")
 	}
 
 	userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
@@ -61,28 +65,31 @@ func (handler *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) api.R
 
 	err := json.NewDecoder(r.Body).Decode(&userSignin)
 	if err != nil {
-		log.GetLogger().Debug(err.Error())
-
-		return api.NewError(http.StatusBadRequest, "error on body decoding")
+		log.GetLogger().Error(err.Error())
+		return api.NewError(http.StatusBadRequest, "invalid request body format")
 	}
 
 	user, err := handler.storage.GetUserByEmail(r.Context(), userSignin.Email)
 	if err == sql.ErrNoRows {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusNotFound, "user not found")
 	}
 
 	if err != nil {
-		return api.NewError(http.StatusInternalServerError, err.Error())
+		log.GetLogger().Error(err.Error())
+		return api.NewError(http.StatusInternalServerError, "internal server error")
 	}
 
 	if !utils.VerifyPassword(userSignin.Password, user.Password) {
+		log.GetLogger().Error("bad credentials user: " + userSignin.Email)
 		return api.NewError(http.StatusUnauthorized, "bad credentials")
 	}
 
 	/*** SESSION TOKEN (JWT)  ***/
 	jwtToken, err := utils.CreateToken(user.ID)
 	if err != nil {
-		return api.NewError(http.StatusInternalServerError, "error on creating session token")
+		log.GetLogger().Error(err.Error())
+		return api.NewError(http.StatusInternalServerError, "internal server error")
 	}
 
 	sessionCookie := &http.Cookie{

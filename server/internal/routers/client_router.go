@@ -18,7 +18,7 @@ func NewClientRouter(prefix string) *ClientRouter {
 	fileMatcher := regexp.MustCompile(`\.(css|js|png|jpg|jpeg|gif|ico|svg)$`)
 
 	router.mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        //if the file is static serve id directly
+        //if the file is static serve it directly
 		if fileMatcher.MatchString(r.URL.Path) {
 			fileServer.ServeHTTP(w, r)
 		} else {

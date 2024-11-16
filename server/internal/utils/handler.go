@@ -20,7 +20,7 @@ func GetUserID(r *http.Request) (*uuid.UUID, error) {
         return nil, errors.New("fail on getting user id from context")
     }
 
-    userID, err := uuid.Parse(userIDStr) // Converte la stringa in un UUID
+    userID, err := uuid.Parse(userIDStr)
     if err != nil {
         return nil,err
     }

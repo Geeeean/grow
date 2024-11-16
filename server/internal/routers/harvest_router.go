@@ -11,32 +11,31 @@ import (
 )
 
 type HarvestRouter struct {
-    mux *http.ServeMux
-    handler *handlers.HarvestHandler
+	mux     *http.ServeMux
+	handler *handlers.HarvestHandler
 }
 
 func NewHarvestRouter(db *sql.DB, storage *storage.Queries, prefix string) *HarvestRouter {
-    router := &HarvestRouter{
-        mux: http.NewServeMux(),
-        handler: handlers.NewHarvestHandler(db, storage),
-    }
+	router := &HarvestRouter{
+		mux:     http.NewServeMux(),
+		handler: handlers.NewHarvestHandler(db, storage),
+	}
 
-    getAllEndpoint := "/get/all"
-    addEndpoint := "/add"
+	getAllEndpoint := "/get/all"
+	addEndpoint := "/add"
 
-    router.mux.HandleFunc(getAllEndpoint, middlewares.Wrapper(middlewares.Auth(router.handler.GetAll)))
-    router.mux.HandleFunc(addEndpoint, middlewares.Wrapper(middlewares.Auth(router.handler.Add)))
+	router.mux.HandleFunc(getAllEndpoint, middlewares.Wrapper(http.MethodGet, middlewares.Auth(router.handler.GetAll)))
+	router.mux.HandleFunc(addEndpoint, middlewares.Wrapper(http.MethodPost, middlewares.Auth(router.handler.Add)))
 
-    /*** LOGGING ***/
-    log.GetLogger().Info("HARVEST ROUTER")
+	/*** LOGGING ***/
+	log.GetLogger().Info("HARVEST ROUTER")
 	log.GetLogger().Info("get all endpoint available at " + prefix + getAllEndpoint)
 	log.GetLogger().Info("add endpoint available at " + prefix + addEndpoint)
-    log.GetLogger().NewLine()
+	log.GetLogger().NewLine()
 
-    return router
+	return router
 }
 
 func (router *HarvestRouter) Mux() *http.ServeMux {
-    return router.mux
+	return router.mux
 }
-

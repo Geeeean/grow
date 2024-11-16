@@ -7,6 +7,7 @@ import (
 
 	"github.com/Geeeean/grow/internal/api"
 	"github.com/Geeeean/grow/internal/dto"
+	"github.com/Geeeean/grow/internal/log"
 	"github.com/Geeeean/grow/internal/storage"
 	"github.com/Geeeean/grow/internal/utils"
 )
@@ -23,11 +24,13 @@ func NewHarvestHandler(db *sql.DB, storage *storage.Queries) *HarvestHandler {
 func (handler *HarvestHandler) GetAll(w http.ResponseWriter, r *http.Request) api.Response {
 	userID, err := utils.GetUserID(r)
 	if err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "unable to get user id")
 	}
 
 	harvests, err := handler.storage.ListHarvests(r.Context(), *userID)
 	if err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "unable to get harvest list")
 	}
 
@@ -44,12 +47,14 @@ func (handler *HarvestHandler) GetAll(w http.ResponseWriter, r *http.Request) ap
 func (handler *HarvestHandler) Add(w http.ResponseWriter, r *http.Request) api.Response {
 	userID, err := utils.GetUserID(r)
 	if err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "unable to get user id")
 	}
 
 	var harvestAddRequest dto.HarvestAddRequest
 	if err := json.NewDecoder(r.Body).Decode(&harvestAddRequest); err != nil {
-		return api.NewError(http.StatusBadRequest, err.Error())
+		log.GetLogger().Error(err.Error())
+		return api.NewError(http.StatusBadRequest, "invalid request body format")
 	}
 
 	harvestAddParam := storage.CreateHarvestParams{
@@ -62,6 +67,7 @@ func (handler *HarvestHandler) Add(w http.ResponseWriter, r *http.Request) api.R
 
 	harvest, err := handler.storage.CreateHarvest(r.Context(), harvestAddParam)
 	if err != nil {
+		log.GetLogger().Error(err.Error())
 		return api.NewError(http.StatusInternalServerError, "cant create new harvest")
 	}
 

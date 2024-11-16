@@ -16,24 +16,23 @@ type UserRouter struct {
 }
 
 func NewUserRouter(db *sql.DB, storage *storage.Queries, prefix string) *UserRouter {
-	router := &UserRouter {
+	router := &UserRouter{
 		mux:     http.NewServeMux(),
 		handler: handlers.NewUserHandler(db, storage),
 	}
 
-    infoEndpoint := "/info"
+	infoEndpoint := "/info"
 
-	router.mux.HandleFunc(infoEndpoint, middlewares.Wrapper(middlewares.Auth(router.handler.Info)))
+	router.mux.HandleFunc(infoEndpoint, middlewares.Wrapper(http.MethodGet, middlewares.Auth(router.handler.Info)))
 
-    /*** LOGGING ***/
-    log.GetLogger().Info("USER ROUTER")
+	/*** LOGGING ***/
+	log.GetLogger().Info("USER ROUTER")
 	log.GetLogger().Info("info endpoint available at " + prefix + infoEndpoint)
-    log.GetLogger().NewLine()
+	log.GetLogger().NewLine()
 
-    return router
+	return router
 }
 
 func (router *UserRouter) Mux() *http.ServeMux {
 	return router.mux
 }
-
