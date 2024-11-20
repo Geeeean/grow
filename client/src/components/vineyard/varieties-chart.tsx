@@ -1,16 +1,32 @@
 import { LabelList, Pie, PieChart } from 'recharts';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Variety } from '@/types/vineyard';
+import { useMemo } from 'react';
 type Props = {
     varieties: Variety[];
 };
 
+const getConfig = (): ChartConfig => {
+    const chartConfig: ChartConfig = {
+        desktop: {
+            label: 'Desktop',
+            color: '#2563eb',
+        },
+        mobile: {
+            label: 'Mobile',
+            color: '#60a5fa',
+        },
+    };
+
+    return chartConfig;
+};
+
 const VarietiesChart = ({ varieties }: Props) => {
-    console.log(varieties);
+    const config = getConfig();
 
     return (
         <ChartContainer
-            config={{}}
+            config={config}
             className="min-h-[150px] mx-auto aspect-square md:h-[250px] lg:max-h-none [&_.recharts-text]:fill-background"
         >
             <PieChart>

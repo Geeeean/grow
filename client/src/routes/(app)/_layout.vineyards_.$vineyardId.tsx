@@ -100,9 +100,35 @@ const VineyardComponent = () => {
                                     </DetailCardContent>
                                 </div>
                             </DetailCard>
+                            <DetailCard className="md:col-span-2 max-h-[234px]">
+                                <DetailCardHeader>
+                                    <DetailCardTitle>
+                                        Notes <span className="text-muted-foreground">[1]</span>
+                                    </DetailCardTitle>
+                                    <Maximize />
+                                </DetailCardHeader>
+                                <div className="flex flex-col gap-1 scrollbar-hide">
+                                    <DetailCardContent className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-muted-foreground">20/11/2023</p>
+                                            <p className="">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                                commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                                                velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                                                occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                                mollit anim id est laborum.
+                                            </p>
+                                        </div>
+                                    </DetailCardContent>
+                                </div>
+                            </DetailCard>
                             <DetailCard className="md:col-span-2 lg:col-span-3">
                                 <DetailCardHeader>
-                                    <DetailCardTitle>Variants</DetailCardTitle>
+                                    <DetailCardTitle>
+                                        Varieties <span className="text-muted-foreground">[{vineyard.varieties.length}]</span>
+                                    </DetailCardTitle>
                                     <Maximize />
                                 </DetailCardHeader>
                                 <div className="flex flex-col lg:flex-row gap-1 w-full h-full">
