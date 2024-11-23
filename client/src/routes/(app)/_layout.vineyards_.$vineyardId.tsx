@@ -12,6 +12,7 @@ import VarietiesChart from '@/components/vineyard/varieties-chart';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import HarvestsChart from '@/components/vineyard/harvests-chart';
 
 export const Route = createFileRoute('/(app)/_layout/vineyards_/$vineyardId')({
     validateSearch: (search: Record<string, string>): { bcLast: string } => {
@@ -127,7 +128,8 @@ const VineyardComponent = () => {
                             <DetailCard className="md:col-span-2 lg:col-span-3">
                                 <DetailCardHeader>
                                     <DetailCardTitle>
-                                        Varieties <span className="text-muted-foreground">[{vineyard.varieties.length}]</span>
+                                        Varieties{' '}
+                                        <span className="text-muted-foreground">[{vineyard.varieties.length}]</span>
                                     </DetailCardTitle>
                                     <Maximize />
                                 </DetailCardHeader>
@@ -161,17 +163,53 @@ const VineyardComponent = () => {
                                     </DetailCardContent>
                                 </div>
                             </DetailCard>
+                            <DetailCard>
+                                <DetailCardHeader>
+                                    <DetailCardTitle>Trims</DetailCardTitle>
+                                    <Maximize />
+                                </DetailCardHeader>
+                                <DetailCardContent className="h-36 flex items-center justify-between">
+                                    trims table
+                                </DetailCardContent>
+                            </DetailCard>
+                            <DetailCard>
+                                <DetailCardHeader>
+                                    <DetailCardTitle>Grass cuts</DetailCardTitle>
+                                    <Maximize />
+                                </DetailCardHeader>
+                                <DetailCardContent className="h-36 flex items-center justify-between">
+                                    grass cuts table
+                                </DetailCardContent>
+                            </DetailCard>
+                            <DetailCard className='md:col-span-2 lg:col-span-1'>
+                                <DetailCardHeader>
+                                    <DetailCardTitle>Explantations</DetailCardTitle>
+                                    <Maximize />
+                                </DetailCardHeader>
+                                <DetailCardContent className="h-36 flex items-center justify-between">
+                                    explantations table
+                                </DetailCardContent>
+                            </DetailCard>
+                            <DetailCard className="md:col-span-2 lg:col-span-3">
+                                <DetailCardHeader>
+                                    <DetailCardTitle>Harvests</DetailCardTitle>
+                                    <Maximize />
+                                </DetailCardHeader>
+                                <DetailCardContent className="flex items-center justify-between">
+                                    <HarvestsChart />
+                                </DetailCardContent>
+                            </DetailCard>
                         </div>
                     )}
                 </div>
                 <VineyardTrimAddForm
-                    open={getVineyardActionState('trimming')}
-                    setOpen={getVineyardActionSetter('trimming')}
+                    open={getVineyardActionState('trim')}
+                    setOpen={getVineyardActionSetter('trim')}
                     vineyardId={vineyard.id}
                 />
                 <VineyardCutAddForm
-                    open={getVineyardActionState('cutting')}
-                    setOpen={getVineyardActionSetter('cutting')}
+                    open={getVineyardActionState('cut')}
+                    setOpen={getVineyardActionSetter('cut')}
                     vineyardId={vineyard.id}
                 />
             </>

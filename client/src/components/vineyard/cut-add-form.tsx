@@ -16,7 +16,7 @@ const DESC = {
     review: 'Review the cutting grase date and any details to ensure accuracy before submitting.',
 };
 
-const action: vineyardAction = 'cutting';
+const action: vineyardAction = 'cut';
 
 const VineyardCutAddForm = ({ vineyardId, open, setOpen }: Props) => {
     const { step, handleBtn, resetForm, isPending, isSuccess, error, cutDate, setCutDate } =

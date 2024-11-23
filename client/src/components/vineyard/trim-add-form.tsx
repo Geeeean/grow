@@ -16,7 +16,7 @@ const DESC = {
     review: 'Review the trimming date and any details to ensure accuracy before submitting.',
 };
 
-const action: vineyardAction = 'trimming';
+const action: vineyardAction = 'trim';
 
 const VineyardTrimAddForm = ({ vineyardId, open, setOpen }: Props) => {
     const { step, handleBtn, resetForm, isPending, isSuccess, error, trimDate, setTrimDate } =

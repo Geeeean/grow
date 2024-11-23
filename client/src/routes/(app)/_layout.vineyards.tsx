@@ -74,13 +74,13 @@ const Vineyards = () => {
                 )}
                 <VineyardAddForm open={addOpen} setOpen={setAddOpen} />
                 <VineyardTrimAddForm
-                    open={getVineyardActionState('trimming')}
-                    setOpen={getVineyardActionSetter('trimming')}
+                    open={getVineyardActionState('trim')}
+                    setOpen={getVineyardActionSetter('trim')}
                     vineyardId={selectedVineyard}
                 />
                 <VineyardCutAddForm
-                    open={getVineyardActionState('cutting')}
-                    setOpen={getVineyardActionSetter('cutting')}
+                    open={getVineyardActionState('cut')}
+                    setOpen={getVineyardActionSetter('cut')}
                     vineyardId={selectedVineyard}
                 />
             </>

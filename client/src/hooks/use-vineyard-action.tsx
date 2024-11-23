@@ -2,27 +2,27 @@ import { vineyardAction } from '@/types/vineyard';
 import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react';
 
 export const useVineyardAction = () => {
-    const [isTrimmingOpen, setTrimmingOpen] = useState<boolean>(false);
-    const [isCuttingGrassOpen, setCuttingGrassOpen] = useState<boolean>(false);
+    const [isTrimOpen, setTrimOpen] = useState<boolean>(false);
+    const [isCutOpen, setCutOpen] = useState<boolean>(false);
     const [isExplantationOpen, setExplantationOpen] = useState<boolean>(false);
     const [isTreatmentOpen, setTreatmentOpen] = useState<boolean>(false);
     const [isHarvestOpen, setHarvestOpen] = useState<boolean>(false);
 
     const actionStates = useMemo(() => {
         const dictionary: Record<vineyardAction, boolean> = {
-            trimming: isTrimmingOpen,
-            cutting: isCuttingGrassOpen,
+            trim: isTrimOpen,
+            cut: isCutOpen,
             explantation: isExplantationOpen,
             treatment: isTreatmentOpen,
             harvest: isHarvestOpen,
         };
         return dictionary;
-    }, [isTrimmingOpen, isCuttingGrassOpen, isExplantationOpen, isTreatmentOpen, isHarvestOpen]);
+    }, [isTrimOpen, isCutOpen, isExplantationOpen, isTreatmentOpen, isHarvestOpen]);
 
     const actionSetters = useMemo(() => {
         const dictionary: Record<vineyardAction, Dispatch<SetStateAction<boolean>>> = {
-            trimming: setTrimmingOpen,
-            cutting: setCuttingGrassOpen,
+            trim: setTrimOpen,
+            cut: setCutOpen,
             explantation: setExplantationOpen,
             treatment: setTreatmentOpen,
             harvest: setHarvestOpen,
