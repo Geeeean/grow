@@ -6,7 +6,7 @@ export const vineyardActionCopy: Record<vineyardAction, string> = {
     cut: 'Grass cutting',
     trim: 'Trimming',
     treatment: 'Treatment',
-    explantation: 'Explantation',
+    planting: 'Explantation',
 };
 
 const vineyardActionIcon: Record<vineyardAction, (className?: string) => JSX.Element> = {
@@ -14,7 +14,7 @@ const vineyardActionIcon: Record<vineyardAction, (className?: string) => JSX.Ele
     cut: (classname) => <Scissors className={classname} />,
     trim: (classname) => <TreeDeciduous className={classname} />,
     treatment: (classname) => <FlaskRound className={classname} />,
-    explantation: (classname) => <Shovel className={classname} />,
+    planting: (classname) => <Shovel className={classname} />,
 };
 
 export const getVineyardActionIcon = (action: vineyardAction, className?: string) => {

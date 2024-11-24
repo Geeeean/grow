@@ -1,13 +1,28 @@
+import { addVineyardCut } from '@/services/api/vineyard';
 import { VineyardCutAdd } from '@/types/vineyard';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+const vineyardCutAddFn = async (cut: VineyardCutAdd) => {
+    const result = await addVineyardCut(cut);
+    return result;
+};
 
 export const useVineyardCutAdd = () => {
-    const cut = ({ vineyardId, date }: VineyardCutAdd) => {
-        console.log(vineyardId, date);
-    };
-    const isSuccess = false;
-    const error = false;
-    const isPending = false;
-    const reset = () => {};
+    const client = useQueryClient();
 
-    return { cut, isSuccess, error, isPending, reset };
+    const {
+        mutate: vineyardCutAdd,
+        error,
+        isPending,
+        isSuccess,
+        reset,
+    } = useMutation({
+        mutationFn: vineyardCutAddFn,
+        onSuccess: () => {
+            //client.invalidateQueries({ queryKey: [QUERY_KEY.vineyards] });
+        },
+        retry: false,
+    });
+
+    return { vineyardCutAdd, isSuccess, error, isPending, reset };
 };

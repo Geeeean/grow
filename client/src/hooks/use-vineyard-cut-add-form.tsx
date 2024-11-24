@@ -7,7 +7,7 @@ type step = 'informations' | 'review';
 export const useVineyardCutAddForm = (vineyardId: VineyardId) => {
     const [step, setStep] = useState<step>('informations');
     const [cutDate, setCutDate] = useState(new Date());
-    const { cut, isPending, error, isSuccess, reset } = useVineyardCutAdd();
+    const { vineyardCutAdd, isPending, error, isSuccess, reset } = useVineyardCutAdd();
 
     const handleBtn = useCallback(() => {
         switch (step) {
@@ -15,7 +15,7 @@ export const useVineyardCutAddForm = (vineyardId: VineyardId) => {
                 setStep('review');
                 break;
             case 'review':
-                cut({ vineyardId: vineyardId, date: cutDate });
+                vineyardCutAdd({ vineyardId: vineyardId, date: cutDate });
                 break;
         }
     }, [step, cutDate]);

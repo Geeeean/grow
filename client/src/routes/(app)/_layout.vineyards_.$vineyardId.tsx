@@ -183,7 +183,7 @@ const VineyardComponent = () => {
                             </DetailCard>
                             <DetailCard className='md:col-span-2 lg:col-span-1'>
                                 <DetailCardHeader>
-                                    <DetailCardTitle>Explantations</DetailCardTitle>
+                                    <DetailCardTitle>Planting/Explantation</DetailCardTitle>
                                     <Maximize />
                                 </DetailCardHeader>
                                 <DetailCardContent className="h-36 flex items-center justify-between">
