@@ -23,9 +23,9 @@ func NewVineyardRouter(db *sql.DB, storage *storage.Queries, prefix string) *Vin
 
 	getAllEndpoint := "/get/all"
 	addEndpoint := "/add"
-	addTrimEndpoint := "/{id}/add/trim"
-	addCutEndpoint := "/{id}/add/cut"
-	addPlantingEndpoint := "/{id}/add/planting"
+	addTrimEndpoint := "/{id}/trim/add"
+	addCutEndpoint := "/{id}/cut/add"
+	addPlantingEndpoint := "/{id}/planting/add"
 
 	router.mux.HandleFunc(getAllEndpoint, middlewares.Wrapper(http.MethodGet, middlewares.Auth(router.handler.GetAll)))
 	router.mux.HandleFunc(addEndpoint, middlewares.Wrapper(http.MethodPost, middlewares.Auth(router.handler.Add)))

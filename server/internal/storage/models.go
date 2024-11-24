@@ -249,6 +249,7 @@ type VineyardPlanting struct {
 	ID           int32
 	ActionID     int32
 	PlantingType PlantingTypeEnum
+	PlantCount   int32
 	CreatedAt    time.Time
 }
 

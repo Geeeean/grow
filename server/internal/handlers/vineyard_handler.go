@@ -218,7 +218,7 @@ func (handler *VineyardHandler) AddCut(w http.ResponseWriter, r *http.Request) a
 		ActionDate: cutAddRequest.Date,
 		VineyardID: int32(vineyardId),
 		UserID:     *userID,
-		ActionType: storage.ActionTypeEnumTrim,
+		ActionType: storage.ActionTypeEnumCut,
 	}
 
 	cut, err := handler.storage.CreateVineyardAction(r.Context(), cutAddParams)
@@ -246,7 +246,7 @@ func (handler *VineyardHandler) AddPlanting(w http.ResponseWriter, r *http.Reque
 	var plantingAddRequest dto.PlantingAddRequest
 	if err := json.NewDecoder(r.Body).Decode(&plantingAddRequest); err != nil {
 		log.GetLogger().Error(err.Error())
-		return api.NewError(http.StatusInternalServerError, "cant create new cut")
+		return api.NewError(http.StatusInternalServerError, "cant create new planting")
 	}
 
 	vineyardId, err := strconv.ParseInt(r.PathValue("id"), 10, 32)
@@ -270,7 +270,7 @@ func (handler *VineyardHandler) AddPlanting(w http.ResponseWriter, r *http.Reque
 		ActionDate: plantingAddRequest.Date,
 		VineyardID: int32(vineyardId),
 		UserID:     *userID,
-		ActionType: storage.ActionTypeEnumTrim,
+		ActionType: storage.ActionTypeEnumPlanting,
 	}
 
 	planting, err := qtx.CreateVineyardAction(r.Context(), plantingAddParams)
@@ -284,6 +284,7 @@ func (handler *VineyardHandler) AddPlanting(w http.ResponseWriter, r *http.Reque
 	planting_aux, err := qtx.CreateVineyardPlanting(r.Context(), storage.CreateVineyardPlantingParams{
 		ActionID:     planting.ID,
 		PlantingType: plantingAddRequest.PlantingType,
+        PlantCount: plantingAddRequest.PlantCount,
 	})
 
 	if err := tx.Commit(); err != nil {

@@ -173,18 +173,19 @@ func (q *Queries) CreateVineyardAction(ctx context.Context, arg CreateVineyardAc
 
 const createVineyardPlanting = `-- name: CreateVineyardPlanting :one
 INSERT INTO vineyard_plantings (
-    action_id, planting_type
-) VALUES ($1, $2)
+    action_id, planting_type, plant_count
+) VALUES ($1, $2, $3)
 RETURNING planting_type
 `
 
 type CreateVineyardPlantingParams struct {
 	ActionID     int32
 	PlantingType PlantingTypeEnum
+	PlantCount   int32
 }
 
 func (q *Queries) CreateVineyardPlanting(ctx context.Context, arg CreateVineyardPlantingParams) (PlantingTypeEnum, error) {
-	row := q.db.QueryRowContext(ctx, createVineyardPlanting, arg.ActionID, arg.PlantingType)
+	row := q.db.QueryRowContext(ctx, createVineyardPlanting, arg.ActionID, arg.PlantingType, arg.PlantCount)
 	var planting_type PlantingTypeEnum
 	err := row.Scan(&planting_type)
 	return planting_type, err
@@ -307,26 +308,42 @@ SELECT
     gv.id AS grape_variety_id,
     gv.name AS grape_variety_name,
     gv.rows,
-    gv.age
+    gv.age,
+    va.id AS vineyard_action_id,
+    va.action_type,
+    va.action_date,
+    vp.id AS vineyard_planting_id,
+    vp.planting_type AS vineyard_planting_type,
+    vp.plant_count
 FROM
     vineyards v
 LEFT JOIN
     grape_varieties gv ON gv.vineyard_id = v.id
+LEFT JOIN
+    vineyard_actions va ON va.vineyard_id = v.id
+LEFT JOIN
+    vineyard_plantings vp ON vp.action_id = va.id
 WHERE
     v.user_id = $1
 `
 
 type ListVineyardsRow struct {
-	VineyardID       int32
-	VineyardName     string
-	Altitude         int32
-	Soil             SoilType
-	Plants           int32
-	CreatedAt        time.Time
-	GrapeVarietyID   sql.NullInt32
-	GrapeVarietyName sql.NullString
-	Rows             sql.NullInt32
-	Age              sql.NullInt32
+	VineyardID           int32
+	VineyardName         string
+	Altitude             int32
+	Soil                 SoilType
+	Plants               int32
+	CreatedAt            time.Time
+	GrapeVarietyID       sql.NullInt32
+	GrapeVarietyName     sql.NullString
+	Rows                 sql.NullInt32
+	Age                  sql.NullInt32
+	VineyardActionID     sql.NullInt32
+	ActionType           NullActionTypeEnum
+	ActionDate           sql.NullTime
+	VineyardPlantingID   sql.NullInt32
+	VineyardPlantingType NullPlantingTypeEnum
+	PlantCount           sql.NullInt32
 }
 
 func (q *Queries) ListVineyards(ctx context.Context, userID uuid.UUID) ([]ListVineyardsRow, error) {
@@ -349,6 +366,12 @@ func (q *Queries) ListVineyards(ctx context.Context, userID uuid.UUID) ([]ListVi
 			&i.GrapeVarietyName,
 			&i.Rows,
 			&i.Age,
+			&i.VineyardActionID,
+			&i.ActionType,
+			&i.ActionDate,
+			&i.VineyardPlantingID,
+			&i.VineyardPlantingType,
+			&i.PlantCount,
 		); err != nil {
 			return nil, err
 		}

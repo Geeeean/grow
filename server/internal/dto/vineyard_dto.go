@@ -64,6 +64,7 @@ type CutAddResponse struct {
 type PlantingAddRequest struct {
 	Date         time.Time                `json:"date"`
 	PlantingType storage.PlantingTypeEnum `json:"plantingType"`
+	PlantCount   int32                    `json:"plantCount"`
 }
 
 type PlantingAddResponse struct {

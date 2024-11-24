@@ -47,6 +47,7 @@ CREATE TABLE vineyard_plantings (
     id SERIAL PRIMARY KEY,
     action_id INT NOT NULL REFERENCES vineyard_actions(id) ON DELETE CASCADE,
     planting_type planting_type_enum NOT NULL,
+    plant_count INT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 
