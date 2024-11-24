@@ -53,7 +53,7 @@ func (handler *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) api.R
 		return api.NewError(http.StatusInternalServerError, "internal server error")
 	}
 
-	userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
+	userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email, CreatedAt: user.CreatedAt}
 	return api.NewSuccess(http.StatusOK, "successful signup", userResponse)
 }
 

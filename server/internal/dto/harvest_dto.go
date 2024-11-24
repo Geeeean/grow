@@ -3,7 +3,6 @@ package dto
 import (
 	"time"
 
-	"github.com/Geeeean/grow/internal/storage"
 )
 
 type HarvestAddRequest struct {
@@ -26,6 +25,7 @@ type HarvestResponseList struct {
 	Harvests []HarvestResponse `json:"harvests"`
 }
 
+/*
 func HarvestListItemToResponse(harvestModel storage.ListHarvestsRow) HarvestResponse {
 	return HarvestResponse{
 		ID:                harvestModel.ID,
@@ -36,3 +36,4 @@ func HarvestListItemToResponse(harvestModel storage.ListHarvestsRow) HarvestResp
 		CreatedAt:         harvestModel.CreatedAt,
 	}
 }
+*/

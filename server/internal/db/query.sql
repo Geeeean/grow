@@ -2,7 +2,7 @@
 INSERT INTO users (
     name, email, password
 ) VALUES ($1, $2, $3)
-RETURNING id, name, email;
+RETURNING id, name, email, created_at;
 
 -- name: GetUserByEmail :one
 SELECT id, name, email, password
@@ -14,17 +14,6 @@ SELECT id, name, email, password
 FROM users
 WHERE id = $1;
 
--- name: CreateHarvest :one
-INSERT INTO harvests (
-    grape_variety, quantity_collected, quality_notes, harvest_date, user_id
-) VALUES ($1, $2, $3, $4, $5)
-RETURNING id, grape_variety, quantity_collected, quality_notes, harvest_date, created_at;
-
--- name: ListHarvests :many
-SELECT id, grape_variety, quantity_collected, quality_notes, harvest_date, created_at
-FROM harvests
-WHERE user_id = $1;
-
 -- name: CreateVineyard :one
 INSERT INTO vineyards (
     name, altitude, soil, plants, user_id
@@ -35,7 +24,7 @@ RETURNING id, name, altitude, soil, plants, created_at;
 INSERT INTO grape_varieties (
     name, rows, age, user_id, vineyard_id
 ) VALUES ($1, $2, $3, $4, $5)
-RETURNING id, name, rows, age;
+RETURNING id, name, rows, age, created_at;
 
 -- name: ListVineyards :many
 SELECT
@@ -74,3 +63,15 @@ LEFT JOIN
     grape_varieties gv ON gv.vineyard_id = v.id
 WHERE
     v.id = $1 AND v.user_id = $2;
+
+-- name: CreateVineyardAction :one
+INSERT INTO vineyard_actions (
+    vineyard_id, user_id, action_type, action_date
+) VALUES ($1, $2, $3, $4)
+RETURNING id, vineyard_id, action_type, action_date, created_at;
+
+-- name: CreateVineyardPlanting :one
+INSERT INTO vineyard_plantings (
+    action_id, planting_type
+) VALUES ($1, $2)
+RETURNING planting_type;

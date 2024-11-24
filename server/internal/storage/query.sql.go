@@ -17,7 +17,7 @@ const createGrapeVariety = `-- name: CreateGrapeVariety :one
 INSERT INTO grape_varieties (
     name, rows, age, user_id, vineyard_id
 ) VALUES ($1, $2, $3, $4, $5)
-RETURNING id, name, rows, age
+RETURNING id, name, rows, age, created_at
 `
 
 type CreateGrapeVarietyParams struct {
@@ -29,10 +29,11 @@ type CreateGrapeVarietyParams struct {
 }
 
 type CreateGrapeVarietyRow struct {
-	ID   int32
-	Name string
-	Rows int32
-	Age  int32
+	ID        int32
+	Name      string
+	Rows      int32
+	Age       int32
+	CreatedAt time.Time
 }
 
 func (q *Queries) CreateGrapeVariety(ctx context.Context, arg CreateGrapeVarietyParams) (CreateGrapeVarietyRow, error) {
@@ -49,49 +50,6 @@ func (q *Queries) CreateGrapeVariety(ctx context.Context, arg CreateGrapeVariety
 		&i.Name,
 		&i.Rows,
 		&i.Age,
-	)
-	return i, err
-}
-
-const createHarvest = `-- name: CreateHarvest :one
-INSERT INTO harvests (
-    grape_variety, quantity_collected, quality_notes, harvest_date, user_id
-) VALUES ($1, $2, $3, $4, $5)
-RETURNING id, grape_variety, quantity_collected, quality_notes, harvest_date, created_at
-`
-
-type CreateHarvestParams struct {
-	GrapeVariety      string
-	QuantityCollected string
-	QualityNotes      string
-	HarvestDate       time.Time
-	UserID            uuid.UUID
-}
-
-type CreateHarvestRow struct {
-	ID                int32
-	GrapeVariety      string
-	QuantityCollected string
-	QualityNotes      string
-	HarvestDate       time.Time
-	CreatedAt         time.Time
-}
-
-func (q *Queries) CreateHarvest(ctx context.Context, arg CreateHarvestParams) (CreateHarvestRow, error) {
-	row := q.db.QueryRowContext(ctx, createHarvest,
-		arg.GrapeVariety,
-		arg.QuantityCollected,
-		arg.QualityNotes,
-		arg.HarvestDate,
-		arg.UserID,
-	)
-	var i CreateHarvestRow
-	err := row.Scan(
-		&i.ID,
-		&i.GrapeVariety,
-		&i.QuantityCollected,
-		&i.QualityNotes,
-		&i.HarvestDate,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -101,7 +59,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (
     name, email, password
 ) VALUES ($1, $2, $3)
-RETURNING id, name, email
+RETURNING id, name, email, created_at
 `
 
 type CreateUserParams struct {
@@ -111,15 +69,21 @@ type CreateUserParams struct {
 }
 
 type CreateUserRow struct {
-	ID    uuid.UUID
-	Name  string
-	Email string
+	ID        uuid.UUID
+	Name      string
+	Email     string
+	CreatedAt time.Time
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
 	row := q.db.QueryRowContext(ctx, createUser, arg.Name, arg.Email, arg.Password)
 	var i CreateUserRow
-	err := row.Scan(&i.ID, &i.Name, &i.Email)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.CreatedAt,
+	)
 	return i, err
 }
 
@@ -165,6 +129,65 @@ func (q *Queries) CreateVineyard(ctx context.Context, arg CreateVineyardParams) 
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const createVineyardAction = `-- name: CreateVineyardAction :one
+INSERT INTO vineyard_actions (
+    vineyard_id, user_id, action_type, action_date
+) VALUES ($1, $2, $3, $4)
+RETURNING id, vineyard_id, action_type, action_date, created_at
+`
+
+type CreateVineyardActionParams struct {
+	VineyardID int32
+	UserID     uuid.UUID
+	ActionType ActionTypeEnum
+	ActionDate time.Time
+}
+
+type CreateVineyardActionRow struct {
+	ID         int32
+	VineyardID int32
+	ActionType ActionTypeEnum
+	ActionDate time.Time
+	CreatedAt  time.Time
+}
+
+func (q *Queries) CreateVineyardAction(ctx context.Context, arg CreateVineyardActionParams) (CreateVineyardActionRow, error) {
+	row := q.db.QueryRowContext(ctx, createVineyardAction,
+		arg.VineyardID,
+		arg.UserID,
+		arg.ActionType,
+		arg.ActionDate,
+	)
+	var i CreateVineyardActionRow
+	err := row.Scan(
+		&i.ID,
+		&i.VineyardID,
+		&i.ActionType,
+		&i.ActionDate,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const createVineyardPlanting = `-- name: CreateVineyardPlanting :one
+INSERT INTO vineyard_plantings (
+    action_id, planting_type
+) VALUES ($1, $2)
+RETURNING planting_type
+`
+
+type CreateVineyardPlantingParams struct {
+	ActionID     int32
+	PlantingType PlantingTypeEnum
+}
+
+func (q *Queries) CreateVineyardPlanting(ctx context.Context, arg CreateVineyardPlantingParams) (PlantingTypeEnum, error) {
+	row := q.db.QueryRowContext(ctx, createVineyardPlanting, arg.ActionID, arg.PlantingType)
+	var planting_type PlantingTypeEnum
+	err := row.Scan(&planting_type)
+	return planting_type, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
@@ -271,51 +294,6 @@ func (q *Queries) GetVineyardById(ctx context.Context, arg GetVineyardByIdParams
 		&i.Age,
 	)
 	return i, err
-}
-
-const listHarvests = `-- name: ListHarvests :many
-SELECT id, grape_variety, quantity_collected, quality_notes, harvest_date, created_at
-FROM harvests
-WHERE user_id = $1
-`
-
-type ListHarvestsRow struct {
-	ID                int32
-	GrapeVariety      string
-	QuantityCollected string
-	QualityNotes      string
-	HarvestDate       time.Time
-	CreatedAt         time.Time
-}
-
-func (q *Queries) ListHarvests(ctx context.Context, userID uuid.UUID) ([]ListHarvestsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listHarvests, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListHarvestsRow
-	for rows.Next() {
-		var i ListHarvestsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.GrapeVariety,
-			&i.QuantityCollected,
-			&i.QualityNotes,
-			&i.HarvestDate,
-			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const listVineyards = `-- name: ListVineyards :many

@@ -28,6 +28,9 @@ func (handler *UserHandler) Info(w http.ResponseWriter, r *http.Request) api.Res
 	}
 
 	user, err := handler.storage.GetUserById(r.Context(), *userID)
+	if err != nil {
+		return api.NewError(http.StatusNotFound, "user not found")
+	}
 
 	userResponse := &dto.UserResponse{Name: user.Name, Email: user.Email}
 	return api.NewSuccess(http.StatusOK, "successful getting user info", userResponse)

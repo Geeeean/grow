@@ -1,5 +1,9 @@
 package dto
 
+import (
+    "time"
+)
+
 type UserSignup struct {
     Name     string `json:"name"`
 	Email    string `json:"email"`
@@ -14,4 +18,5 @@ type UserSignin struct {
 type UserResponse struct {
     Email string `json:"email"`
     Name  string `json:"name"`
+    CreatedAt time.Time `json:"createdAt"`
 }
