@@ -43,7 +43,10 @@ SELECT
     va.action_date,
     vp.id AS vineyard_planting_id,
     vp.planting_type AS vineyard_planting_type,
-    vp.plant_count
+    vp.plant_count AS vineyard_planting_count,
+    vt.id AS vineyard_treatment_id,
+    vt.product AS vineyard_treatment_product,
+    vt.treatment_type AS vineyard_treatment_type
 FROM
     vineyards v
 LEFT JOIN
@@ -52,6 +55,8 @@ LEFT JOIN
     vineyard_actions va ON va.vineyard_id = v.id
 LEFT JOIN
     vineyard_plantings vp ON vp.action_id = va.id
+LEFT JOIN
+    vineyard_treatments vt ON vp.action_id = vt.id
 WHERE
     v.user_id = $1;
 
@@ -88,6 +93,6 @@ RETURNING planting_type;
 
 -- name: CreateVineyardTreatment :one
 INSERT INTO vineyard_treatments (
-    action_id, product, notes
-) VALUES ($1, $2)
-RETURNING product, notes;
+    action_id, product, treatment_type
+) VALUES ($1, $2, $3)
+RETURNING product, treatment_type;

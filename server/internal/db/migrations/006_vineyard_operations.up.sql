@@ -18,8 +18,7 @@ CREATE TABLE vineyard_treatments (
     id SERIAL PRIMARY KEY,
     action_id INT NOT NULL REFERENCES vineyard_actions(id) ON DELETE CASCADE,
     treatment_type treatment_type_enum NOT NULL,
-    product_used TEXT NOT NULL,
-    tratment_date TIMESTAMPTZ DEFAULT now() NOT NULL,
+    product TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 
@@ -30,7 +29,6 @@ CREATE TABLE harvests (
     action_id INT NOT NULL REFERENCES vineyard_actions(id) ON DELETE CASCADE,
     quality_notes TEXT NOT NULL, -- Notes on the quality of the harvest
     number_of_workers INT NOT NULL,
-    date TIMESTAMPTZ DEFAULT now() NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 

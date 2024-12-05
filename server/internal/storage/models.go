@@ -206,7 +206,6 @@ type Harvest struct {
 	ActionID        int32
 	QualityNotes    string
 	NumberOfWorkers int32
-	Date            time.Time
 	CreatedAt       time.Time
 }
 
@@ -257,7 +256,6 @@ type VineyardTreatment struct {
 	ID            int32
 	ActionID      int32
 	TreatmentType TreatmentTypeEnum
-	ProductUsed   string
-	TratmentDate  time.Time
+	Product       string
 	CreatedAt     time.Time
 }
