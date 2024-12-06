@@ -1,41 +1,24 @@
-use diesel::prelude::*;
+use diesel::{
+    prelude::*,
+    r2d2::{ConnectionManager, PooledConnection},
+    result::Error,
+};
 use domain::models::Vineyard;
-use infrastructure::establish_connection;
-use rocket::response::status::NotFound;
-use shared::response_models::Response;
 
-pub fn read_vineyard(vineyard_id: i32) -> Result<Vineyard, NotFound<String>> {
-    use domain::schema::vineyards;
+type Connection = PooledConnection<ConnectionManager<PgConnection>>;
 
-    match vineyards::table
+pub fn read_vineyard(mut connection: Connection, vineyard_id: i32) -> Result<Vineyard, Error> {
+    use domain::schema::vineyards::dsl::*;
+
+    vineyards
         .find(vineyard_id)
-        .first::<Vineyard>(&mut establish_connection())
-    {
-        Ok(post) => Ok(post),
-        Err(err) => match err {
-            diesel::result::Error::NotFound => {
-                let response = Response { body: None };
-                return Err(NotFound(serde_json::to_string(&response).unwrap()));
-            }
-            _ => {
-                panic!("Internal server error");
-            }
-        },
-    }
+        .first::<Vineyard>(&mut connection)
 }
 
-pub fn read_vineyards() -> Vec<Vineyard> {
-    use domain::schema::vineyards;
+pub fn read_vineyards(mut connection: Connection) -> Result<Vec<Vineyard>, Error> {
+    use domain::schema::vineyards::dsl::*;
 
-    match vineyards::table
-        .select(vineyards::all_columns)
-        .load::<Vineyard>(&mut establish_connection())
-    {
-        Ok(vineyards) => vineyards,
-        Err(err) => match err {
-            _ => {
-                panic!("Internal server error");
-            }
-        },
-    }
+    vineyards
+        .select(Vineyard::as_select())
+        .load::<Vineyard>(&mut connection)
 }
