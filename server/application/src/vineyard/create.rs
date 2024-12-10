@@ -1,13 +1,21 @@
 use diesel::{insert_into, prelude::*, result::Error, Connection};
-use domain::models::{GrapeVariety, NewGrapeVariety, NewVineyard, Vineyard};
+use domain::models::{
+    ActionTypeEnum, GrapeVariety, NewGrapeVariety, NewVineyard, NewVineyardAction, Vineyard,
+    VineyardAction,
+};
 use shared::{
-    dto::vineyard_dto::{GrapeVarietyResponse, NewVineyardRequest, VineyardResponse},
+    dto::vineyard_dto::{
+        GrapeVarietyResponse, NewVineyardActionRequest, NewVineyardRequest, VineyardActionResponse,
+        VineyardResponse,
+    },
     jwt::AuthenticatedUser,
 };
 
+use crate::vineyard::read::read_vineyard;
+
 pub fn create_vineyard(
     vineyard_req: NewVineyardRequest,
-    mut connection: crate::Connection,
+    connection: &mut crate::Connection,
     user: AuthenticatedUser,
 ) -> Result<VineyardResponse, Error> {
     use domain::schema::grape_varieties::dsl::*;
@@ -30,6 +38,11 @@ pub fn create_vineyard(
             vineyard.name,
             vineyard.altitude,
             vineyard.soil,
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
             Vec::new(),
         );
 
@@ -54,4 +67,60 @@ pub fn create_vineyard(
 
         Ok(vineyard_response)
     })
+}
+
+pub fn create_trim(
+    trim_req: NewVineyardActionRequest,
+    connection: &mut crate::Connection,
+    user: AuthenticatedUser,
+) -> Result<VineyardActionResponse, Error> {
+    use domain::schema::vineyard_actions::dsl::*;
+
+    let new_trim = NewVineyardAction {
+        action_type: ActionTypeEnum::Trim,
+        action_date: trim_req.action_date,
+        vineyard_id: trim_req.vineyard_id,
+        user_id: user.id,
+    };
+
+    let _ = read_vineyard(trim_req.vineyard_id, connection, user)?;
+
+    let vineyard_action = insert_into(vineyard_actions)
+        .values(&new_trim)
+        .get_result::<VineyardAction>(connection)?;
+
+    Ok(VineyardActionResponse::new(
+        vineyard_action.id,
+        vineyard_action.vineyard_id,
+        vineyard_action.action_type,
+        vineyard_action.action_date,
+    ))
+}
+
+pub fn create_cut(
+    cut_req: NewVineyardActionRequest,
+    connection: &mut crate::Connection,
+    user: AuthenticatedUser,
+) -> Result<VineyardActionResponse, Error> {
+    use domain::schema::vineyard_actions::dsl::*;
+
+    let new_cut = NewVineyardAction {
+        action_type: ActionTypeEnum::Cut,
+        action_date: cut_req.action_date,
+        vineyard_id: cut_req.vineyard_id,
+        user_id: user.id,
+    };
+
+    let _ = read_vineyard(cut_req.vineyard_id, connection, user)?;
+
+    let vineyard_action = insert_into(vineyard_actions)
+        .values(&new_cut)
+        .get_result::<VineyardAction>(connection)?;
+
+    Ok(VineyardActionResponse::new(
+        vineyard_action.id,
+        vineyard_action.vineyard_id,
+        vineyard_action.action_type,
+        vineyard_action.action_date,
+    ))
 }

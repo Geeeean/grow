@@ -10,7 +10,7 @@ pub enum CreateError {
 }
 
 pub fn create_user(
-    mut connection: Connection,
+    connection: &mut Connection,
     signup_req: SignupRequest,
 ) -> Result<User, CreateError> {
     use domain::schema::users::dsl::*;
@@ -28,6 +28,6 @@ pub fn create_user(
 
     insert_into(users)
         .values(&new_user)
-        .get_result::<User>(&mut connection)
+        .get_result::<User>(connection)
         .map_err(|x| CreateError::DbError(x))
 }

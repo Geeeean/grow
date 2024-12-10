@@ -10,12 +10,15 @@ pub enum ReadError {
     BcryptError(bcrypt::BcryptError),
 }
 
-pub fn read_user(mut connection: Connection, signin_req: SigninRequest) -> Result<User, ReadError> {
+pub fn read_user(
+    connection: &mut Connection,
+    signin_req: SigninRequest,
+) -> Result<User, ReadError> {
     use domain::schema::users::dsl::*;
 
     let user: User = match users
         .filter(email.eq(signin_req.email))
-        .first::<User>(&mut connection)
+        .first::<User>(connection)
     {
         Ok(user) => user,
         Err(err) => return Err(ReadError::DbError(err)),

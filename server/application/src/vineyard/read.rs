@@ -5,7 +5,7 @@ use shared::{dto::vineyard_dto::VineyardResponse, jwt::AuthenticatedUser};
 
 pub fn read_vineyard(
     vineyard_id: i32,
-    mut connection: Connection,
+    connection: &mut Connection,
     user: AuthenticatedUser,
 ) -> Result<VineyardResponse, Error> {
     use domain::schema::vineyards::dsl::*;
@@ -13,7 +13,7 @@ pub fn read_vineyard(
     let vineyard: Vineyard = vineyards
         .filter(user_id.eq(user.id))
         .find(vineyard_id)
-        .first::<Vineyard>(&mut connection)?;
+        .first::<Vineyard>(connection)?;
 
     Ok(VineyardResponse::new(
         vineyard.id,
@@ -21,11 +21,16 @@ pub fn read_vineyard(
         vineyard.altitude,
         vineyard.soil,
         Vec::new(),
+        Vec::new(),
+        Vec::new(),
+        Vec::new(),
+        Vec::new(),
+        Vec::new(),
     ))
 }
 
 pub fn read_vineyards(
-    mut connection: Connection,
+    connection: &mut Connection,
     user: AuthenticatedUser,
 ) -> Result<Vec<VineyardResponse>, Error> {
     use domain::schema::vineyards::dsl::*;
@@ -35,7 +40,7 @@ pub fn read_vineyards(
     for vineyard in vineyards
         .filter(user_id.eq(user.id))
         .select(Vineyard::as_select())
-        .load::<Vineyard>(&mut connection)?
+        .load::<Vineyard>(connection)?
         .into_iter()
     {
         vineyard_reponses.push(VineyardResponse::new(
@@ -43,6 +48,11 @@ pub fn read_vineyards(
             vineyard.name,
             vineyard.altitude,
             vineyard.soil,
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
             Vec::new(),
         ));
     }

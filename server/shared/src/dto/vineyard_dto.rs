@@ -1,8 +1,9 @@
-use rocket::FromForm;
 use ::serde::{Deserialize, Serialize};
 use chrono::NaiveDateTime;
-use domain::models::SoilTypeEnum;
+use domain::models::{ActionTypeEnum, SoilTypeEnum};
+use rocket::FromForm;
 
+/*** VARIETY ***/
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, FromForm)]
 pub struct NewGrapeVarietyRequest {
     pub name: String,
@@ -29,13 +30,39 @@ impl GrapeVarietyResponse {
     }
 }
 
+/*** ACTION ***/
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
-pub struct NewVineyardTrim {
+pub struct NewVineyardActionRequest {
     #[serde(rename = "vineyardId")]
     pub vineyard_id: i32,
-    pub date: NaiveDateTime,
+    pub action_date: NaiveDateTime,
 }
 
+#[derive(Serialize)]
+pub struct VineyardActionResponse {
+    id: i32,
+    vineyard_id: i32,
+    action_type: ActionTypeEnum,
+    action_date: NaiveDateTime,
+}
+
+impl VineyardActionResponse {
+    pub fn new(
+        id: i32,
+        vineyard_id: i32,
+        action_type: ActionTypeEnum,
+        action_date: NaiveDateTime,
+    ) -> Self {
+        Self {
+            id,
+            vineyard_id,
+            action_type,
+            action_date,
+        }
+    }
+}
+
+/*** VINEYARD ***/
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, FromForm)]
 pub struct NewVineyardRequest {
     pub name: String,
@@ -51,6 +78,11 @@ pub struct VineyardResponse {
     altitude: i32,
     soil: SoilTypeEnum,
     varieties: Vec<GrapeVarietyResponse>,
+    trims: Vec<VineyardActionResponse>,
+    cuts: Vec<VineyardActionResponse>,
+    plantings: Vec<VineyardActionResponse>,
+    treatments: Vec<VineyardActionResponse>,
+    harvests: Vec<VineyardActionResponse>,
 }
 
 impl VineyardResponse {
@@ -60,6 +92,11 @@ impl VineyardResponse {
         altitude: i32,
         soil: SoilTypeEnum,
         varieties: Vec<GrapeVarietyResponse>,
+        trims: Vec<VineyardActionResponse>,
+        cuts: Vec<VineyardActionResponse>,
+        plantings: Vec<VineyardActionResponse>,
+        treatments: Vec<VineyardActionResponse>,
+        harvests: Vec<VineyardActionResponse>,
     ) -> Self {
         Self {
             id,
@@ -67,6 +104,11 @@ impl VineyardResponse {
             altitude,
             soil,
             varieties,
+            trims,
+            cuts,
+            plantings,
+            treatments,
+            harvests,
         }
     }
 

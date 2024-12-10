@@ -23,7 +23,7 @@ pub enum SoilTypeEnum {
     Alluvial,
 }
 
-#[derive(Debug, Deserialize, Serialize, DbEnum)]
+#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq)]
 #[ExistingTypePath = "ActionType"]
 pub enum ActionTypeEnum {
     Trim,
@@ -140,6 +140,8 @@ pub struct VineyardAction {
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = vineyard_actions)]
 pub struct NewVineyardAction {
+    pub vineyard_id: i32,
+    pub user_id: Uuid,
     pub action_type: ActionTypeEnum,
     pub action_date: NaiveDateTime,
 }

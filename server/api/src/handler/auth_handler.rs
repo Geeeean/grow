@@ -16,12 +16,12 @@ pub fn signin(
     server_state: &State<ServerState>,
     cookies: &CookieJar<'_>,
 ) -> SerializedResponse<UserResponse> {
-    let connection = match server_state.get_db_connection() {
+    let mut connection = match server_state.get_db_connection() {
         Ok(conn) => conn,
         Err(_) => return Response::new_serialized_default_error(),
     };
 
-    let user = match read_user(connection, signin_req.0) {
+    let user = match read_user(&mut connection, signin_req.0) {
         Ok(user) => user,
         Err(error) => match error {
             ReadError::WrongPassword => {
@@ -60,12 +60,12 @@ pub fn signup(
     server_state: &State<ServerState>,
     signup_req: Json<SignupRequest>,
 ) -> SerializedResponse<UserResponse> {
-    let connection = match server_state.get_db_connection() {
+    let mut connection = match server_state.get_db_connection() {
         Ok(conn) => conn,
         Err(_) => return Response::new_serialized_default_error(),
     };
 
-    let user = match create_user(connection, signup_req.0) {
+    let user = match create_user(&mut connection, signup_req.0) {
         Ok(user) => user,
         Err(error) => match error {
             CreateError::DbError(db_error) => {
