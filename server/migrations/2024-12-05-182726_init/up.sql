@@ -8,10 +8,10 @@ CREATE TABLE users (
     created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 
-CREATE TYPE soil_type AS ENUM ('Calcareous','Clay','Sandy','Gravelly','Volcanic','Schist','Silty','Alluvial');
-cREATE TYPE action_type AS ENUM ('Trim', 'Cut', 'Planting', 'Treatment', 'Harvest');
-CREATE TYPE treatment_type AS ENUM ('Fungicide', 'Pesticide', 'Fertilizer', 'Irrigation');
-CREATE TYPE planting_type AS ENUM ('Removal', 'Planting');
+CREATE TYPE soil_type AS ENUM ('calcareous','clay','sandy','gravelly','volcanic','schist','silty','alluvial');
+cREATE TYPE action_type AS ENUM ('trim', 'cut', 'planting', 'treatment', 'harvest');
+CREATE TYPE treatment_type AS ENUM ('fungicide', 'pesticide', 'fertilizer', 'irrigation');
+CREATE TYPE planting_type AS ENUM ('removal', 'planting');
 
 CREATE TABLE vineyards (
     id SERIAL PRIMARY KEY, -- Unique identifier for the vineyard

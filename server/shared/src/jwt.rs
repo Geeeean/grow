@@ -57,7 +57,7 @@ pub fn create_jwt(id: Uuid) -> Result<String, JwtError> {
 }
 
 fn decode_jwt(token: String) -> Result<Claims, ErrorKind> {
-    let secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set.");
+    let secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
     let token = token.trim_start_matches("Bearer").trim();
 
     match decode::<Claims>(

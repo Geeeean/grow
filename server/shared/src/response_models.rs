@@ -39,7 +39,7 @@ impl<T: Serialize> Response<T> {
     pub fn new_serialized_default_error() -> SerializedResponse<T> {
         Self::new_serialized(
             Status::InternalServerError,
-            "Internal server error. Please try again or contact support.",
+            "Internal server error. Please try again or contact support",
             None,
         )
     }

@@ -73,7 +73,7 @@ pub fn new_vineyard(
     match create_vineyard(vineyard_req.0, connection, user) {
         Ok(vineyard) => Response::new_serialized(
             Status::Ok,
-            "Vineyard retrieved successfully",
+            "Vineyard created successfully",
             Some(vineyard),
         ),
         Err(error) => {

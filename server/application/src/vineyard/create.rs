@@ -13,8 +13,6 @@ pub fn create_vineyard(
     use domain::schema::grape_varieties::dsl::*;
     use domain::schema::vineyards::dsl::*;
 
-    println!("{:?}", vineyard_req);
-
     let new_vineyard = NewVineyard {
         name: vineyard_req.name,
         altitude: vineyard_req.altitude,
@@ -41,8 +39,8 @@ pub fn create_vineyard(
                 rows: variety_req.rows,
                 age: variety_req.age,
                 vineyard_id: vineyard.id,
+                user_id: user.id,
             };
-            println!("ok");
 
             let variety = insert_into(grape_varieties)
                 .values(&new_variety)

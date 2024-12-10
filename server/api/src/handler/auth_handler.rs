@@ -93,19 +93,19 @@ fn get_create_db_error_status(error: Error) -> Option<(Status, &'static str)> {
         DatabaseError(error_kind, _) => match error_kind {
             DatabaseErrorKind::UniqueViolation => Some((
                 Status::Conflict,
-                "Email already taken. Please choose another email or sign in.",
+                "Email already taken. Please choose another email or sign in",
             )),
             DatabaseErrorKind::ForeignKeyViolation => Some((
                 Status::BadRequest,
-                "A related resource does not exist. Please check your input.",
+                "A related resource does not exist. Please check your input",
             )),
             DatabaseErrorKind::NotNullViolation => Some((
                 Status::BadRequest,
-                "A required field is missing. Please fill in all required fields.",
+                "A required field is missing. Please fill in all required fields",
             )),
             DatabaseErrorKind::CheckViolation => Some((
                 Status::BadRequest,
-                "Some input values are invalid. Please check the requirements.",
+                "Some input values are invalid. Please check the requirements",
             )),
             _ => None,
         },
@@ -115,7 +115,7 @@ fn get_create_db_error_status(error: Error) -> Option<(Status, &'static str)> {
 
 fn get_read_db_error_status(error: Error) -> Option<(Status, &'static str)> {
     match error {
-        NotFound => Some((Status::NotFound, "Email not found.")),
+        NotFound => Some((Status::NotFound, "Email not found")),
         _ => None,
     }
 }

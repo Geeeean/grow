@@ -4,12 +4,13 @@ use crate::schema::{
 };
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
+use diesel::sql_types::SqlType;
 use diesel_derive_enum::DbEnum;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::FromFormField;
 use uuid::Uuid;
 
-#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField, Clone, Copy)]
+#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField, SqlType)]
 #[ExistingTypePath = "SoilType"]
 pub enum SoilTypeEnum {
     Calcareous,
@@ -119,6 +120,7 @@ pub struct NewGrapeVariety {
     pub rows: i32,
     pub age: i32,
     pub vineyard_id: i32,
+    pub user_id: Uuid,
 }
 
 #[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
