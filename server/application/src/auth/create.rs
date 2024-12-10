@@ -1,13 +1,8 @@
-use bcrypt::{hash, BcryptError, DEFAULT_COST};
-use diesel::{
-    insert_into,
-    prelude::*,
-    r2d2::{ConnectionManager, PooledConnection},
-};
+use crate::Connection;
+use bcrypt::{hash, DEFAULT_COST};
+use diesel::{insert_into, prelude::*};
 use domain::models::{NewUser, User};
 use shared::dto::auth_dto::SignupRequest;
-
-type Connection = PooledConnection<ConnectionManager<PgConnection>>;
 
 pub enum CreateError {
     DbError(diesel::result::Error),

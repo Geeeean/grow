@@ -1,56 +1,84 @@
+use application::vineyard::create::create_vineyard;
 use application::vineyard::read::{read_vineyard, read_vineyards};
 use diesel::result::Error::NotFound;
-use domain::models::Vineyard;
 use infrastructure::ServerState;
-use rocket::{get, http::Status, State};
-use shared::response_models::{Response, SerializedResponse};
+use log::{error, info};
+use rocket::serde::json::Json;
+use rocket::{get, http::Status, post, State};
+use shared::dto::vineyard_dto::{NewVineyardRequest, VineyardResponse};
+use shared::{
+    jwt::AuthenticatedUser,
+    response_models::{Response, SerializedResponse},
+};
 
 #[get("/")]
-pub fn get_vineyards(server_state: &State<ServerState>) -> SerializedResponse<Vec<Vineyard>> {
-    let connection = match server_state.get_pool().get() {
+pub fn get_vineyards(
+    user: AuthenticatedUser,
+    server_state: &State<ServerState>,
+) -> SerializedResponse<Vec<VineyardResponse>> {
+    info!("user: {}", user.id);
+
+    let connection = match server_state.get_db_connection() {
         Ok(conn) => conn,
-        Err(_) => {
-            return Response::new(Status::InternalServerError, "Internal server error", None)
-                .to_serialized();
-        }
+        Err(_) => return Response::new_serialized_default_error(),
     };
 
-    match read_vineyards(connection) {
-        Ok(vineyards) => Response::new(
+    match read_vineyards(connection, user) {
+        Ok(vineyards) => Response::new_serialized(
             Status::Ok,
             "Vineyards retrieved successfully",
             Some(vineyards),
-        )
-        .to_serialized(),
-        Err(NotFound) => {
-            Response::new(Status::NotFound, "Vineyard not found", None).to_serialized()
-        }
-        Err(_) => Response::new(Status::InternalServerError, "Internal server error", None)
-            .to_serialized(),
+        ),
+        Err(NotFound) => Response::new_serialized(Status::NotFound, "Vineyard not found", None),
+        Err(_) => Response::new_serialized_default_error(),
     }
 }
 
 #[get("/<vineyard_id>")]
 pub fn get_vineyard(
-    server_state: &State<ServerState>,
     vineyard_id: i32,
-) -> SerializedResponse<Vineyard> {
-    let connection = match server_state.get_pool().get() {
+    user: AuthenticatedUser,
+    server_state: &State<ServerState>,
+) -> SerializedResponse<VineyardResponse> {
+    let connection = match server_state.get_db_connection() {
         Ok(conn) => conn,
-        Err(_) => {
-            return Response::new(Status::InternalServerError, "Internal server error", None)
-                .to_serialized();
+        Err(_) => return Response::new_serialized_default_error(),
+    };
+
+    match read_vineyard(vineyard_id, connection, user) {
+        Ok(vineyard) => Response::new_serialized(
+            Status::Ok,
+            "Vineyard retrieved successfully",
+            Some(vineyard),
+        ),
+        Err(NotFound) => Response::new_serialized(Status::NotFound, "Vineyard not found", None),
+        Err(_) => Response::new_serialized_default_error(),
+    }
+}
+
+#[post("/", format = "json", data = "<vineyard_req>")]
+pub fn new_vineyard(
+    vineyard_req: Json<NewVineyardRequest>,
+    user: AuthenticatedUser,
+    server_state: &State<ServerState>,
+) -> SerializedResponse<VineyardResponse> {
+    let connection = match server_state.get_db_connection() {
+        Ok(conn) => conn,
+        Err(error) => {
+            error!("ERROR {:?}", error);
+            return Response::new_serialized_default_error();
         }
     };
 
-    match read_vineyard(connection, vineyard_id) {
-        Ok(vineyard) => {
-            Response::new(Status::Ok, "Vineyard retrieved successfully", Some(vineyard)).to_serialized()
+    match create_vineyard(vineyard_req.0, connection, user) {
+        Ok(vineyard) => Response::new_serialized(
+            Status::Ok,
+            "Vineyard retrieved successfully",
+            Some(vineyard),
+        ),
+        Err(error) => {
+            error!("ERROR {:?}", error);
+            return Response::new_serialized_default_error();
         }
-        Err(NotFound) => {
-            Response::new(Status::NotFound, "Vineyard not found", None).to_serialized()
-        }
-        Err(_) => Response::new(Status::InternalServerError, "Internal server error", None)
-            .to_serialized(),
     }
 }

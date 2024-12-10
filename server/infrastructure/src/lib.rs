@@ -1,5 +1,5 @@
 use diesel::pg::PgConnection;
-use diesel::r2d2::{ConnectionManager, Pool};
+use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
 use dotenvy::dotenv;
 use std::env;
 
@@ -26,7 +26,7 @@ impl ServerState {
         }
     }
 
-    pub fn get_pool(&self) -> &DbPool {
-        &self.pool
+    pub fn get_db_connection(&self) -> Result<PooledConnection<ConnectionManager<PgConnection>>, ()> {
+        Ok(self.pool.get().map_err(|_| ())?)
     }
 }

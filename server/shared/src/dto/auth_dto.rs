@@ -23,6 +23,6 @@ pub struct SignupRequest {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct SigninRequest {
-    email: String,
-    password: String,
+    pub email: String,
+    pub password: String,
 }

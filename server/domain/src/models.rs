@@ -6,9 +6,10 @@ use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use diesel_derive_enum::DbEnum;
 use rocket::serde::{Deserialize, Serialize};
+use rocket::FromFormField;
 use uuid::Uuid;
 
-#[derive(Debug, Deserialize, Serialize, DbEnum)]
+#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField, Clone, Copy)]
 #[ExistingTypePath = "SoilType"]
 pub enum SoilTypeEnum {
     Calcareous,
@@ -65,7 +66,16 @@ pub struct NewUser {
     pub password: String,
 }
 
-#[derive(Queryable, QueryableByName, Selectable, Identifiable, Associations, Debug, Serialize, Deserialize)]
+#[derive(
+    Queryable,
+    QueryableByName,
+    Selectable,
+    Identifiable,
+    Associations,
+    Debug,
+    Serialize,
+    Deserialize,
+)]
 #[diesel(belongs_to(User))]
 #[diesel(table_name = vineyards)]
 pub struct Vineyard {
@@ -81,10 +91,10 @@ pub struct Vineyard {
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = vineyards)]
 pub struct NewVineyard {
-    pub id: i32,
     pub name: String,
     pub altitude: i32,
     pub soil: SoilTypeEnum,
+    pub user_id: Uuid,
 }
 
 #[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
