@@ -2,7 +2,7 @@ use crate::Connection;
 use bcrypt::{hash, DEFAULT_COST};
 use diesel::{insert_into, prelude::*};
 use domain::models::{NewUser, User};
-use shared::dto::auth_dto::SignupRequest;
+use shared::dto::auth_dto::{SignupRequest, UserResponse};
 
 pub enum CreateError {
     DbError(diesel::result::Error),
@@ -12,7 +12,7 @@ pub enum CreateError {
 pub fn create_user(
     connection: &mut Connection,
     signup_req: SignupRequest,
-) -> Result<User, CreateError> {
+) -> Result<UserResponse, CreateError> {
     use domain::schema::users::dsl::*;
 
     let hashed_password = match hash(signup_req.password, DEFAULT_COST) {
@@ -26,8 +26,10 @@ pub fn create_user(
         password: hashed_password,
     };
 
-    insert_into(users)
+    let user = insert_into(users)
         .values(&new_user)
         .get_result::<User>(connection)
-        .map_err(|x| CreateError::DbError(x))
+        .map_err(|x| CreateError::DbError(x))?;
+
+    Ok(UserResponse::new(user.id, user.email, user.name))
 }

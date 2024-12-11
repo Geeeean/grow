@@ -12,6 +12,10 @@ impl UserResponse {
     pub fn new(id: Uuid, email: String, name: String) -> Self {
         Self { id, email, name }
     }
+
+    pub fn get_id(&self) -> Uuid {
+        self.id
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]

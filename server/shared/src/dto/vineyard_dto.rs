@@ -30,7 +30,7 @@ impl GrapeVarietyResponse {
     }
 }
 
-/*** ACTION ***/
+/*** BASE ACTION ***/
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct NewVineyardActionRequest {
     #[serde(rename = "vineyardId")]
@@ -45,7 +45,6 @@ pub struct VineyardActionResponse {
     action_type: ActionTypeEnum,
     action_date: NaiveDateTime,
 }
-
 impl VineyardActionResponse {
     pub fn new(
         id: i32,
@@ -61,6 +60,13 @@ impl VineyardActionResponse {
         }
     }
 }
+
+/*** PLANTING  ***/
+pub struct NewVineyardPlanting {
+    field1: i32,
+    action : NewVineyardActionRequest
+}
+
 
 /*** VINEYARD ***/
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, FromForm)]

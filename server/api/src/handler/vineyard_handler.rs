@@ -63,7 +63,7 @@ pub fn new_vineyard(
 ) -> SerializedResponse<VineyardResponse> {
     let mut connection = match server_state.get_db_connection() {
         Ok(conn) => conn,
-        Err(error) => {
+        Err(_) => {
             return Response::new_serialized_default_error();
         }
     };

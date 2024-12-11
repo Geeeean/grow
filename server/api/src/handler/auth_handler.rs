@@ -38,9 +38,7 @@ pub fn signin(
         },
     };
 
-    let user_response = UserResponse::new(user.id, user.email, user.name);
-
-    let token = match create_jwt(user.id) {
+    let token = match create_jwt(user.get_id()) {
         Ok(token) => token,
         Err(_) => return Response::new_serialized_default_error(),
     };
@@ -52,7 +50,7 @@ pub fn signin(
     cookie.set_path("/api");
     cookies.add_private(cookie);
 
-    Response::new_serialized(Status::Ok, "User successfully logged", Some(user_response))
+    Response::new_serialized(Status::Ok, "User successfully logged", Some(user))
 }
 
 #[post("/signup", format = "json", data = "<signup_req>")]
@@ -79,13 +77,7 @@ pub fn signup(
         },
     };
 
-    let user_response = UserResponse::new(user.id, user.email, user.name);
-
-    Response::new_serialized(
-        Status::Created,
-        "User successfully registered",
-        Some(user_response),
-    )
+    Response::new_serialized(Status::Created, "User successfully registered", Some(user))
 }
 
 fn get_create_db_error_status(error: Error) -> Option<(Status, &'static str)> {

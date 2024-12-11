@@ -1,8 +1,11 @@
 use crate::Connection;
 use bcrypt::verify;
-use diesel::prelude::*;
+use diesel::{prelude::*, result::Error};
 use domain::models::User;
-use shared::dto::auth_dto::SigninRequest;
+use shared::{
+    dto::auth_dto::{SigninRequest, UserResponse},
+    jwt::AuthenticatedUser,
+};
 
 pub enum ReadError {
     WrongPassword,
@@ -13,7 +16,7 @@ pub enum ReadError {
 pub fn read_user(
     connection: &mut Connection,
     signin_req: SigninRequest,
-) -> Result<User, ReadError> {
+) -> Result<UserResponse, ReadError> {
     use domain::schema::users::dsl::*;
 
     let user: User = match users
@@ -33,5 +36,5 @@ pub fn read_user(
         return Err(ReadError::WrongPassword);
     }
 
-    return Ok(user);
+    Ok(UserResponse::new(user.id, user.email, user.name))
 }
