@@ -181,7 +181,7 @@ const VineyardComponent = () => {
                                     grass cuts table
                                 </DetailCardContent>
                             </DetailCard>
-                            <DetailCard className='md:col-span-2 lg:col-span-1'>
+                            <DetailCard className="md:col-span-2 lg:col-span-1">
                                 <DetailCardHeader>
                                     <DetailCardTitle>Planting/Explantation</DetailCardTitle>
                                     <Maximize />

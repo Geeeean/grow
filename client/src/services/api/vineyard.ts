@@ -13,28 +13,30 @@ export const addVineyard = async (vineyard: VineyardAdd) => {
 
 export const addVineyardTrim = async (trim: VineyardTrimAdd) => {
     const trimData = {
+        ...trim,
         date: trim.date.toISOString(),
     };
 
-    const response = await apiClient.post('/vineyard/' + trim.vineyardId + '/trim/add', trimData);
+    const response = await apiClient.post('/vineyard/trim', trimData);
     return response.data;
 };
 
 export const addVineyardCut = async (cut: VineyardCutAdd) => {
     const cutData = {
+        ...cut,
         date: cut.date.toISOString(),
     };
 
-    const response = await apiClient.post('/vineyard/' + cut.vineyardId + '/cut/add', cutData);
+    const response = await apiClient.post('/vineyard/cut', cutData);
     return response.data;
 };
 
 export const addVineyardPlanting = async (planting: VineyardPlantingAdd) => {
     const plantingData = {
+        ...planting,
         date: planting.date.toISOString(),
-        plantingType: planting.plantingType,
     };
 
-    const response = await apiClient.post('/vineyard/' + planting.vineyardId + '/planting/add', plantingData);
+    const response = await apiClient.post('/vineyard/planting', plantingData);
     return response.data;
 };
