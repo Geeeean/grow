@@ -1,6 +1,6 @@
 use ::serde::{Deserialize, Serialize};
-use chrono::NaiveDateTime;
-use domain::models::{ActionTypeEnum, SoilTypeEnum};
+use chrono::{DateTime, Utc};
+use domain::models::{ActionTypeEnum, PlantingTypeEnum, SoilTypeEnum, TreatmentTypeEnum};
 use rocket::FromForm;
 
 /*** VARIETY ***/
@@ -35,22 +35,27 @@ impl GrapeVarietyResponse {
 pub struct NewVineyardActionRequest {
     #[serde(rename = "vineyardId")]
     pub vineyard_id: i32,
-    pub action_date: NaiveDateTime,
+    #[serde(rename = "date")]
+    pub action_date: DateTime<Utc>,
 }
 
 #[derive(Serialize)]
 pub struct VineyardActionResponse {
     id: i32,
+    #[serde(rename = "vineyardId")]
     vineyard_id: i32,
+    #[serde(rename = "actionType")]
     action_type: ActionTypeEnum,
-    action_date: NaiveDateTime,
+    #[serde(rename = "date")]
+    action_date: DateTime<Utc>,
 }
+
 impl VineyardActionResponse {
     pub fn new(
         id: i32,
         vineyard_id: i32,
         action_type: ActionTypeEnum,
-        action_date: NaiveDateTime,
+        action_date: DateTime<Utc>,
     ) -> Self {
         Self {
             id,
@@ -62,11 +67,94 @@ impl VineyardActionResponse {
 }
 
 /*** PLANTING  ***/
-pub struct NewVineyardPlanting {
-    field1: i32,
-    action : NewVineyardActionRequest
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
+pub struct NewVineyardPlantingRequest {
+    pub action: NewVineyardActionRequest,
+    #[serde(rename = "plantingType")]
+    pub planting_type: PlantingTypeEnum,
+    #[serde(rename = "plantCount")]
+    pub plant_count: i32,
 }
 
+#[derive(Serialize)]
+pub struct VineyardPlantingResponse {
+    action: VineyardActionResponse,
+    id: i32,
+    #[serde(rename = "plantingType")]
+    planting_type: PlantingTypeEnum,
+    #[serde(rename = "plantCount")]
+    plant_count: i32,
+}
+
+impl VineyardPlantingResponse {
+    pub fn new(
+        action: VineyardActionResponse,
+        id: i32,
+        planting_type: PlantingTypeEnum,
+        plant_count: i32,
+    ) -> Self {
+        Self {
+            action,
+            id,
+            planting_type,
+            plant_count,
+        }
+    }
+}
+
+/*** TREATMENT ***/
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
+pub struct NewVineyardTreatmentRequest {
+    pub action: NewVineyardActionRequest,
+    #[serde(rename = "treatmentType")]
+    pub treatment_type: TreatmentTypeEnum,
+    pub product: String,
+}
+
+#[derive(Serialize)]
+pub struct VineyardTreatmentResponse {
+    action: VineyardActionResponse,
+    id: i32,
+    #[serde(rename = "treatmentType")]
+    treatment_type: TreatmentTypeEnum,
+    product: String,
+}
+
+impl VineyardTreatmentResponse {
+    pub fn new(
+        action: VineyardActionResponse,
+        id: i32,
+        treatment_type: TreatmentTypeEnum,
+        product: String,
+    ) -> Self {
+        Self {
+            action,
+            id,
+            treatment_type,
+            product,
+        }
+    }
+}
+
+/*** HARVEST ***/
+/*
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
+pub struct NewVineyardHarvest {
+    pub action: NewVineyardActionRequest,
+}
+
+#[derive(Serialize)]
+pub struct VineyardHarvestResponse {
+    action: VineyardActionResponse,
+    id: i32,
+}
+
+impl VineyardHarvestResponse {
+    pub fn new(action: VineyardActionResponse, id: i32) -> Self {
+        Self { action, id }
+    }
+}
+*/
 
 /*** VINEYARD ***/
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, FromForm)]

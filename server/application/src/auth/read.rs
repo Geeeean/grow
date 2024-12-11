@@ -1,11 +1,8 @@
 use crate::Connection;
 use bcrypt::verify;
-use diesel::{prelude::*, result::Error};
+use diesel::prelude::*;
 use domain::models::User;
-use shared::{
-    dto::auth_dto::{SigninRequest, UserResponse},
-    jwt::AuthenticatedUser,
-};
+use shared::dto::auth_dto::{SigninRequest, UserResponse};
 
 pub enum ReadError {
     WrongPassword,

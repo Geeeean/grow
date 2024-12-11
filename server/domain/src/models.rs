@@ -2,15 +2,14 @@ use crate::schema::sql_types::{ActionType, PlantingType, SoilType, TreatmentType
 use crate::schema::{
     grape_varieties, users, vineyard_actions, vineyard_plantings, vineyard_treatments, vineyards,
 };
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use diesel::prelude::*;
-use diesel::sql_types::SqlType;
 use diesel_derive_enum::DbEnum;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::FromFormField;
 use uuid::Uuid;
 
-#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField, SqlType)]
+#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField)]
 #[ExistingTypePath = "SoilType"]
 pub enum SoilTypeEnum {
     Calcareous,
@@ -23,7 +22,7 @@ pub enum SoilTypeEnum {
     Alluvial,
 }
 
-#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField)]
 #[ExistingTypePath = "ActionType"]
 pub enum ActionTypeEnum {
     Trim,
@@ -33,7 +32,7 @@ pub enum ActionTypeEnum {
     Harvest,
 }
 
-#[derive(Debug, Deserialize, Serialize, DbEnum)]
+#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField)]
 #[ExistingTypePath = "TreatmentType"]
 pub enum TreatmentTypeEnum {
     Fungicide,
@@ -42,7 +41,7 @@ pub enum TreatmentTypeEnum {
     Irrigation,
 }
 
-#[derive(Debug, Deserialize, Serialize, DbEnum)]
+#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField)]
 #[ExistingTypePath = "PlantingType"]
 pub enum PlantingTypeEnum {
     Removal,
@@ -56,7 +55,7 @@ pub struct User {
     pub name: String,
     pub email: String,
     pub password: String,
-    pub created_at: NaiveDateTime,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Insertable, Debug, Serialize, Deserialize)]
@@ -85,7 +84,7 @@ pub struct Vineyard {
     pub altitude: i32,
     pub soil: SoilTypeEnum,
     pub user_id: Uuid,
-    pub created_at: NaiveDateTime,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Insertable, Deserialize)]
@@ -108,7 +107,7 @@ pub struct GrapeVariety {
     pub rows: i32,
     pub age: i32,
     pub vineyard_id: i32,
-    pub created_at: NaiveDateTime,
+    pub created_at: DateTime<Utc>,
     pub user_id: Uuid,
 }
 
@@ -132,8 +131,8 @@ pub struct VineyardAction {
     pub vineyard_id: i32,
     pub user_id: Uuid,
     pub action_type: ActionTypeEnum,
-    pub action_date: NaiveDateTime,
-    pub created_at: NaiveDateTime,
+    pub action_date: DateTime<Utc>,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Insertable, Deserialize)]
@@ -143,7 +142,7 @@ pub struct NewVineyardAction {
     pub vineyard_id: i32,
     pub user_id: Uuid,
     pub action_type: ActionTypeEnum,
-    pub action_date: NaiveDateTime,
+    pub action_date: DateTime<Utc>,
 }
 
 #[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
@@ -154,7 +153,7 @@ pub struct VineyardPlanting {
     pub vineyard_action_id: i32,
     pub planting_type: PlantingTypeEnum,
     pub plant_count: i32,
-    pub created_at: NaiveDateTime,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Insertable, Deserialize)]
@@ -173,7 +172,7 @@ pub struct VineyardTreatment {
     pub vineyard_action_id: i32,
     pub treatment_type: TreatmentTypeEnum,
     pub product: String,
-    pub created_at: NaiveDateTime,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Insertable, Deserialize)]

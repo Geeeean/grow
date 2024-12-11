@@ -3,6 +3,7 @@ use uuid::Uuid;
 
 #[derive(Serialize)]
 pub struct UserResponse {
+    #[serde(skip)]
     id: Uuid,
     email: String,
     name: String,

@@ -1,11 +1,7 @@
 use crate::Connection;
-use bcrypt::verify;
 use diesel::{prelude::*, result::Error};
 use domain::models::User;
-use shared::{
-    dto::auth_dto::{SigninRequest, UserResponse},
-    jwt::AuthenticatedUser,
-};
+use shared::{dto::auth_dto::UserResponse, jwt::AuthenticatedUser};
 
 pub fn read_user(
     connection: &mut Connection,

@@ -1,12 +1,14 @@
 use diesel::{insert_into, prelude::*, result::Error, Connection};
 use domain::models::{
-    ActionTypeEnum, GrapeVariety, NewGrapeVariety, NewVineyard, NewVineyardAction, Vineyard,
-    VineyardAction,
+    ActionTypeEnum, GrapeVariety, NewGrapeVariety, NewVineyard, NewVineyardAction,
+    NewVineyardPlanting, NewVineyardTreatment, Vineyard, VineyardAction, VineyardPlanting,
+    VineyardTreatment,
 };
 use shared::{
     dto::vineyard_dto::{
-        GrapeVarietyResponse, NewVineyardActionRequest, NewVineyardRequest, VineyardActionResponse,
-        VineyardResponse,
+        GrapeVarietyResponse, NewVineyardActionRequest, NewVineyardPlantingRequest,
+        NewVineyardRequest, NewVineyardTreatmentRequest, VineyardActionResponse,
+        VineyardPlantingResponse, VineyardResponse, VineyardTreatmentResponse,
     },
     jwt::AuthenticatedUser,
 };
@@ -123,4 +125,102 @@ pub fn create_cut(
         vineyard_action.action_type,
         vineyard_action.action_date,
     ))
+}
+
+pub fn create_planting(
+    planting_req: NewVineyardPlantingRequest,
+    connection: &mut crate::Connection,
+    user: AuthenticatedUser,
+) -> Result<VineyardPlantingResponse, Error> {
+    use domain::schema::vineyard_actions::dsl::*;
+    use domain::schema::vineyard_plantings::dsl::*;
+
+    let new_action = NewVineyardAction {
+        action_type: ActionTypeEnum::Planting,
+        action_date: planting_req.action.action_date,
+        vineyard_id: planting_req.action.vineyard_id,
+        user_id: user.id,
+    };
+
+    connection.transaction(|tx_connection| {
+        let _ = read_vineyard(planting_req.action.vineyard_id, tx_connection, user)?;
+
+        let vineyard_action = insert_into(vineyard_actions)
+            .values(&new_action)
+            .get_result::<VineyardAction>(tx_connection)?;
+
+        let new_vineyard_planting = NewVineyardPlanting {
+            plant_count: planting_req.plant_count,
+            planting_type: planting_req.planting_type,
+        };
+
+        let vineyard_planting = insert_into(vineyard_plantings)
+            .values(new_vineyard_planting)
+            .get_result::<VineyardPlanting>(tx_connection)?;
+
+        let vineyard_action_response = VineyardActionResponse::new(
+            vineyard_action.id,
+            vineyard_action.vineyard_id,
+            vineyard_action.action_type,
+            vineyard_action.action_date,
+        );
+
+        let vineyard_planting_response = VineyardPlantingResponse::new(
+            vineyard_action_response,
+            vineyard_planting.id,
+            vineyard_planting.planting_type,
+            vineyard_planting.plant_count,
+        );
+
+        Ok(vineyard_planting_response)
+    })
+}
+
+pub fn create_treatment(
+    treatment_req: NewVineyardTreatmentRequest,
+    connection: &mut crate::Connection,
+    user: AuthenticatedUser,
+) -> Result<VineyardTreatmentResponse, Error> {
+    use domain::schema::vineyard_actions::dsl::*;
+    use domain::schema::vineyard_treatments::dsl::*;
+
+    let new_action = NewVineyardAction {
+        action_type: ActionTypeEnum::Treatment,
+        action_date: treatment_req.action.action_date,
+        vineyard_id: treatment_req.action.vineyard_id,
+        user_id: user.id,
+    };
+
+    connection.transaction(|tx_connection| {
+        let _ = read_vineyard(treatment_req.action.vineyard_id, tx_connection, user)?;
+
+        let vineyard_action = insert_into(vineyard_actions)
+            .values(&new_action)
+            .get_result::<VineyardAction>(tx_connection)?;
+
+        let new_vineyard_treatment = NewVineyardTreatment {
+            treatment_type: treatment_req.treatment_type,
+            product: treatment_req.product,
+        };
+
+        let vineyard_treatment = insert_into(vineyard_treatments)
+            .values(new_vineyard_treatment)
+            .get_result::<VineyardTreatment>(tx_connection)?;
+
+        let vineyard_action_response = VineyardActionResponse::new(
+            vineyard_action.id,
+            vineyard_action.vineyard_id,
+            vineyard_action.action_type,
+            vineyard_action.action_date,
+        );
+
+        let vineyard_treatment_response = VineyardTreatmentResponse::new(
+            vineyard_action_response,
+            vineyard_treatment.id,
+            vineyard_treatment.treatment_type,
+            vineyard_treatment.product,
+        );
+
+        Ok(vineyard_treatment_response)
+    })
 }

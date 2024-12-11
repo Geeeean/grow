@@ -9,7 +9,8 @@ use api::handler::{
     },
     user_handler::get_user,
     vineyard_handler::{
-        get_vineyard, get_vineyards, new_vineyard, new_vineyard_cut, new_vineyard_trim,
+        get_vineyard, get_vineyards, new_vineyard, new_vineyard_cut, new_vineyard_planting,
+        new_vineyard_treatment, new_vineyard_trim,
     },
 };
 use dotenvy::dotenv;
@@ -52,7 +53,9 @@ fn rocket() -> _ {
                 get_vineyard,
                 new_vineyard,
                 new_vineyard_trim,
-                new_vineyard_cut
+                new_vineyard_cut,
+                new_vineyard_treatment,
+                new_vineyard_planting,
             ],
         )
         .mount("/api/auth", routes![signup, signin])
