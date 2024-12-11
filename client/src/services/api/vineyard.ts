@@ -2,12 +2,12 @@ import { apiClient } from '@/services/api/client';
 import { VineyardAdd, VineyardCutAdd, VineyardPlantingAdd, VineyardTrimAdd } from '@/types/vineyard';
 
 export const getAll = async () => {
-    const response = await apiClient.get('/vineyard/get/all');
+    const response = await apiClient.get('/vineyard');
     return response.data;
 };
 
 export const addVineyard = async (vineyard: VineyardAdd) => {
-    const response = await apiClient.post('/vineyard/add', vineyard);
+    const response = await apiClient.post('/vineyard', vineyard);
     return response.data;
 };
 
