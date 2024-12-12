@@ -133,6 +133,7 @@ const DialogWrapper = ({
                                 </motion.div>
                             ) : (
                                 <motion.div
+                                    className="max-w-full"
                                     exit={{ y: 24, opacity: 0, filter: 'blur(4px)' }}
                                     transition={{ type: 'spring', duration: 0.6, bounce: 0 }}
                                     animate={animationCompleted ? { height: bounds.height } : {}}

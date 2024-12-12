@@ -37,8 +37,8 @@ const VineyardComponent = () => {
         return (
             <>
                 <div className="h-full flex flex-col gap-4">
-                    <div>
-                        <p className="text-lg font-medium">{vineyard.name}</p>
+                    <div className='max-w-full'>
+                        <p className="text-lg font-medium truncate">{vineyard.name}</p>
                         <p className="text-muted-foreground text-sm">
                             View in-depth information and management tools for this vineyard.
                         </p>

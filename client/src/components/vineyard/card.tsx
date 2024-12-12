@@ -41,9 +41,9 @@ const VineyardCard = ({ vineyard, setSelectedVineyard, getVineyardActionSetter, 
                         search={{ bcLast: vineyard.name }}
                     />
                 )}
-                <div>
+                <div className='truncate'>
                     <p className="text-xs text-muted-foreground font-bold">Name</p>
-                    <p className="font-medium text-lg">{vineyard.name}</p>
+                    <p className="font-medium text-lg truncate">{vineyard.name}</p>
                 </div>
                 <div className="w-full h-20 bg-muted rounded-md" />
 

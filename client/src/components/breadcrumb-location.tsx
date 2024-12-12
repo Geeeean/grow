@@ -43,8 +43,8 @@ const BreadcrumbLocation = ({ location, bcLast }: Props) => {
                     parts.map((part, index) => (
                         <Fragment key={index}>
                             <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <Link to={`/${parts.slice(0, index + 1).join('/')}`} key={index}>
+                            <BreadcrumbItem className="max-w-20">
+                                <Link className="truncate" to={`/${parts.slice(0, index + 1).join('/')}`} key={index}>
                                     {capitalize(part)}
                                 </Link>
                             </BreadcrumbItem>
@@ -59,8 +59,10 @@ const BreadcrumbLocation = ({ location, bcLast }: Props) => {
                 {lastPart != '' && (
                     <>
                         <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{bcLast ? bcLast : capitalize(lastPart)}</BreadcrumbPage>
+                        <BreadcrumbItem className="max-w-20">
+                            <BreadcrumbPage className="truncate">
+                                {bcLast ? bcLast : capitalize(lastPart)}
+                            </BreadcrumbPage>
                         </BreadcrumbItem>{' '}
                     </>
                 )}
