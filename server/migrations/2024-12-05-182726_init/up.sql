@@ -16,7 +16,8 @@ CREATE TYPE planting_type AS ENUM ('removal', 'planting');
 CREATE TABLE vineyards (
     id SERIAL PRIMARY KEY, -- Unique identifier for the vineyard
     name TEXT NOT NULL, -- Name of the vineyard
-    altitude INTEGER NOT NULL, -- Altitude of the vineyard in meters, can be NULL
+    altitude INTEGER NOT NULL, -- Altitude of the vineyard in meters
+    plants INTEGER NOT NULL, -- Number of plants in the vineyard
     soil soil_type NOT NULL, -- Soil type
     user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL, -- Owner of the vineyard
     created_at TIMESTAMPTZ DEFAULT now() NOT NULL -- Record creation date

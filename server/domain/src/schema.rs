@@ -108,6 +108,7 @@ diesel::table! {
         id -> Int4,
         name -> Text,
         altitude -> Int4,
+        plants -> Int4,
         soil -> SoilType,
         user_id -> Uuid,
         created_at -> Timestamptz,

@@ -22,7 +22,7 @@ pub enum SoilTypeEnum {
     Alluvial,
 }
 
-#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField)]
+#[derive(Debug, Deserialize, Serialize, DbEnum, PartialEq, Eq, FromFormField, Clone)]
 #[ExistingTypePath = "ActionType"]
 pub enum ActionTypeEnum {
     Trim,
@@ -82,6 +82,7 @@ pub struct Vineyard {
     pub id: i32,
     pub name: String,
     pub altitude: i32,
+    pub plants: i32,
     pub soil: SoilTypeEnum,
     pub user_id: Uuid,
     pub created_at: DateTime<Utc>,
@@ -93,13 +94,14 @@ pub struct Vineyard {
 pub struct NewVineyard {
     pub name: String,
     pub altitude: i32,
+    pub plants: i32,
     pub soil: SoilTypeEnum,
     pub user_id: Uuid,
 }
 
 #[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
 #[diesel(belongs_to(User))]
-#[diesel(belongs_to(Vineyard))]
+#[diesel(belongs_to(Vineyard, foreign_key = vineyard_id))]
 #[diesel(table_name = grape_varieties)]
 pub struct GrapeVariety {
     pub id: i32,
@@ -124,7 +126,7 @@ pub struct NewGrapeVariety {
 
 #[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
 #[diesel(belongs_to(User))]
-#[diesel(belongs_to(Vineyard))]
+#[diesel(belongs_to(Vineyard, foreign_key = vineyard_id))]
 #[diesel(table_name = vineyard_actions)]
 pub struct VineyardAction {
     pub id: i32,
@@ -146,7 +148,7 @@ pub struct NewVineyardAction {
 }
 
 #[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
-#[diesel(belongs_to(VineyardAction))]
+#[diesel(belongs_to(VineyardAction, foreign_key = vineyard_action_id))]
 #[diesel(table_name = vineyard_plantings)]
 pub struct VineyardPlanting {
     pub id: i32,
@@ -165,7 +167,7 @@ pub struct NewVineyardPlanting {
 }
 
 #[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
-#[diesel(belongs_to(VineyardAction))]
+#[diesel(belongs_to(VineyardAction, foreign_key = vineyard_action_id))]
 #[diesel(table_name = vineyard_treatments)]
 pub struct VineyardTreatment {
     pub id: i32,

@@ -26,6 +26,7 @@ pub fn create_vineyard(
     let new_vineyard = NewVineyard {
         name: vineyard_req.name,
         altitude: vineyard_req.altitude,
+        plants: vineyard_req.plants,
         soil: vineyard_req.soil,
         user_id: user.id,
     };
@@ -39,6 +40,7 @@ pub fn create_vineyard(
             vineyard.id,
             vineyard.name,
             vineyard.altitude,
+            vineyard.plants,
             vineyard.soil,
             Vec::new(),
             Vec::new(),

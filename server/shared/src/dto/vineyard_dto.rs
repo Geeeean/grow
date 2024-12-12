@@ -161,6 +161,7 @@ impl VineyardHarvestResponse {
 pub struct NewVineyardRequest {
     pub name: String,
     pub altitude: i32,
+    pub plants: i32,
     pub soil: SoilTypeEnum,
     pub varieties: Vec<NewGrapeVarietyRequest>,
 }
@@ -170,12 +171,13 @@ pub struct VineyardResponse {
     id: i32,
     name: String,
     altitude: i32,
+    plants: i32,
     soil: SoilTypeEnum,
     varieties: Vec<GrapeVarietyResponse>,
     trims: Vec<VineyardActionResponse>,
     cuts: Vec<VineyardActionResponse>,
-    plantings: Vec<VineyardActionResponse>,
-    treatments: Vec<VineyardActionResponse>,
+    plantings: Vec<VineyardPlantingResponse>,
+    treatments: Vec<VineyardTreatmentResponse>,
     harvests: Vec<VineyardActionResponse>,
 }
 
@@ -184,18 +186,20 @@ impl VineyardResponse {
         id: i32,
         name: String,
         altitude: i32,
+        plants: i32,
         soil: SoilTypeEnum,
         varieties: Vec<GrapeVarietyResponse>,
         trims: Vec<VineyardActionResponse>,
         cuts: Vec<VineyardActionResponse>,
-        plantings: Vec<VineyardActionResponse>,
-        treatments: Vec<VineyardActionResponse>,
+        plantings: Vec<VineyardPlantingResponse>,
+        treatments: Vec<VineyardTreatmentResponse>,
         harvests: Vec<VineyardActionResponse>,
     ) -> Self {
         Self {
             id,
             name,
             altitude,
+            plants,
             soil,
             varieties,
             trims,
