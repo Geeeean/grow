@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import DialogWrapper from '@/components/responsive-dialog-wrapper';
-import VineyardAddInformationsForm from './add-informations-form';
-import VineyardAddVarietiesForm from './add-varieties-form';
+import NewVineyardInformationsForm from './new-informations-form';
+import NewVineyardVarietiesForm from './new-varieties-form';
+import { useNewVineyardForm } from '@/hooks/use-new-vineyard-form';
 import VineyardCard from './card';
-import { useVineyardAddForm } from '@/hooks/use-vineyard-add-form';
 import { BasicFormProps } from '@/types/shared';
 
 const DESC = {
@@ -12,16 +12,16 @@ const DESC = {
     review: 'Review all entered information to ensure accuracy before submitting the vineyard data to the system.',
 };
 
-const VineyardAddForm = ({ open, setOpen }: BasicFormProps) => {
+const NewVineyardForm = ({ open, setOpen }: BasicFormProps) => {
     const { step, disabled, vineyard, vineyardDispatch, handleBtn, resetForm, isPending, isSuccess, error } =
-        useVineyardAddForm();
+        useNewVineyardForm();
 
     const content = useMemo(() => {
         switch (step) {
             case 'informations':
-                return <VineyardAddInformationsForm dispatch={vineyardDispatch} />;
+                return <NewVineyardInformationsForm dispatch={vineyardDispatch} />;
             case 'varieties':
-                return <VineyardAddVarietiesForm varieties={vineyard.varieties} dispatch={vineyardDispatch} />;
+                return <NewVineyardVarietiesForm varieties={vineyard.varieties} dispatch={vineyardDispatch} />;
             case 'review':
                 return <VineyardCard vineyard={vineyard} />;
             default:
@@ -53,4 +53,4 @@ const VineyardAddForm = ({ open, setOpen }: BasicFormProps) => {
         </DialogWrapper>
     );
 };
-export default VineyardAddForm;
+export default NewVineyardForm;

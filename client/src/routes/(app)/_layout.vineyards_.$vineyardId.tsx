@@ -4,8 +4,8 @@ import { Earth, FileOutput, ListFilter, Maximize, Mountain, Sprout } from 'lucid
 import VineyardActionsDropdown from '@/components/vineyard/actions-dropdown';
 import { useVineyardAction } from '@/hooks/use-vineyard-action';
 import { useSharedAction } from '@/hooks/use-shared-action';
-import VineyardCutAddForm from '@/components/vineyard/cut-add-form';
-import VineyardTrimAddForm from '@/components/vineyard/trim-add-form';
+import NewVineyardCutForm from '@/components/vineyard/new-cut-form';
+import NewVineyardTrimForm from '@/components/vineyard/new-trim-form';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DetailCard, DetailCardContent, DetailCardHeader, DetailCardTitle } from '@/components/ui/detail-card';
 import VarietiesChart from '@/components/vineyard/varieties-chart';
@@ -37,7 +37,7 @@ const VineyardComponent = () => {
         return (
             <>
                 <div className="h-full flex flex-col gap-4">
-                    <div className='max-w-full'>
+                    <div className="max-w-full">
                         <p className="text-lg font-medium truncate">{vineyard.name}</p>
                         <p className="text-muted-foreground text-sm">
                             View in-depth information and management tools for this vineyard.
@@ -202,12 +202,12 @@ const VineyardComponent = () => {
                         </div>
                     )}
                 </div>
-                <VineyardTrimAddForm
+                <NewVineyardTrimForm
                     open={getVineyardActionState('trim')}
                     setOpen={getVineyardActionSetter('trim')}
                     vineyardId={vineyard.id}
                 />
-                <VineyardCutAddForm
+                <NewVineyardCutForm
                     open={getVineyardActionState('cut')}
                     setOpen={getVineyardActionSetter('cut')}
                     vineyardId={vineyard.id}

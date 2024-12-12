@@ -1,13 +1,13 @@
 import { VineyardId } from '@/types/vineyard';
 import { useCallback, useState } from 'react';
-import { useVineyardCutAdd } from './use-vineyard-cut-add';
+import { useNewVineyardCut } from './use-new-vineyard-cut';
 
 type step = 'informations' | 'review';
 
-export const useVineyardCutAddForm = (vineyardId: VineyardId) => {
+export const useNewVineyardCutForm = (vineyardId: VineyardId) => {
     const [step, setStep] = useState<step>('informations');
     const [cutDate, setCutDate] = useState(new Date());
-    const { vineyardCutAdd, isPending, error, isSuccess, reset } = useVineyardCutAdd();
+    const { newVineyardCut, isPending, error, isSuccess, reset } = useNewVineyardCut();
 
     const handleBtn = useCallback(() => {
         switch (step) {
@@ -15,7 +15,7 @@ export const useVineyardCutAddForm = (vineyardId: VineyardId) => {
                 setStep('review');
                 break;
             case 'review':
-                vineyardCutAdd({ vineyardId: vineyardId, date: cutDate });
+                newVineyardCut({ vineyardId: vineyardId, date: cutDate });
                 break;
         }
     }, [step, cutDate]);

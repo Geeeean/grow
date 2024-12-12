@@ -7,7 +7,7 @@ type Props = {
     setDate: Dispatch<SetStateAction<Date>>;
 };
 
-const CutAddInformationsForm = ({ date, setDate }: Props) => {
+const NewCutInformationsForm = ({ date, setDate }: Props) => {
     return (
         <form>
             <div className="flex flex-col gap-2">
@@ -18,4 +18,4 @@ const CutAddInformationsForm = ({ date, setDate }: Props) => {
     );
 };
 
-export default CutAddInformationsForm;
+export default NewCutInformationsForm;

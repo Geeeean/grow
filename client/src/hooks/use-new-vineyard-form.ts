@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useReducer, useState } from 'react';
 
-import { Soil, VineyardAdd, Variety } from '@/types/vineyard';
-import { useVineyardAdd } from './use-vineyard-add';
+import { Soil, NewVineyard, Variety } from '@/types/vineyard';
+import { useNewVineyard } from './use-new-vineyard';
 
 type step = 'informations' | 'varieties' | 'review';
 
-export type VineyardAddAction =
+export type NewVineyardAction =
     | { type: 'SET_NAME'; payload: string }
     | { type: 'SET_SOIL'; payload: Soil }
     | { type: 'SET_ALTITUDE'; payload: number | null }
@@ -15,7 +15,7 @@ export type VineyardAddAction =
     | { type: 'REMOVE_VARIETY'; payload: number }
     | { type: 'RESET' };
 
-const vineyardReducer = (state: VineyardAdd, action: VineyardAddAction): VineyardAdd => {
+const vineyardReducer = (state: NewVineyard, action: NewVineyardAction): NewVineyard => {
     switch (action.type) {
         case 'SET_NAME':
             return { ...state, name: action.payload };
@@ -45,7 +45,7 @@ const vineyardReducer = (state: VineyardAdd, action: VineyardAddAction): Vineyar
     }
 };
 
-const initialVineyardState: VineyardAdd = {
+const initialVineyardState: NewVineyard = {
     name: '',
     altitude: null,
     soil: '',
@@ -53,11 +53,11 @@ const initialVineyardState: VineyardAdd = {
     varieties: [],
 };
 
-export const useVineyardAddForm = () => {
+export const useNewVineyardForm = () => {
     const [step, setStep] = useState<step>('informations');
     const [vineyard, vineyardDispatch] = useReducer(vineyardReducer, initialVineyardState);
     const [disabled, setDisabled] = useState<boolean>(true);
-    const { vineyardAdd, isPending, isSuccess, error, reset } = useVineyardAdd();
+    const { newVineyard, isPending, isSuccess, error, reset } = useNewVineyard();
 
     useEffect(() => {
         switch (step) {
@@ -96,7 +96,7 @@ export const useVineyardAddForm = () => {
                 setStep('review');
                 break;
             case 'review':
-                vineyardAdd(vineyard);
+                newVineyard(vineyard);
                 break;
         }
     }, [vineyard, step]);

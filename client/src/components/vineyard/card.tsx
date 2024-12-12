@@ -4,14 +4,14 @@ import VineyardVarietiesTooltip from './varieties-tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Sprout } from 'lucide-react';
 
-import { Vineyard, vineyardAction, VineyardAdd, VineyardId } from '@/types/vineyard';
+import { Vineyard, vineyardAction, NewVineyard, VineyardId } from '@/types/vineyard';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import VineyardActionsDropdown from './actions-dropdown';
 import { Dispatch, SetStateAction } from 'react';
 import { action } from '@/types/shared';
 
 type Props = {
-    vineyard: Vineyard | VineyardAdd;
+    vineyard: Vineyard | NewVineyard;
     setSelectedVineyard?: Dispatch<SetStateAction<VineyardId>>;
     getVineyardActionSetter?: (action: vineyardAction) => React.Dispatch<React.SetStateAction<boolean>>;
     getActionSetter?: (action: action) => Dispatch<SetStateAction<boolean>>;

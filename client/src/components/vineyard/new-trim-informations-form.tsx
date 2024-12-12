@@ -7,7 +7,7 @@ type Props = {
     setDate: Dispatch<SetStateAction<Date>>;
 };
 
-const TrimAddInformationsForm = ({ date, setDate }: Props) => {
+const NewTrimInformationsForm = ({ date, setDate }: Props) => {
     return (
         <form>
             <div className="flex flex-col gap-2">
@@ -18,4 +18,4 @@ const TrimAddInformationsForm = ({ date, setDate }: Props) => {
     );
 };
 
-export default TrimAddInformationsForm;
+export default NewTrimInformationsForm;

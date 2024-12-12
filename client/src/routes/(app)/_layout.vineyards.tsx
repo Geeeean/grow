@@ -6,13 +6,13 @@ import { useVineyards } from '@/hooks/use-vineyards';
 import VineyardsTable from '@/components/vineyard/table';
 import VineyardsGrid from '@/components/vineyard/grid';
 import VineyardControls, { AddButton } from '@/components/vineyard/toolbar';
-import VineyardAddForm from '@/components/vineyard/add-form';
+import NewVineyardForm from '@/components/vineyard/new-form';
+import NewVineyardTrimForm from '@/components/vineyard/new-trim-form';
+import NewVineyardCutForm from '@/components/vineyard/new-cut-form';
 
 import plant from '/plant.svg';
 import { useVineyardAction } from '@/hooks/use-vineyard-action';
-import VineyardTrimAddForm from '@/components/vineyard/trim-add-form';
 import { useSharedAction } from '@/hooks/use-shared-action';
-import VineyardCutAddForm from '@/components/vineyard/cut-add-form';
 
 export const Route = createFileRoute('/(app)/_layout/vineyards')({
     component: () => <Vineyards />,
@@ -72,13 +72,13 @@ const Vineyards = () => {
                         <AddButton setOpen={setAddOpen} />
                     </div>
                 )}
-                <VineyardAddForm open={addOpen} setOpen={setAddOpen} />
-                <VineyardTrimAddForm
+                <NewVineyardForm open={addOpen} setOpen={setAddOpen} />
+                <NewVineyardTrimForm
                     open={getVineyardActionState('trim')}
                     setOpen={getVineyardActionSetter('trim')}
                     vineyardId={selectedVineyard}
                 />
-                <VineyardCutAddForm
+                <NewVineyardCutForm
                     open={getVineyardActionState('cut')}
                     setOpen={getVineyardActionSetter('cut')}
                     vineyardId={selectedVineyard}

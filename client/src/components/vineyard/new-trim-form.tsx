@@ -1,10 +1,10 @@
-import { useVineyardCutAddForm } from '@/hooks/use-vineyard-cut-add-form';
+import { useNewVineyardTrimForm } from '@/hooks/use-new-vineyard-trim-form';
 import { vineyardAction, VineyardId } from '@/types/vineyard';
 import { useMemo } from 'react';
 import DialogWrapper from '../responsive-dialog-wrapper';
 import { BasicFormProps } from '@/types/shared';
+import NewTrimInformationsForm from './new-trim-informations-form';
 import { format } from 'date-fns';
-import CutAddInformationsForm from './cut-add-informations-form';
 import { getVineyardActionIcon } from '@/utils/vineyard';
 
 type Props = {
@@ -12,32 +12,32 @@ type Props = {
 } & BasicFormProps;
 
 const DESC = {
-    informations: 'Enter the date on which the cutting grass took place.',
-    review: 'Review the cutting grase date and any details to ensure accuracy before submitting.',
+    informations: 'Enter the date on which the vineyard trimming took place.',
+    review: 'Review the trimming date and any details to ensure accuracy before submitting.',
 };
 
-const action: vineyardAction = 'cut';
+const action: vineyardAction = 'trim';
 
-const VineyardCutAddForm = ({ vineyardId, open, setOpen }: Props) => {
-    const { step, handleBtn, resetForm, isPending, isSuccess, error, cutDate, setCutDate } =
-        useVineyardCutAddForm(vineyardId);
+const NewVineyardTrimForm = ({ vineyardId, open, setOpen }: Props) => {
+    const { step, handleBtn, resetForm, isPending, isSuccess, error, trimDate, setTrimDate } =
+        useNewVineyardTrimForm(vineyardId);
 
     const content = useMemo(() => {
         switch (step) {
             case 'informations':
-                return <CutAddInformationsForm date={cutDate} setDate={setCutDate} />;
+                return <NewTrimInformationsForm date={trimDate} setDate={setTrimDate} />;
             case 'review':
                 return (
                     <div className="bg-secondary/30 ring-1 p-2 rounded-md flex items-center justify-between">
                         <div>
-                            <p className="text-sm">Cut date</p>
-                            <p className="text-secondary-foreground font-medium">{format(cutDate, 'PPP')}</p>
+                            <p className="text-sm">Trim date</p>
+                            <p className="text-secondary-foreground font-medium">{format(trimDate, 'PPP')}</p>
                         </div>
                         {getVineyardActionIcon(action, '!w-6 !h-6')}
                     </div>
                 );
         }
-    }, [step, cutDate]);
+    }, [step, trimDate]);
 
     return (
         <DialogWrapper
@@ -45,14 +45,14 @@ const VineyardCutAddForm = ({ vineyardId, open, setOpen }: Props) => {
             setOpen={setOpen}
             title={step}
             description={DESC[step]}
-            confirmCopy={step == 'review' ? 'Add cutting grass' : 'Next'}
+            confirmCopy={step == 'review' ? 'Add trim' : 'Next'}
             successCopy={{
-                title: 'Cut has been added successfully!',
+                title: 'Trim has been added successfully!',
                 desc: 'You can continue to manage and track vineyards.',
             }}
             errorCopy={{
-                title: 'Error while adding cutting grass.',
-                desc: 'Something went wrong while adding this tirm. Please try again later or contact the support.',
+                title: 'Error while adding trim.',
+                desc: 'Something went wrong while adding this trim. Please try again later or contact the support.',
             }}
             disabled={false}
             handle={handleBtn}
@@ -64,4 +64,4 @@ const VineyardCutAddForm = ({ vineyardId, open, setOpen }: Props) => {
     );
 };
 
-export default VineyardCutAddForm;
+export default NewVineyardTrimForm;

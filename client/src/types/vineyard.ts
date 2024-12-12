@@ -12,7 +12,7 @@ export const soilValues = [
 export type Soil = (typeof soilValues)[number];
 export type Variety = { name: string; rows: number | null; age: number | null; id?: number };
 
-export type VineyardAdd = {
+export type NewVineyard = {
     name: string;
     altitude: number | null;
     soil: Soil;
@@ -20,34 +20,34 @@ export type VineyardAdd = {
     varieties: Variety[];
 };
 export type VineyardId = number;
-export type Vineyard = VineyardAdd & {
+export type Vineyard = NewVineyard & {
     id: VineyardId;
 };
 
-export type VineyardTrimAdd = {
+export type NewVineyardTrim = {
     vineyardId: VineyardId;
     date: Date;
 };
-export type VineyardTrim = VineyardTrimAdd & {
+export type VineyardTrim = NewVineyardTrim & {
     id: number;
 };
 
-export type VineyardCutAdd = {
+export type NewVineyardCut = {
     vineyardId: VineyardId;
     date: Date;
 };
-export type VineyardCut = VineyardCutAdd & {
+export type VineyardCut = NewVineyardCut & {
     id: number;
 };
 
 export const plantingValues = ['removal', 'planting'] as const;
 export type planting = (typeof plantingValues)[number];
-export type VineyardPlantingAdd = {
+export type NewVineyardPlanting = {
     vineyardId: VineyardId;
     date: Date;
     plantingType: planting;
 };
-export type VineyardPlanting = VineyardPlantingAdd & {
+export type VineyardPlanting = NewVineyardPlanting & {
     id: number;
 };
 

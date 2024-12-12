@@ -1,5 +1,5 @@
 import { Dispatch } from 'react';
-import { VineyardAddAction } from '@/hooks/use-vineyard-add-form';
+import { NewVineyardAction } from '@/hooks/use-new-vineyard-form';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
@@ -7,11 +7,11 @@ import { Plus, X } from 'lucide-react';
 import { Variety } from '@/types/vineyard';
 
 type Props = {
-    dispatch: Dispatch<VineyardAddAction>;
+    dispatch: Dispatch<NewVineyardAction>;
     varieties: Variety[];
 };
 
-const VineyardAddVarietiesForm = ({ varieties, dispatch }: Props) => {
+const NewVineyardVarietiesForm = ({ varieties, dispatch }: Props) => {
     return (
         <form className="w-full space-y-3">
             <div className="space-y-1">
@@ -107,4 +107,4 @@ const VineyardAddVarietiesForm = ({ varieties, dispatch }: Props) => {
     );
 };
 
-export default VineyardAddVarietiesForm;
+export default NewVineyardVarietiesForm;

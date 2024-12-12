@@ -1,17 +1,17 @@
 import { apiClient } from '@/services/api/client';
-import { VineyardAdd, VineyardCutAdd, VineyardPlantingAdd, VineyardTrimAdd } from '@/types/vineyard';
+import { NewVineyard, NewVineyardCut, NewVineyardTrim, NewVineyardPlanting } from '@/types/vineyard';
 
 export const getAll = async () => {
     const response = await apiClient.get('/vineyard');
     return response.data;
 };
 
-export const addVineyard = async (vineyard: VineyardAdd) => {
+export const newVineyard = async (vineyard: NewVineyard) => {
     const response = await apiClient.post('/vineyard', vineyard);
     return response.data;
 };
 
-export const addVineyardTrim = async (trim: VineyardTrimAdd) => {
+export const newVineyardTrim = async (trim: NewVineyardTrim) => {
     const trimData = {
         ...trim,
         date: trim.date.toISOString(),
@@ -21,7 +21,7 @@ export const addVineyardTrim = async (trim: VineyardTrimAdd) => {
     return response.data;
 };
 
-export const addVineyardCut = async (cut: VineyardCutAdd) => {
+export const newVineyardCut = async (cut: NewVineyardCut) => {
     const cutData = {
         ...cut,
         date: cut.date.toISOString(),
@@ -31,7 +31,7 @@ export const addVineyardCut = async (cut: VineyardCutAdd) => {
     return response.data;
 };
 
-export const addVineyardPlanting = async (planting: VineyardPlantingAdd) => {
+export const newVineyardPlanting = async (planting: NewVineyardPlanting) => {
     const plantingData = {
         ...planting,
         date: planting.date.toISOString(),
