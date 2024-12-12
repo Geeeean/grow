@@ -191,7 +191,7 @@ pub struct NewVineyardHarvestRequest {
     #[serde(rename = "numberOfWorkers")]
     pub number_of_workers: i32,
 
-    #[serde(rename = "grapeVarieties")]
+    #[serde(rename = "grapeVarietyIds")]
     pub grape_varieties: Vec<NewHarvestGrapeVarietyRequest>,
 }
 
@@ -206,7 +206,7 @@ pub struct VineyardHarvestResponse {
     #[serde(rename = "numberOfWorkers")]
     number_of_workers: i32,
 
-    #[serde(rename = "grapeVarieties")]
+    #[serde(rename = "grapeVarietyIds")]
     grape_varieties: Vec<HarvestGrapeVarietyResponse>,
 }
 

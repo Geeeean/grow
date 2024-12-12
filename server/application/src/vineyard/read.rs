@@ -3,11 +3,13 @@ use std::collections::HashMap;
 use crate::Connection;
 use diesel::{prelude::*, result::Error};
 use domain::models::{
-    ActionTypeEnum, GrapeVariety, Vineyard, VineyardAction, VineyardPlanting, VineyardTreatment,
+    ActionTypeEnum, GrapeVariety, HarvestGrapeVariety, Vineyard, VineyardAction, VineyardHarvest,
+    VineyardPlanting, VineyardTreatment,
 };
 use shared::{
     dto::vineyard_dto::{
-        GrapeVarietyResponse, VineyardActionResponse, VineyardPlantingResponse, VineyardResponse,
+        GrapeVarietyResponse, HarvestGrapeVarietyResponse, VineyardActionResponse,
+        VineyardHarvestResponse, VineyardPlantingResponse, VineyardResponse,
         VineyardTreatmentResponse,
     },
     jwt::AuthenticatedUser,
@@ -90,6 +92,23 @@ pub fn read_vineyards(
         treatments_map.insert(treatment.vineyard_action_id, treatment);
     }
 
+    /*** HARVESTS ***/
+    let harvests: Vec<VineyardHarvest> =
+        VineyardHarvest::belonging_to(&actions).load::<VineyardHarvest>(connection)?;
+    let mut harvests_map: HashMap<i32, VineyardHarvest> = HashMap::new();
+
+    let hv_grape_varieties: Vec<HarvestGrapeVariety> =
+        HarvestGrapeVariety::belonging_to(&harvests).load::<HarvestGrapeVariety>(connection)?;
+
+    let hv_grape_varieties_per_harvest: Vec<Vec<HarvestGrapeVariety>> =
+        hv_grape_varieties.grouped_by(&harvests);
+
+    let mut hv_grape_varieties_per_harvest_iter = hv_grape_varieties_per_harvest.into_iter();
+
+    for harvest in harvests.into_iter() {
+        harvests_map.insert(harvest.vineyard_action_id, harvest);
+    }
+
     let actions_per_vineyard = actions.grouped_by(&vineyards_res);
 
     let vineyard_responses = vineyards_res
@@ -99,6 +118,7 @@ pub fn read_vineyards(
         .map(|((vineyard, varieties), actions)| {
             let mut planting_responses: Vec<VineyardPlantingResponse> = Vec::new();
             let mut treatment_responses: Vec<VineyardTreatmentResponse> = Vec::new();
+            let mut harvest_responses: Vec<VineyardHarvestResponse> = Vec::new();
             let mut cut_responses: Vec<VineyardActionResponse> = Vec::new();
             let mut trim_responses: Vec<VineyardActionResponse> = Vec::new();
 
@@ -139,7 +159,35 @@ pub fn read_vineyards(
                             treatment.product,
                         ));
                     }
-                    ActionTypeEnum::Harvest => todo!(),
+                    ActionTypeEnum::Harvest => {
+                        let harvest = match harvests_map.remove(&action.id) {
+                            Some(harvest) => harvest,
+                            None => todo!(),
+                        };
+
+                        let grape_variety_ids = match hv_grape_varieties_per_harvest_iter.next() {
+                            Some(varieties) => varieties
+                                .into_iter()
+                                .map(|hv_variety| {
+                                    HarvestGrapeVarietyResponse::new(
+                                        hv_variety.id,
+                                        hv_variety.weight,
+                                        hv_variety.grape_variety_id,
+                                        hv_variety.harvest_id,
+                                    )
+                                })
+                                .collect(),
+                            None => todo!(),
+                        };
+
+                        harvest_responses.push(VineyardHarvestResponse::new(
+                            action_response,
+                            harvest.id,
+                            harvest.quality_notes,
+                            harvest.number_of_workers,
+                            grape_variety_ids,
+                        ));
+                    }
                 };
             }
 

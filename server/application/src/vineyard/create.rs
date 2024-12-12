@@ -261,6 +261,11 @@ pub fn create_harvest(
             .values(new_vineyard_harvest)
             .get_result::<VineyardHarvest>(tx_connection)?;
 
+        //TODO
+        //check if harvest -> vineyard_id
+        //                        ||
+        //   grape_variety -> vineyard_id
+
         let new_harvest_grape_varieties: Vec<NewHarvestGrapeVariety> = harvest_req
             .grape_varieties
             .into_iter()
