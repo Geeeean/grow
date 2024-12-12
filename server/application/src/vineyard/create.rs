@@ -1,13 +1,14 @@
 use diesel::{insert_into, prelude::*, result::Error, Connection};
 use domain::models::{
-    ActionTypeEnum, GrapeVariety, NewGrapeVariety, NewVineyard, NewVineyardAction,
-    NewVineyardPlanting, NewVineyardTreatment, Vineyard, VineyardAction, VineyardPlanting,
-    VineyardTreatment,
+    ActionTypeEnum, GrapeVariety, HarvestGrapeVariety, NewGrapeVariety, NewHarvestGrapeVariety,
+    NewVineyard, NewVineyardAction, NewVineyardHarvest, NewVineyardPlanting, NewVineyardTreatment,
+    Vineyard, VineyardAction, VineyardHarvest, VineyardPlanting, VineyardTreatment,
 };
 use shared::{
     dto::vineyard_dto::{
-        GrapeVarietyResponse, NewVineyardActionRequest, NewVineyardPlantingRequest,
-        NewVineyardRequest, NewVineyardTreatmentRequest, VineyardActionResponse,
+        GrapeVarietyResponse, HarvestGrapeVarietyResponse, NewVineyardActionRequest,
+        NewVineyardHarvestRequest, NewVineyardPlantingRequest, NewVineyardRequest,
+        NewVineyardTreatmentRequest, VineyardActionResponse, VineyardHarvestResponse,
         VineyardPlantingResponse, VineyardResponse, VineyardTreatmentResponse,
     },
     jwt::AuthenticatedUser,
@@ -224,5 +225,81 @@ pub fn create_treatment(
         );
 
         Ok(vineyard_treatment_response)
+    })
+}
+
+pub fn create_harvest(
+    harvest_req: NewVineyardHarvestRequest,
+    connection: &mut crate::Connection,
+    user: AuthenticatedUser,
+) -> Result<VineyardHarvestResponse, Error> {
+    use domain::schema::harvest_grape_varieties::dsl::*;
+    use domain::schema::vineyard_actions::dsl::*;
+    use domain::schema::vineyard_harvests::dsl::*;
+
+    let new_action = NewVineyardAction {
+        action_type: ActionTypeEnum::Harvest,
+        action_date: harvest_req.action.action_date,
+        vineyard_id: harvest_req.action.vineyard_id,
+        user_id: user.id,
+    };
+
+    connection.transaction(|tx_connection| {
+        let _ = read_vineyard(harvest_req.action.vineyard_id, tx_connection, user)?;
+
+        let vineyard_action = insert_into(vineyard_actions)
+            .values(&new_action)
+            .get_result::<VineyardAction>(tx_connection)?;
+
+        let new_vineyard_harvest = NewVineyardHarvest {
+            vineyard_action_id: vineyard_action.id,
+            quality_notes: harvest_req.quality_notes,
+            number_of_workers: harvest_req.number_of_workers,
+        };
+
+        let vineyard_harvest = insert_into(vineyard_harvests)
+            .values(new_vineyard_harvest)
+            .get_result::<VineyardHarvest>(tx_connection)?;
+
+        let new_harvest_grape_varieties: Vec<NewHarvestGrapeVariety> = harvest_req
+            .grape_varieties
+            .into_iter()
+            .map(|harvest_grape_variety| NewHarvestGrapeVariety {
+                harvest_id: harvest_grape_variety.harvest_id,
+                grape_variety_id: harvest_grape_variety.grape_variety_id,
+                weight: harvest_grape_variety.weight,
+            })
+            .collect();
+
+        let hv_grape_varieties: Vec<HarvestGrapeVariety> = insert_into(harvest_grape_varieties)
+            .values(new_harvest_grape_varieties)
+            .get_results::<HarvestGrapeVariety>(tx_connection)?;
+
+        let vineyard_action_response = VineyardActionResponse::new(
+            vineyard_action.id,
+            vineyard_action.vineyard_id,
+            vineyard_action.action_type,
+            vineyard_action.action_date,
+        );
+
+        let vineyard_harvest_response = VineyardHarvestResponse::new(
+            vineyard_action_response,
+            vineyard_harvest.id,
+            vineyard_harvest.quality_notes,
+            vineyard_harvest.number_of_workers,
+            hv_grape_varieties
+                .into_iter()
+                .map(|gv_grape_variety| {
+                    HarvestGrapeVarietyResponse::new(
+                        gv_grape_variety.id,
+                        gv_grape_variety.weight,
+                        gv_grape_variety.grape_variety_id,
+                        gv_grape_variety.harvest_id,
+                    )
+                })
+                .collect(),
+        );
+
+        Ok(vineyard_harvest_response)
     })
 }

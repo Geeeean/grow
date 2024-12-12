@@ -35,17 +35,7 @@ diesel::table! {
         id -> Int4,
         harvest_id -> Int4,
         grape_variety_id -> Int4,
-        total_weight -> Numeric,
-        created_at -> Timestamptz,
-    }
-}
-
-diesel::table! {
-    harvests (id) {
-        id -> Int4,
-        vineyard_action_id -> Int4,
-        quality_notes -> Text,
-        number_of_workers -> Int4,
+        weight -> Int4,
         created_at -> Timestamptz,
     }
 }
@@ -70,6 +60,16 @@ diesel::table! {
         user_id -> Uuid,
         action_type -> ActionType,
         action_date -> Timestamptz,
+        created_at -> Timestamptz,
+    }
+}
+
+diesel::table! {
+    vineyard_harvests (id) {
+        id -> Int4,
+        vineyard_action_id -> Int4,
+        quality_notes -> Text,
+        number_of_workers -> Int4,
         created_at -> Timestamptz,
     }
 }
@@ -118,10 +118,10 @@ diesel::table! {
 diesel::joinable!(grape_varieties -> users (user_id));
 diesel::joinable!(grape_varieties -> vineyards (vineyard_id));
 diesel::joinable!(harvest_grape_varieties -> grape_varieties (grape_variety_id));
-diesel::joinable!(harvest_grape_varieties -> harvests (harvest_id));
-diesel::joinable!(harvests -> vineyard_actions (vineyard_action_id));
+diesel::joinable!(harvest_grape_varieties -> vineyard_harvests (harvest_id));
 diesel::joinable!(vineyard_actions -> users (user_id));
 diesel::joinable!(vineyard_actions -> vineyards (vineyard_id));
+diesel::joinable!(vineyard_harvests -> vineyard_actions (vineyard_action_id));
 diesel::joinable!(vineyard_plantings -> vineyard_actions (vineyard_action_id));
 diesel::joinable!(vineyard_treatments -> vineyard_actions (vineyard_action_id));
 diesel::joinable!(vineyards -> users (user_id));
@@ -129,9 +129,9 @@ diesel::joinable!(vineyards -> users (user_id));
 diesel::allow_tables_to_appear_in_same_query!(
     grape_varieties,
     harvest_grape_varieties,
-    harvests,
     users,
     vineyard_actions,
+    vineyard_harvests,
     vineyard_plantings,
     vineyard_treatments,
     vineyards,

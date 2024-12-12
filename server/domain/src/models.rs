@@ -1,6 +1,7 @@
 use crate::schema::sql_types::{ActionType, PlantingType, SoilType, TreatmentType};
 use crate::schema::{
-    grape_varieties, users, vineyard_actions, vineyard_plantings, vineyard_treatments, vineyards,
+    grape_varieties, harvest_grape_varieties, users, vineyard_actions, vineyard_harvests,
+    vineyard_plantings, vineyard_treatments, vineyards,
 };
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
@@ -183,4 +184,45 @@ pub struct VineyardTreatment {
 pub struct NewVineyardTreatment {
     pub treatment_type: TreatmentTypeEnum,
     pub product: String,
+}
+
+#[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
+#[diesel(belongs_to(VineyardAction, foreign_key = vineyard_action_id))]
+#[diesel(table_name = vineyard_harvests)]
+pub struct VineyardHarvest {
+    pub id: i32,
+    pub vineyard_action_id: i32,
+    pub quality_notes: String,
+    pub number_of_workers: i32,
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Insertable, Deserialize)]
+#[serde(crate = "rocket::serde")]
+#[diesel(table_name = vineyard_harvests )]
+pub struct NewVineyardHarvest {
+    pub vineyard_action_id: i32,
+    pub quality_notes: String,
+    pub number_of_workers: i32,
+}
+
+#[derive(Queryable, Identifiable, Associations, Debug, Serialize, Deserialize)]
+#[diesel(belongs_to(VineyardHarvest, foreign_key = harvest_id))]
+#[diesel(belongs_to(GrapeVariety, foreign_key = grape_variety_id))]
+#[diesel(table_name = harvest_grape_varieties)]
+pub struct HarvestGrapeVariety {
+    pub id: i32,
+    pub harvest_id: i32,
+    pub grape_variety_id: i32,
+    pub weight: i32,
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Insertable, Deserialize)]
+#[serde(crate = "rocket::serde")]
+#[diesel(table_name = harvest_grape_varieties )]
+pub struct NewHarvestGrapeVariety {
+    pub harvest_id: i32,
+    pub grape_variety_id: i32,
+    pub weight: i32,
 }

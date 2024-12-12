@@ -33,7 +33,6 @@ CREATE TABLE grape_varieties (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL -- ID of the user who created the harvest record
 );
 
-
 -- store basic information about actions performed on the vineyard
 CREATE TABLE vineyard_actions (
     id SERIAL PRIMARY KEY,
@@ -54,7 +53,7 @@ CREATE TABLE vineyard_treatments (
 );
 
 -- store details specific to the harvest operation
-CREATE TABLE harvests (
+CREATE TABLE vineyard_harvests (
     id SERIAL PRIMARY KEY,
     vineyard_action_id INT NOT NULL REFERENCES vineyard_actions(id) ON DELETE CASCADE,
     quality_notes TEXT NOT NULL, -- Notes on the quality of the harvest
@@ -64,9 +63,9 @@ CREATE TABLE harvests (
 
 CREATE TABLE harvest_grape_varieties (
     id SERIAL PRIMARY KEY,
-    harvest_id INT NOT NULL REFERENCES harvests(id) ON DELETE CASCADE,
+    harvest_id INT NOT NULL REFERENCES vineyard_harvests(id) ON DELETE CASCADE,
     grape_variety_id INT NOT NULL REFERENCES grape_varieties(id),
-    total_weight DECIMAL NOT NULL,
+    weight INT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 
