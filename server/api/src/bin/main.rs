@@ -4,6 +4,7 @@ use std::env;
 
 use api::handler::{
     auth_handler::{signin, signup},
+    cors_handler::{all_options, make_cors},
     error_handler::{
         bad_request, forbidden, internal_error, not_found, unauthorized, unprocessable_entity,
     },
@@ -15,25 +16,6 @@ use api::handler::{
 };
 use dotenvy::dotenv;
 use infrastructure::ServerState;
-use rocket::http::Method;
-use rocket_cors::{AllowedHeaders, AllowedOrigins, Cors, CorsOptions};
-
-fn make_cors() -> Cors {
-    let allowed_origins = AllowedOrigins::all();
-
-    CorsOptions {
-        allowed_origins,
-        allowed_methods: vec![Method::Get, Method::Post, Method::Options]
-            .into_iter()
-            .map(From::from)
-            .collect(),
-        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept", "Content-Type"]),
-        allow_credentials: true,
-        ..Default::default()
-    }
-    .to_cors()
-    .expect("To not fail")
-}
 
 #[launch]
 fn rocket() -> _ {
@@ -46,6 +28,7 @@ fn rocket() -> _ {
     rocket::build()
         .configure(rocket::Config::figment().merge(("port", port)))
         .manage(server_state)
+        .attach(make_cors())
         .mount(
             "/api/vineyard",
             routes![
@@ -56,10 +39,11 @@ fn rocket() -> _ {
                 new_vineyard_cut,
                 new_vineyard_treatment,
                 new_vineyard_planting,
+                all_options
             ],
         )
-        .mount("/api/auth", routes![signup, signin])
-        .mount("/api/user", routes![get_user])
+        .mount("/api/auth", routes![signup, signin, all_options])
+        .mount("/api/user", routes![get_user, all_options])
         .register(
             "/api/",
             catchers![
@@ -71,5 +55,4 @@ fn rocket() -> _ {
                 internal_error,
             ],
         )
-        .attach(make_cors())
 }
