@@ -34,8 +34,8 @@ const BreadcrumbLocation = ({ location, bcLast }: Props) => {
     const { parts, lastPart } = splitPath(location);
 
     return (
-        <Breadcrumb>
-            <BreadcrumbList>
+        <Breadcrumb className="grow">
+            <BreadcrumbList className="max-w-full truncate flex-nowrap">
                 <BreadcrumbItem>
                     <Link to="/">Home</Link>
                 </BreadcrumbItem>
@@ -43,7 +43,7 @@ const BreadcrumbLocation = ({ location, bcLast }: Props) => {
                     parts.map((part, index) => (
                         <Fragment key={index}>
                             <BreadcrumbSeparator />
-                            <BreadcrumbItem className="max-w-20">
+                            <BreadcrumbItem className="max-w-20 md:max-w-full">
                                 <Link className="truncate" to={`/${parts.slice(0, index + 1).join('/')}`} key={index}>
                                     {capitalize(part)}
                                 </Link>
@@ -59,7 +59,7 @@ const BreadcrumbLocation = ({ location, bcLast }: Props) => {
                 {lastPart != '' && (
                     <>
                         <BreadcrumbSeparator />
-                        <BreadcrumbItem className="max-w-20">
+                        <BreadcrumbItem className="max-w-20 md:max-w-full">
                             <BreadcrumbPage className="truncate">
                                 {bcLast ? bcLast : capitalize(lastPart)}
                             </BreadcrumbPage>
