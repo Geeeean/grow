@@ -12,7 +12,7 @@ type Props = {
 } & BasicFormProps;
 
 const DESC = {
-    informations: 'Enter the date on which the cutting grass took place.',
+    informations: 'Enter the date on which the grass cut took place.',
     review: 'Review the cutting grase date and any details to ensure accuracy before submitting.',
 };
 
@@ -28,12 +28,14 @@ const NewVineyardCutForm = ({ vineyardId, open, setOpen }: Props) => {
                 return <NewCutInformationsForm date={cutDate} setDate={setCutDate} />;
             case 'review':
                 return (
-                    <div className="bg-secondary/30 ring-1 p-2 rounded-md flex items-center justify-between">
-                        <div>
-                            <p className="text-sm">Cut date</p>
-                            <p className="text-secondary-foreground font-medium">{format(cutDate, 'PPP')}</p>
+                    <div className="p-2 bg-card ring-1 ring-border rounded-lg">
+                        <div className="bg-secondary/30 ring-1 p-2 rounded-md flex items-center justify-between">
+                            <div>
+                                <p className="text-sm">Cut date</p>
+                                <p className="text-secondary-foreground font-medium">{format(cutDate, 'PPP')}</p>
+                            </div>
+                            {getVineyardActionIcon(action, '!w-6 !h-6')}
                         </div>
-                        {getVineyardActionIcon(action, '!w-6 !h-6')}
                     </div>
                 );
         }
@@ -45,14 +47,14 @@ const NewVineyardCutForm = ({ vineyardId, open, setOpen }: Props) => {
             setOpen={setOpen}
             title={step}
             description={DESC[step]}
-            confirmCopy={step == 'review' ? 'Add cutting grass' : 'Next'}
+            confirmCopy={step == 'review' ? 'Add grass cut' : 'Next'}
             successCopy={{
                 title: 'Cut has been added successfully!',
                 desc: 'You can continue to manage and track vineyards.',
             }}
             errorCopy={{
-                title: 'Error while adding cutting grass.',
-                desc: 'Something went wrong while adding this tirm. Please try again later or contact the support.',
+                title: 'Error while adding grass cut.',
+                desc: 'Something went wrong while adding this grass cut. Please try again later or contact the support.',
             }}
             disabled={false}
             handle={handleBtn}

@@ -1,4 +1,5 @@
 import { newVineyardTrim } from '@/services/api/vineyard';
+import { QUERY_KEY } from '@/services/react-query/client';
 import { NewVineyardTrim } from '@/types/vineyard';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -19,7 +20,7 @@ export const useNewVineyardTrim = () => {
     } = useMutation({
         mutationFn: newVineyardTrimFn,
         onSuccess: () => {
-            //client.invalidateQueries({ queryKey: [QUERY_KEY.vineyards] });
+            client.invalidateQueries({ queryKey: [QUERY_KEY.vineyards] });
         },
         retry: false,
     });

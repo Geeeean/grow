@@ -13,6 +13,7 @@ import NewVineyardCutForm from '@/components/vineyard/new-cut-form';
 import plant from '/plant.svg';
 import { useVineyardAction } from '@/hooks/use-vineyard-action';
 import { useSharedAction } from '@/hooks/use-shared-action';
+import NewVineyardPlantingForm from '@/components/vineyard/new-planting-form';
 
 export const Route = createFileRoute('/(app)/_layout/vineyards')({
     component: () => <Vineyards />,
@@ -81,6 +82,11 @@ const Vineyards = () => {
                 <NewVineyardCutForm
                     open={getVineyardActionState('cut')}
                     setOpen={getVineyardActionSetter('cut')}
+                    vineyardId={selectedVineyard}
+                />
+                <NewVineyardPlantingForm
+                    open={getVineyardActionState('planting')}
+                    setOpen={getVineyardActionSetter('planting')}
                     vineyardId={selectedVineyard}
                 />
             </>

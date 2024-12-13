@@ -24,28 +24,27 @@ export type Vineyard = NewVineyard & {
     id: VineyardId;
 };
 
-export type NewVineyardTrim = {
+export type NewVineyardAction = {
     vineyardId: VineyardId;
     date: Date;
 };
+
+export type NewVineyardTrim = NewVineyardAction;
 export type VineyardTrim = NewVineyardTrim & {
     id: number;
 };
 
-export type NewVineyardCut = {
-    vineyardId: VineyardId;
-    date: Date;
-};
+export type NewVineyardCut = NewVineyardAction;
 export type VineyardCut = NewVineyardCut & {
     id: number;
 };
 
-export const plantingValues = ['removal', 'planting'] as const;
+export const plantingValues = ['Removal', 'Planting'] as const;
 export type planting = (typeof plantingValues)[number];
 export type NewVineyardPlanting = {
-    vineyardId: VineyardId;
-    date: Date;
+    action: NewVineyardAction;
     plantingType: planting;
+    plantCount: number;
 };
 export type VineyardPlanting = NewVineyardPlanting & {
     id: number;

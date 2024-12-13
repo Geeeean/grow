@@ -34,7 +34,10 @@ export const newVineyardCut = async (cut: NewVineyardCut) => {
 export const newVineyardPlanting = async (planting: NewVineyardPlanting) => {
     const plantingData = {
         ...planting,
-        date: planting.date.toISOString(),
+        action: {
+            ...planting.action,
+            date: planting.action.date.toISOString(),
+        },
     };
 
     const response = await apiClient.post('/vineyard/planting', plantingData);

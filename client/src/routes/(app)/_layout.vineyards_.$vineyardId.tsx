@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import HarvestsChart from '@/components/vineyard/harvests-chart';
+import NewVineyardPlantingForm from '@/components/vineyard/new-planting-form';
 
 export const Route = createFileRoute('/(app)/_layout/vineyards_/$vineyardId')({
     validateSearch: (search: Record<string, string>): { bcLast: string } => {
@@ -210,6 +211,11 @@ const VineyardComponent = () => {
                 <NewVineyardCutForm
                     open={getVineyardActionState('cut')}
                     setOpen={getVineyardActionSetter('cut')}
+                    vineyardId={vineyard.id}
+                />
+                <NewVineyardPlantingForm
+                    open={getVineyardActionState('planting')}
+                    setOpen={getVineyardActionSetter('planting')}
                     vineyardId={vineyard.id}
                 />
             </>

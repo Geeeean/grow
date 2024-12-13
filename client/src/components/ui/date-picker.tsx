@@ -11,7 +11,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 type Props = {
     date: Date;
-    setDate: Dispatch<SetStateAction<Date>>;
+    setDate: Dispatch<SetStateAction<Date>> | ((date: Date) => void);
     id: string;
 };
 
