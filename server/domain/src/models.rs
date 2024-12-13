@@ -138,7 +138,7 @@ pub struct VineyardAction {
     pub created_at: DateTime<Utc>,
 }
 
-#[derive(Insertable, Deserialize)]
+#[derive(Insertable, Deserialize, Debug)]
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = vineyard_actions)]
 pub struct NewVineyardAction {
@@ -163,6 +163,7 @@ pub struct VineyardPlanting {
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = vineyard_plantings)]
 pub struct NewVineyardPlanting {
+    pub vineyard_action_id: i32,
     pub planting_type: PlantingTypeEnum,
     pub plant_count: i32,
 }
@@ -182,6 +183,7 @@ pub struct VineyardTreatment {
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = vineyard_treatments)]
 pub struct NewVineyardTreatment {
+    pub vineyard_action_id: i32,
     pub treatment_type: TreatmentTypeEnum,
     pub product: String,
 }

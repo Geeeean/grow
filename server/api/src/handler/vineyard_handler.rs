@@ -147,7 +147,8 @@ pub fn new_vineyard_planting(
             "Vineyard planting created successfully",
             Some(planting),
         ),
-        Err(_) => {
+        Err(error) => {
+            println!("{:?}", error);
             return Response::new_serialized_default_error();
         }
     }

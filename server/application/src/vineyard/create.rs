@@ -155,6 +155,7 @@ pub fn create_planting(
         let new_vineyard_planting = NewVineyardPlanting {
             plant_count: planting_req.plant_count,
             planting_type: planting_req.planting_type,
+            vineyard_action_id: vineyard_action.id,
         };
 
         let vineyard_planting = insert_into(vineyard_plantings)
@@ -203,6 +204,7 @@ pub fn create_treatment(
 
         let new_vineyard_treatment = NewVineyardTreatment {
             treatment_type: treatment_req.treatment_type,
+            vineyard_action_id: vineyard_action.id,
             product: treatment_req.product,
         };
 
