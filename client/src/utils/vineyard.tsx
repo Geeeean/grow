@@ -6,7 +6,7 @@ export const vineyardActionCopy: Record<vineyardAction, string> = {
     cut: 'Grass cutting',
     trim: 'Trimming',
     treatment: 'Treatment',
-    planting: 'Explantation',
+    planting: 'Planting and removal',
 };
 
 const vineyardActionIcon: Record<vineyardAction, (className?: string) => JSX.Element> = {

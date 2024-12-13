@@ -21,7 +21,7 @@ const NewPlantingInformationsForm = ({ planting, setPlanting }: Props) => {
                     }}
                 >
                     <SelectTrigger>
-                        <SelectValue placeholder="Select a planting type" />
+                        <SelectValue placeholder="Select the operation" />
                     </SelectTrigger>
                     <SelectContent>
                         {plantingValues.map((val: planting, index: number) => (

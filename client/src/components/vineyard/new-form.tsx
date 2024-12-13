@@ -5,6 +5,7 @@ import NewVineyardVarietiesForm from './new-varieties-form';
 import { useNewVineyardForm } from '@/hooks/use-new-vineyard-form';
 import VineyardCard from './card';
 import { BasicFormProps } from '@/types/shared';
+import VineyardPreview from './preview';
 
 const DESC = {
     informations: 'Enter the basic details for the vineyard.',
@@ -23,7 +24,7 @@ const NewVineyardForm = ({ open, setOpen }: BasicFormProps) => {
             case 'varieties':
                 return <NewVineyardVarietiesForm varieties={vineyard.varieties} dispatch={vineyardDispatch} />;
             case 'review':
-                return <VineyardCard vineyard={vineyard} />;
+                return <VineyardPreview vineyard={vineyard} />;
             default:
                 return <></>;
         }

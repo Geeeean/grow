@@ -1,42 +1,20 @@
-import { Link } from '@tanstack/react-router';
-
-import VineyardVarietiesTooltip from './varieties-tooltip';
-import { Badge } from '@/components/ui/badge';
-import { Mountain, Sprout } from 'lucide-react';
-
-import { Vineyard, vineyardAction, VineyardId } from '@/types/vineyard';
+import { NewVineyard } from '@/types/vineyard';
 import { Card, CardContent, CardHeader } from '../ui/card';
-import VineyardActionsDropdown from './actions-dropdown';
-import { Dispatch, SetStateAction } from 'react';
-import { action } from '@/types/shared';
+import { Badge } from '../ui/badge';
+import { Mountain, Sprout } from 'lucide-react';
+import VineyardVarietiesTooltip from './varieties-tooltip';
 
 type Props = {
-    vineyard: Vineyard;
-    setSelectedVineyard: Dispatch<SetStateAction<VineyardId>>;
-    getVineyardActionSetter: (action: vineyardAction) => React.Dispatch<React.SetStateAction<boolean>>;
-    getActionSetter: (action: action) => Dispatch<SetStateAction<boolean>>;
+    vineyard: NewVineyard;
 };
 
-const VineyardCard = ({ vineyard, setSelectedVineyard, getVineyardActionSetter, getActionSetter }: Props) => {
+const VineyardPreview = ({ vineyard }: Props) => {
     return (
         <Card className="relative hover:border-ring transition-colors">
             <CardHeader className="flex flex-row justify-between items-center">
                 <Badge variant="outline">{vineyard.soil}</Badge>
-                <VineyardActionsDropdown
-                    vineyardId={vineyard.id}
-                    setSelectedVineyard={setSelectedVineyard}
-                    getVineyardActionSetter={getVineyardActionSetter}
-                    getActionSetter={getActionSetter}
-                    className="px-1 py-0.5 h-fit"
-                />
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
-                <Link
-                    aria-label="Open Vineyard"
-                    className="absolute w-full h-full z-10 left-0 top-0"
-                    to={`/vineyards/${vineyard.id}`}
-                    search={{ bcLast: vineyard.name }}
-                />
                 <div className="truncate">
                     <p className="text-xs text-muted-foreground font-bold">Name</p>
                     <p className="font-medium text-lg truncate">{vineyard.name}</p>
@@ -67,4 +45,4 @@ const VineyardCard = ({ vineyard, setSelectedVineyard, getVineyardActionSetter, 
     );
 };
 
-export default VineyardCard;
+export default VineyardPreview;

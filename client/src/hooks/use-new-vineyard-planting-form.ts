@@ -11,14 +11,14 @@ export const useNewVineyardPlantingForm = (vineyardId: VineyardId) => {
             vineyardId: vineyardId,
             date: new Date(),
         },
-        plantingType: 'Planting',
+        plantingType: '',
         plantCount: 0,
     });
     const [disabled, setDisabled] = useState(true);
     const { newVineyardPlanting, isPending, error, isSuccess, reset } = useNewVineyardPlanting();
 
     useEffect(() => {
-        if (planting.plantCount <= 0) setDisabled(true);
+        if (planting.plantCount <= 0 || planting.plantingType == '') setDisabled(true);
         else setDisabled(false);
     }, [planting]);
 

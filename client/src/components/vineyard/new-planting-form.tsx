@@ -13,8 +13,8 @@ type Props = {
 } & BasicFormProps;
 
 const DESC = {
-    informations: 'Enter the date on which the planting took place.',
-    review: 'Review the planting details to ensure accuracy before submitting.',
+    informations: 'Enter the date on which the planting/removal took place.',
+    review: 'Review the planting/removal details to ensure accuracy before submitting.',
 };
 
 const action: vineyardAction = 'planting';
@@ -32,7 +32,7 @@ const NewVineyardPlantingForm = ({ vineyardId, open, setOpen }: Props) => {
                     <div className="p-2 ring-1 ring-border bg-card rounded-lg space-y-3">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-sm">Planting type</p>
+                                <p className="text-sm">Operation</p>
                                 <Badge>{planting.plantingType}</Badge>
                             </div>
                             <div className="text-right">
@@ -60,14 +60,14 @@ const NewVineyardPlantingForm = ({ vineyardId, open, setOpen }: Props) => {
             setOpen={setOpen}
             title={step}
             description={DESC[step]}
-            confirmCopy={step == 'review' ? 'Add planting' : 'Next'}
+            confirmCopy={step == 'review' ? `Add ${planting.plantingType}` : 'Next'}
             successCopy={{
-                title: 'Planting has been added successfully!',
+                title: `${planting.plantingType} has been added successfully!`,
                 desc: 'You can continue to manage and track vineyards.',
             }}
             errorCopy={{
                 title: 'Error while adding planting.',
-                desc: 'Something went wrong while adding this planting. Please try again later or contact the support.',
+                desc: `Something went wrong while adding ${planting.plantingType}. Please try again later or contact the support.`,
             }}
             disabled={disabled}
             handle={handleBtn}

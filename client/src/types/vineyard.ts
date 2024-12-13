@@ -22,6 +22,9 @@ export type NewVineyard = {
 export type VineyardId = number;
 export type Vineyard = NewVineyard & {
     id: VineyardId;
+    trims: VineyardTrim[];
+    cuts: VineyardCut[];
+    plantings: VineyardPlanting[];
 };
 
 export type NewVineyardAction = {
@@ -40,7 +43,7 @@ export type VineyardCut = NewVineyardCut & {
 };
 
 export const plantingValues = ['Removal', 'Planting'] as const;
-export type planting = (typeof plantingValues)[number];
+export type planting = (typeof plantingValues)[number] | '';
 export type NewVineyardPlanting = {
     action: NewVineyardAction;
     plantingType: planting;
