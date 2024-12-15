@@ -7,7 +7,8 @@ use rocket::http::{Cookie, CookieJar, SameSite, Status};
 use rocket::serde::json::Json;
 use rocket::{post, State};
 use shared::dto::auth_dto::{SigninRequest, SignupRequest, UserResponse};
-use shared::jwt::create_jwt;
+use shared::dto::shared_dto::NoData;
+use shared::jwt::{create_jwt, AuthenticatedUser};
 use shared::response_models::{Response, SerializedResponse};
 
 #[post("/signin", format = "json", data = "<signin_req>")]
@@ -78,6 +79,12 @@ pub fn signup(
     };
 
     Response::new_serialized(Status::Created, "User successfully registered", Some(user))
+}
+
+#[post("/signout")]
+pub fn signout(cookies: &CookieJar<'_>, _user: AuthenticatedUser) -> SerializedResponse<NoData> {
+    cookies.remove_private(Cookie::build("grow.session-token").path("/api"));
+    Response::new_serialized(Status::Ok, "User successfully logged out", None)
 }
 
 fn get_create_db_error_status(error: Error) -> Option<(Status, &'static str)> {

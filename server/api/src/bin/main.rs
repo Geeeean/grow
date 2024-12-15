@@ -3,7 +3,7 @@ extern crate rocket;
 use std::env;
 
 use api::handler::{
-    auth_handler::{signin, signup},
+    auth_handler::{signin, signout, signup},
     cors_handler::{all_options, make_cors},
     error_handler::{
         bad_request, forbidden, internal_error, not_found, unauthorized, unprocessable_entity,
@@ -42,7 +42,7 @@ fn rocket() -> _ {
                 all_options
             ],
         )
-        .mount("/api/auth", routes![signup, signin, all_options])
+        .mount("/api/auth", routes![signup, signin, signout, all_options])
         .mount("/api/user", routes![get_user, all_options])
         .register(
             "/api/",

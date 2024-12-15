@@ -1,9 +1,8 @@
 use rocket::{catch, http::Status};
-use serde::Serialize;
-use shared::response_models::{Response, SerializedResponse};
-
-#[derive(Serialize)]
-pub struct NoData {}
+use shared::{
+    dto::shared_dto::NoData,
+    response_models::{Response, SerializedResponse},
+};
 
 #[catch(401)]
 pub fn unauthorized() -> SerializedResponse<NoData> {
@@ -39,7 +38,11 @@ pub fn bad_request() -> SerializedResponse<NoData> {
 
 #[catch(422)]
 pub fn unprocessable_entity() -> SerializedResponse<NoData> {
-    Response::new_serialized(Status::UnprocessableEntity, "The request data is malformed", None)
+    Response::new_serialized(
+        Status::UnprocessableEntity,
+        "The request data is malformed",
+        None,
+    )
 }
 
 #[catch(default)]
