@@ -23,6 +23,7 @@ export const useNewVineyardTrimForm = (vineyardId: VineyardId) => {
     const resetForm = useCallback(() => {
         setStep('informations');
         reset();
+        setTrimDate(new Date());
     }, [setStep, reset]);
 
     return {

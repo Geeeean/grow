@@ -21,7 +21,7 @@ export const AddButton = ({ setOpen, className }: AddProps & { className?: strin
     return (
         <Button className={cn('font-normal flex items-center gap-2', className)} onClick={() => setOpen(true)}>
             <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
-            Add vineyard
+            New vineyard
         </Button>
     );
 };

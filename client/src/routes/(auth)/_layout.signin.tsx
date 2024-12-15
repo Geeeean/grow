@@ -25,8 +25,6 @@ const SignIn = () => {
 
     if (isSuccess) return <Navigate to={redirect} />;
 
-    console.log(isPending, error);
-
     return (
         <Card>
             <CardHeader>

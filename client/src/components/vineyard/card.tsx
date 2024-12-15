@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 import VineyardActionsDropdown from './actions-dropdown';
 import { Dispatch, SetStateAction } from 'react';
 import { action } from '@/types/shared';
+import { getPlantsNumber } from '@/utils/vineyard';
 
 type Props = {
     vineyard: Vineyard;
@@ -49,7 +50,7 @@ const VineyardCard = ({ vineyard, setSelectedVineyard, getVineyardActionSetter, 
                             <p className="text-xs text-muted-foreground font-bold">Plants</p>
                             <p className="font-medium flex gap-1 items-center">
                                 <Sprout />
-                                {vineyard.plants}
+                                {getPlantsNumber(vineyard.plants, vineyard.plantings)}
                             </p>
                         </div>
                         <div>

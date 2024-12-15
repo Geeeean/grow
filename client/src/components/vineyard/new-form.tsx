@@ -3,7 +3,6 @@ import DialogWrapper from '@/components/responsive-dialog-wrapper';
 import NewVineyardInformationsForm from './new-informations-form';
 import NewVineyardVarietiesForm from './new-varieties-form';
 import { useNewVineyardForm } from '@/hooks/use-new-vineyard-form';
-import VineyardCard from './card';
 import { BasicFormProps } from '@/types/shared';
 import VineyardPreview from './preview';
 
@@ -36,7 +35,7 @@ const NewVineyardForm = ({ open, setOpen }: BasicFormProps) => {
             setOpen={setOpen}
             title={step}
             description={DESC[step]}
-            confirmCopy={step == 'review' ? 'Add vineyard' : 'Next'}
+            confirmCopy={step == 'review' ? 'New vineyard' : 'Next'}
             successCopy={{
                 title: 'Vineyard has been added successfully!',
                 desc: 'You can now manage and track this vineyard in your list.',

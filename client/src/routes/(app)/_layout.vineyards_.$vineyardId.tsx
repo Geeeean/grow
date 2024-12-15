@@ -1,6 +1,6 @@
 import { useVineyardById } from '@/hooks/use-vineyards';
 import { createFileRoute } from '@tanstack/react-router';
-import { Earth, FileOutput, ListFilter, Maximize, Mountain, Sprout } from 'lucide-react';
+import { CirclePlus, Earth, FileOutput, ListFilter, Maximize, Mountain, Sprout } from 'lucide-react';
 import VineyardActionsDropdown from '@/components/vineyard/actions-dropdown';
 import { useVineyardAction } from '@/hooks/use-vineyard-action';
 import { useSharedAction } from '@/hooks/use-shared-action';
@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import HarvestsChart from '@/components/vineyard/harvests-chart';
 import NewVineyardPlantingForm from '@/components/vineyard/new-planting-form';
+import { getPlantsNumber } from '@/utils/vineyard';
 
 export const Route = createFileRoute('/(app)/_layout/vineyards_/$vineyardId')({
     validateSearch: (search: Record<string, string>): { bcLast: string } => {
@@ -96,7 +97,9 @@ const VineyardComponent = () => {
                                     <DetailCardContent className="flex items-center justify-between">
                                         <div>
                                             <p className="text-sm text-muted-foreground">Plants</p>
-                                            <p className="font-medium">{vineyard.plants}</p>
+                                            <p className="font-medium">
+                                                {getPlantsNumber(vineyard.plants, vineyard.plantings)}
+                                            </p>
                                         </div>
                                         <Sprout className="!w-6 !h-6 text-secondary-foreground" />
                                     </DetailCardContent>
@@ -169,27 +172,78 @@ const VineyardComponent = () => {
                                     <DetailCardTitle>Trims</DetailCardTitle>
                                     <Maximize />
                                 </DetailCardHeader>
-                                <DetailCardContent className="h-36 flex items-center justify-between">
-                                    trims table
-                                </DetailCardContent>
+                                {vineyard.trims.length > 0 ? (
+                                    <DetailCardContent className="h-36 flex items-center justify-between">
+                                        trims table
+                                    </DetailCardContent>
+                                ) : (
+                                    <div className="w-full p-3 md:px-5 h-full flex flex-col items-center justify-center gap-3 bg-secondary/20 dark:bg-secondary/50 border border-dashed border-secondary rounded-md">
+                                        <div>
+                                            <p className="text-lg md:text-xl font-medium text-center">
+                                                No trim currently registered.
+                                            </p>
+                                            <p className="text-sm text-center text-muted-foreground">
+                                                Press the button to add your first trim.
+                                            </p>
+                                        </div>
+                                        <Button variant="outline" size="sm" className="flex gap-1 items-center">
+                                            <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
+                                            New trim
+                                        </Button>
+                                    </div>
+                                )}
                             </DetailCard>
                             <DetailCard>
                                 <DetailCardHeader>
                                     <DetailCardTitle>Grass cuts</DetailCardTitle>
                                     <Maximize />
                                 </DetailCardHeader>
-                                <DetailCardContent className="h-36 flex items-center justify-between">
-                                    grass cuts table
-                                </DetailCardContent>
+                                {vineyard.cuts.length > 0 ? (
+                                    <DetailCardContent className="h-36 flex items-center justify-between">
+                                        grass cuts table
+                                    </DetailCardContent>
+                                ) : (
+                                    <div className="w-full p-3 md:px-5 h-full flex flex-col items-center justify-center gap-3 bg-secondary/20 dark:bg-secondary/50 border border-dashed border-secondary rounded-md">
+                                        <div>
+                                            <p className="text-lg md:text-xl font-medium text-center">
+                                                No grass cut currently registered.
+                                            </p>
+                                            <p className="text-sm text-center text-muted-foreground">
+                                                Press the button to add your first grass cut.
+                                            </p>
+                                        </div>
+                                        <Button variant="outline" size="sm" className="flex gap-1 items-center">
+                                            <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
+                                            New grass cut
+                                        </Button>
+                                    </div>
+                                )}
                             </DetailCard>
                             <DetailCard className="md:col-span-2 lg:col-span-1">
                                 <DetailCardHeader>
-                                    <DetailCardTitle>Planting/Explantation</DetailCardTitle>
+                                    <DetailCardTitle>Planting and Removal</DetailCardTitle>
                                     <Maximize />
                                 </DetailCardHeader>
-                                <DetailCardContent className="h-36 flex items-center justify-between">
-                                    explantations table
-                                </DetailCardContent>
+                                {vineyard.plantings.length > 0 ? (
+                                    <DetailCardContent className="h-36 flex items-center justify-between">
+                                        explantations table
+                                    </DetailCardContent>
+                                ) : (
+                                    <div className="w-full p-3 md:px-5 h-full flex flex-col items-center justify-center gap-3 bg-secondary/20 dark:bg-secondary/50 border border-dashed border-secondary rounded-md">
+                                        <div>
+                                            <p className="text-lg md:text-xl font-medium text-center">
+                                                No planting currently registered.
+                                            </p>
+                                            <p className="text-sm text-center text-muted-foreground">
+                                                Press the button to add your first planting.
+                                            </p>
+                                        </div>
+                                        <Button variant="outline" size="sm" className="flex gap-1 items-center">
+                                            <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
+                                            New planting/removal
+                                        </Button>
+                                    </div>
+                                )}
                             </DetailCard>
                             <DetailCard className="md:col-span-2 lg:col-span-3">
                                 <DetailCardHeader>

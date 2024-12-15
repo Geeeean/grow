@@ -21,6 +21,7 @@ import {
     DrawerTitle,
 } from '@/components/ui/drawer';
 import { CircleCheck, Loader, XCircle } from 'lucide-react';
+import AnimatedButton from './ui/animated-button';
 
 export type FormState = 'idle' | 'loading' | 'error' | 'success';
 
@@ -65,31 +66,17 @@ const DialogWrapper = ({
     );
 
     const ConfirmBtn = () => (
-        <Button
-            type="submit"
+        <AnimatedButton
+            key={formState}
             disabled={disabled}
             onClick={() => {
                 setHeight(bounds.height);
                 handle();
             }}
-            className="md:w-36"
+            type="submit"
         >
-            <AnimatePresence mode="popLayout" initial={false}>
-                <motion.span
-                    transition={{
-                        type: 'spring',
-                        duration: 0.3,
-                        bounce: 0,
-                    }}
-                    initial={{ opacity: 0, y: -25 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 25 }}
-                    key={formState}
-                >
-                    {formState === 'loading' ? <Loader className="animate-spin" /> : <span>{confirmCopy}</span>}
-                </motion.span>
-            </AnimatePresence>
-        </Button>
+            {formState === 'loading' ? <Loader className="animate-spin" /> : <span>{confirmCopy}</span>}
+        </AnimatedButton>
     );
 
     if (isDesktop) {

@@ -1,4 +1,4 @@
-import { vineyardAction } from '@/types/vineyard';
+import { vineyardAction, VineyardPlanting } from '@/types/vineyard';
 import { Grape, Scissors, TreeDeciduous, FlaskRound, Shovel } from 'lucide-react';
 
 export const vineyardActionCopy: Record<vineyardAction, string> = {
@@ -19,4 +19,23 @@ const vineyardActionIcon: Record<vineyardAction, (className?: string) => JSX.Ele
 
 export const getVineyardActionIcon = (action: vineyardAction, className?: string) => {
     return vineyardActionIcon[action](className);
+};
+
+export const getPlantsNumber = (initial: number, plantings: VineyardPlanting[]): number => {
+    let res = initial;
+
+    plantings.forEach((planting) => {
+        switch (planting.plantingType) {
+            case 'Removal':
+                res -= planting.plantCount;
+                break;
+            case 'Planting':
+                res += planting.plantCount;
+                break;
+            default:
+                break;
+        }
+    });
+
+    return res;
 };

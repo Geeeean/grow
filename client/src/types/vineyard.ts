@@ -1,3 +1,7 @@
+type MakeNonNullable<T, K extends keyof T> = Omit<T, K> & {
+    [P in K]-?: NonNullable<T[P]>;
+};
+
 export const soilValues = [
     'Calcareous',
     'Clay',
@@ -20,7 +24,7 @@ export type NewVineyard = {
     varieties: Variety[];
 };
 export type VineyardId = number;
-export type Vineyard = NewVineyard & {
+export type Vineyard = MakeNonNullable<NewVineyard, 'plants' | 'altitude'> & {
     id: VineyardId;
     trims: VineyardTrim[];
     cuts: VineyardCut[];
