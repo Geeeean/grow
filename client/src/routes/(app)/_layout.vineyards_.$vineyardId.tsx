@@ -9,11 +9,10 @@ import {
     FileOutput,
     ListFilter,
     Maximize,
+    Minimize,
     Mountain,
     Plus,
-    PlusCircle,
     Sprout,
-    Trash,
 } from 'lucide-react';
 
 import { useVineyardAction } from '@/hooks/use-vineyard-action';
@@ -23,21 +22,22 @@ import { useVineyardById } from '@/hooks/use-vineyards';
 import VineyardActionsDropdown from '@/components/vineyard/actions-dropdown';
 import NewVineyardCutForm from '@/components/vineyard/new-cut-form';
 import NewVineyardTrimForm from '@/components/vineyard/new-trim-form';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DetailCard, DetailCardContent, DetailCardHeader, DetailCardTitle } from '@/components/ui/detail-card';
 import VarietiesChart from '@/components/vineyard/varieties-chart';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import HarvestsChart from '@/components/vineyard/harvests-chart';
 import NewVineyardPlantingForm from '@/components/vineyard/new-planting-form';
+import { Badge } from '@/components/ui/badge';
+import TrimTable from '@/components/vineyard/trims-table';
+import CutsTable from '@/components/vineyard/cuts-table';
 
 import { getPlantsNumber } from '@/utils/vineyard';
 import { capitalize, cn } from '@/utils/shared';
 
 import { DetailView, detailViewStr } from '@/types/vineyard';
-import { Badge } from '@/components/ui/badge';
-import { MenubarSeparator } from '@/components/ui/menubar';
-import { Separator } from '@/components/ui/separator';
+import PlantingsTable from '@/components/vineyard/plantings-table';
+import VarietisTable from '@/components/vineyard/varieties-table';
 
 export const Route = createFileRoute('/(app)/_layout/vineyards_/$vineyardId')({
     validateSearch: (search: Record<string, string>): { bcLast: string } => {
@@ -53,6 +53,14 @@ const VineyardComponent = () => {
     const { vineyard, error } = useVineyardById(Number(vineyardId));
     const { getVineyardActionState, getVineyardActionSetter } = useVineyardAction();
     const { getActionSetter } = useSharedAction();
+
+    const [notesOpen, setNotesOpen] = useState<boolean>(false);
+    const [varietiesOpen, setVarietiesOpen] = useState<boolean>(false);
+    const [cutsOpen, setCutsOpen] = useState<boolean>(false);
+    const [trimsOpen, setTrimsOpen] = useState<boolean>(false);
+    const [plantingsOpen, setPlantingsOpen] = useState<boolean>(false);
+    const [harvestsOpen, setHarvestsOpen] = useState<boolean>(false);
+    const [analysesOpen, setAnalysesOpen] = useState<boolean>(false);
 
     const [detailView, setDetailView] = useState<DetailView>('overview');
 
@@ -73,7 +81,6 @@ const VineyardComponent = () => {
                         defaultValue="overview"
                         value={detailView}
                         onValueChange={(value) => setDetailView(value as DetailView)}
-                        className=""
                     >
                         <TabsList className="w-full md:w-fit">
                             {detailViewStr.map((value, index) => (
@@ -84,12 +91,12 @@ const VineyardComponent = () => {
                         </TabsList>
                     </Tabs>
                     <div className="flex items-center gap-4 w-full justify-between md:justify-normal md:w-fit">
-                        <div className="flex gap-2">
-                            <Button disabled variant="outline" className="font-normal flex items-center gap-2">
+                        <div className="flex gap-1">
+                            <Button disabled variant="outline" className="font-normal flex items-center gap-1">
                                 <FileOutput className="h-[1.2rem] w-[1.2rem]" />
                                 <span className="md:hidden lg:block">Export</span>
                             </Button>
-                            <Button disabled variant="outline" className="font-normal flex items-center gap-2">
+                            <Button disabled variant="outline" className="font-normal flex items-center gap-1">
                                 <ListFilter className="h-[1.2rem] w-[1.2rem]" />
                                 <span className="md:hidden lg:block">Filter</span>
                             </Button>
@@ -104,13 +111,13 @@ const VineyardComponent = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 overflow-y-auto scrollbar-hide">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 overflow-y-auto scrollbar-hide">
                     {/* BASIC INFOS */}
                     {detailView == 'overview' && (
                         <DetailCard className="md:col-span-2 lg:col-span-1">
                             <DetailCardHeader>
                                 <DetailCardTitle>Basic informations</DetailCardTitle>
-                                <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
+                                <Button size="icon" variant="ghost" className="p-1 m-0 h-fit w-fit">
                                     <Edit />
                                 </Button>
                             </DetailCardHeader>
@@ -144,7 +151,11 @@ const VineyardComponent = () => {
 
                     {/* NOTES */}
                     {detailView == 'overview' && (
-                        <DetailCard className="md:col-span-2 max-h-60 lg:overflow-hidden md:max-h-none">
+                        <DetailCard
+                            className="md:col-span-2 max-h-60 lg:overflow-hidden md:max-h-none"
+                            setOpen={setNotesOpen}
+                            open={notesOpen}
+                        >
                             <DetailCardHeader>
                                 <DetailCardTitle>
                                     <span>Notes</span>
@@ -154,12 +165,17 @@ const VineyardComponent = () => {
                                 </DetailCardTitle>
                                 <div className="flex gap-0 items-center">
                                     {vineyard.notes && (
-                                        <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                            <PlusCircle />
+                                        <Button size="icon" variant="ghost" className="p-1 m-0 h-fit w-fit">
+                                            <Plus />
                                         </Button>
                                     )}
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                        <Maximize />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="p-1 m-0 h-fit w-fit"
+                                        onClick={() => setNotesOpen((old) => !old)}
+                                    >
+                                        {notesOpen ? <Minimize /> : <Maximize />}
                                     </Button>
                                 </div>
                             </DetailCardHeader>
@@ -223,7 +239,11 @@ const VineyardComponent = () => {
 
                     {/* VARIETIES */}
                     {detailView == 'overview' && (
-                        <DetailCard className="md:col-span-2 lg:col-span-3">
+                        <DetailCard
+                            className="md:col-span-2 lg:col-span-3"
+                            setOpen={setVarietiesOpen}
+                            open={varietiesOpen}
+                        >
                             <DetailCardHeader>
                                 <DetailCardTitle>
                                     <span>Varieties</span>
@@ -232,43 +252,57 @@ const VineyardComponent = () => {
                                     </Badge>
                                 </DetailCardTitle>
                                 <div className="flex">
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
+                                    <Button size="icon" variant="ghost" className="p-1 m-0 h-fit w-fit">
                                         <Plus />
                                     </Button>
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                        <Edit />
-                                    </Button>
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                        <Maximize />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="p-1 m-0 h-fit w-fit"
+                                        onClick={() => setVarietiesOpen((old) => !old)}
+                                    >
+                                        {varietiesOpen ? <Minimize /> : <Maximize />}
                                     </Button>
                                 </div>
                             </DetailCardHeader>
                             <div className="flex flex-col lg:flex-row gap-1 w-full h-full">
-                                <DetailCardContent className="h-full p-0 grow">
-                                    <div className="max-h-[270px] overflow-y-auto">
-                                        <Table className="p-0 w-full">
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead>Name</TableHead>
-                                                    <TableHead>Rows</TableHead>
-                                                    <TableHead>Age</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {vineyard.varieties.map((variety, index: number) => (
-                                                    <TableRow key={index}>
-                                                        <TableCell className="font-medium">{variety.name}</TableCell>
-                                                        <TableCell>{variety.rows}</TableCell>
-                                                        <TableCell>{variety.age}</TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-                                </DetailCardContent>
-                                <DetailCardContent>
-                                    <VarietiesChart varieties={vineyard.varieties} />
-                                </DetailCardContent>
+                                {vineyard.varieties.length ? (
+                                    <>
+                                        <div className="flex flex-col grow overflow-hidden p-[1px] h-full">
+                                            <VarietisTable
+                                                varieties={vineyard.varieties}
+                                                BodyWrapper={({ children }) => (
+                                                    <DetailCardContent className="overflow-scroll">
+                                                        {children}
+                                                    </DetailCardContent>
+                                                )}
+                                            />
+                                        </div>
+                                        <DetailCardContent>
+                                            <VarietiesChart varieties={vineyard.varieties} />
+                                        </DetailCardContent>
+                                    </>
+                                ) : (
+                                    <DetailCardContent variant="empty" className="w-full">
+                                        <div>
+                                            <p className="text-lg md:text-xl font-medium text-center">
+                                                No varieties currently registered.
+                                            </p>
+                                            <p className="text-sm text-center text-muted-foreground">
+                                                Press the button to add your first variety.
+                                            </p>
+                                        </div>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="flex gap-1 items-center"
+                                            //onClick={() => getVineyardActionSetter('cut')(true)}
+                                        >
+                                            <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
+                                            New variety
+                                        </Button>
+                                    </DetailCardContent>
+                                )}
                             </div>
                         </DetailCard>
                     )}
@@ -278,8 +312,12 @@ const VineyardComponent = () => {
                         <DetailCard
                             className={cn(
                                 detailView == 'operations' && 'col-span-3',
-                                vineyard.trims.length && (detailView == 'operations' ? 'max-h-80' : 'max-h-60'),
+                                vineyard.trims.length &&
+                                    !trimsOpen &&
+                                    (detailView == 'operations' ? 'max-h-80' : 'max-h-60'),
                             )}
+                            setOpen={setTrimsOpen}
+                            open={trimsOpen}
                         >
                             <DetailCardHeader>
                                 <DetailCardTitle>
@@ -290,53 +328,58 @@ const VineyardComponent = () => {
                                 </DetailCardTitle>
                                 <div className="flex">
                                     {vineyard.trims.length ? (
-                                        <>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Plus />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Edit />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Trash />
-                                            </Button>
-                                        </>
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="p-1 m-0 h-fit w-fit"
+                                            onClick={() => getVineyardActionSetter('trim')(true)}
+                                        >
+                                            <Plus />
+                                        </Button>
                                     ) : null}
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                        <Maximize />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="p-1 m-0 h-fit w-fit"
+                                        onClick={() => setTrimsOpen((old) => !old)}
+                                    >
+                                        {trimsOpen ? <Minimize /> : <Maximize />}
                                     </Button>
                                 </div>
                             </DetailCardHeader>
-                            <DetailCardContent
-                                className="overflow-scroll"
-                                variant={vineyard.trims.length ? 'default' : 'empty'}
-                            >
-                                {vineyard.trims.length ? (
+                            {vineyard.trims.length ? (
+                                <div className="flex flex-col gap-1 overflow-hidden p-[1px] h-full">
+                                    <TrimTable
+                                        trims={vineyard.trims}
+                                        filter={{ placeholder: 'Filter Date...', column: 'date' }}
+                                        BodyWrapper={({ children }) => (
+                                            <DetailCardContent className="overflow-scroll">
+                                                {children}
+                                            </DetailCardContent>
+                                        )}
+                                    />
+                                </div>
+                            ) : (
+                                <DetailCardContent variant="empty">
                                     <div>
-                                        <p>trims table</p>
+                                        <p className="text-lg md:text-xl font-medium text-center">
+                                            No trim currently registered.
+                                        </p>
+                                        <p className="text-sm text-center text-muted-foreground">
+                                            Press the button to add your first trim.
+                                        </p>
                                     </div>
-                                ) : (
-                                    <>
-                                        <div>
-                                            <p className="text-lg md:text-xl font-medium text-center">
-                                                No trim currently registered.
-                                            </p>
-                                            <p className="text-sm text-center text-muted-foreground">
-                                                Press the button to add your first trim.
-                                            </p>
-                                        </div>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="flex gap-1 items-center"
-                                            onClick={() => getVineyardActionSetter('trim')(true)}
-                                        >
-                                            <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
-                                            New trim
-                                        </Button>
-                                    </>
-                                )}
-                            </DetailCardContent>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="flex gap-1 items-center"
+                                        onClick={() => getVineyardActionSetter('trim')(true)}
+                                    >
+                                        <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
+                                        New trim
+                                    </Button>
+                                </DetailCardContent>
+                            )}
                         </DetailCard>
                     )}
 
@@ -347,6 +390,8 @@ const VineyardComponent = () => {
                                 detailView == 'operations' && 'col-span-3',
                                 vineyard.cuts.length && (detailView == 'operations' ? 'max-h-80' : 'max-h-60'),
                             )}
+                            setOpen={setCutsOpen}
+                            open={cutsOpen}
                         >
                             <DetailCardHeader>
                                 <DetailCardTitle>
@@ -357,51 +402,58 @@ const VineyardComponent = () => {
                                 </DetailCardTitle>
                                 <div className="flex">
                                     {vineyard.cuts.length ? (
-                                        <>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Plus />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Edit />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Trash />
-                                            </Button>
-                                        </>
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="p-1 m-0 h-fit w-fit"
+                                            onClick={() => getVineyardActionSetter('cut')(true)}
+                                        >
+                                            <Plus />
+                                        </Button>
                                     ) : null}
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                        <Maximize />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="p-1 m-0 h-fit w-fit"
+                                        onClick={() => setCutsOpen((old) => !old)}
+                                    >
+                                        {cutsOpen ? <Minimize /> : <Maximize />}
                                     </Button>
                                 </div>
                             </DetailCardHeader>
-                            <DetailCardContent
-                                className="overflow-scroll"
-                                variant={vineyard.cuts.length ? 'default' : 'empty'}
-                            >
-                                {vineyard.cuts.length ? (
-                                    <span>grass cuts table</span>
-                                ) : (
-                                    <>
-                                        <div>
-                                            <p className="text-lg md:text-xl font-medium text-center">
-                                                No grass cut currently registered.
-                                            </p>
-                                            <p className="text-sm text-center text-muted-foreground">
-                                                Press the button to add your first grass cut.
-                                            </p>
-                                        </div>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="flex gap-1 items-center"
-                                            onClick={() => getVineyardActionSetter('cut')(true)}
-                                        >
-                                            <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
-                                            New grass cut
-                                        </Button>
-                                    </>
-                                )}
-                            </DetailCardContent>
+                            {vineyard.cuts.length ? (
+                                <div className="flex flex-col gap-1 overflow-hidden p-[1px] h-full">
+                                    <CutsTable
+                                        cuts={vineyard.cuts}
+                                        filter={{ placeholder: 'Filter Date...', column: 'date' }}
+                                        BodyWrapper={({ children }) => (
+                                            <DetailCardContent className="overflow-scroll">
+                                                {children}
+                                            </DetailCardContent>
+                                        )}
+                                    />
+                                </div>
+                            ) : (
+                                <DetailCardContent variant="empty">
+                                    <div>
+                                        <p className="text-lg md:text-xl font-medium text-center">
+                                            No grass cut currently registered.
+                                        </p>
+                                        <p className="text-sm text-center text-muted-foreground">
+                                            Press the button to add your first grass cut.
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="flex gap-1 items-center"
+                                        onClick={() => getVineyardActionSetter('cut')(true)}
+                                    >
+                                        <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
+                                        New grass cut
+                                    </Button>
+                                </DetailCardContent>
+                            )}
                         </DetailCard>
                     )}
 
@@ -413,6 +465,8 @@ const VineyardComponent = () => {
                                 detailView == 'operations' ? 'lg:col-span-3' : 'lg:col-span-1',
                                 vineyard.plantings.length && (detailView == 'operations' ? 'max-h-80' : 'max-h-60'),
                             )}
+                            setOpen={setPlantingsOpen}
+                            open={plantingsOpen}
                         >
                             <DetailCardHeader>
                                 <DetailCardTitle>
@@ -423,57 +477,68 @@ const VineyardComponent = () => {
                                 </DetailCardTitle>
                                 <div className="flex">
                                     {vineyard.plantings.length ? (
-                                        <>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Plus />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Edit />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Trash />
-                                            </Button>
-                                        </>
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="p-1 m-0 h-fit w-fit"
+                                            onClick={() => getVineyardActionSetter('planting')(true)}
+                                        >
+                                            <Plus />
+                                        </Button>
                                     ) : null}
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                        <Maximize />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="p-1 m-0 h-fit w-fit"
+                                        onClick={() => setPlantingsOpen((old) => !old)}
+                                    >
+                                        {plantingsOpen ? <Minimize /> : <Maximize />}
                                     </Button>
                                 </div>
                             </DetailCardHeader>
-                            <DetailCardContent
-                                variant={vineyard.plantings.length ? 'default' : 'empty'}
-                                className="overflow-scroll"
-                            >
-                                {vineyard.plantings.length ? (
-                                    <span>explantations table</span>
-                                ) : (
-                                    <>
-                                        <div>
-                                            <p className="text-lg md:text-xl font-medium text-center">
-                                                No planting currently registered.
-                                            </p>
-                                            <p className="text-sm text-center text-muted-foreground">
-                                                Press the button to add your first planting.
-                                            </p>
-                                        </div>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="flex gap-1 items-center"
-                                            onClick={() => getVineyardActionSetter('planting')(true)}
-                                        >
-                                            <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
-                                            New planting/removal
-                                        </Button>
-                                    </>
-                                )}
-                            </DetailCardContent>
+                            {vineyard.plantings.length ? (
+                                <div className="flex flex-col gap-1 overflow-hidden p-[1px] h-full">
+                                    <PlantingsTable
+                                        plantings={vineyard.plantings}
+                                        filter={{ placeholder: 'Filter Date...', column: 'date' }}
+                                        BodyWrapper={({ children }) => (
+                                            <DetailCardContent className="overflow-scroll">
+                                                {children}
+                                            </DetailCardContent>
+                                        )}
+                                    />
+                                </div>
+                            ) : (
+                                <DetailCardContent variant="empty">
+                                    <div>
+                                        <p className="text-lg md:text-xl font-medium text-center">
+                                            No planting currently registered.
+                                        </p>
+                                        <p className="text-sm text-center text-muted-foreground">
+                                            Press the button to add your first planting.
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="flex gap-1 items-center"
+                                        onClick={() => getVineyardActionSetter('planting')(true)}
+                                    >
+                                        <CirclePlus className="h-[1.2rem] w-[1.2rem]" />
+                                        New planting/removal
+                                    </Button>
+                                </DetailCardContent>
+                            )}
                         </DetailCard>
                     )}
 
                     {/* HARVESTS */}
                     {(detailView == 'overview' || detailView == 'harvests' || detailView == 'operations') && (
-                        <DetailCard className="md:col-span-2 lg:col-span-3">
+                        <DetailCard
+                            className="md:col-span-2 lg:col-span-3"
+                            setOpen={setHarvestsOpen}
+                            open={harvestsOpen}
+                        >
                             <DetailCardHeader>
                                 <DetailCardTitle>
                                     <span>Harvests</span>
@@ -483,20 +548,17 @@ const VineyardComponent = () => {
                                 </DetailCardTitle>
                                 <div className="flex">
                                     {vineyard.harvests.length ? (
-                                        <>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Plus />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Edit />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Trash />
-                                            </Button>
-                                        </>
+                                        <Button size="icon" variant="ghost" className="p-1 m-0 h-fit w-fit">
+                                            <Plus />
+                                        </Button>
                                     ) : null}
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                        <Maximize />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="p-1 m-0 h-fit w-fit"
+                                        onClick={() => setHarvestsOpen((old) => !old)}
+                                    >
+                                        {harvestsOpen ? <Minimize /> : <Maximize />}
                                     </Button>
                                 </div>
                             </DetailCardHeader>
@@ -534,7 +596,11 @@ const VineyardComponent = () => {
 
                     {/* ANALYSES */}
                     {(detailView == 'overview' || detailView == 'analyses' || detailView == 'operations') && (
-                        <DetailCard className="md:col-span-2 lg:col-span-3">
+                        <DetailCard
+                            className="md:col-span-2 lg:col-span-3"
+                            setOpen={setAnalysesOpen}
+                            open={analysesOpen}
+                        >
                             <DetailCardHeader>
                                 <DetailCardTitle>
                                     <span>Analyses</span>
@@ -544,20 +610,17 @@ const VineyardComponent = () => {
                                 </DetailCardTitle>
                                 <div className="flex">
                                     {0 ? (
-                                        <>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Plus />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Edit />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                                <Trash />
-                                            </Button>
-                                        </>
+                                        <Button size="icon" variant="ghost" className="p-1 m-0 h-fit w-fit">
+                                            <Plus />
+                                        </Button>
                                     ) : null}
-                                    <Button size="icon" variant="ghost" className="p-2 m-0 h-fit w-fit">
-                                        <Maximize />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="p-1 m-0 h-fit w-fit"
+                                        onClick={() => setAnalysesOpen((old) => !old)}
+                                    >
+                                        {analysesOpen ? <Minimize /> : <Maximize />}
                                     </Button>
                                 </div>
                             </DetailCardHeader>

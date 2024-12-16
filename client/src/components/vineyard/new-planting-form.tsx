@@ -33,7 +33,9 @@ const NewVineyardPlantingForm = ({ vineyardId, open, setOpen }: Props) => {
                         <div className="flex justify-between">
                             <div>
                                 <p className="text-sm">Operation</p>
-                                <Badge>{planting.plantingType}</Badge>
+                                <Badge variant={planting.plantingType == 'Removal' ? 'destructive' : 'default'}>
+                                    {planting.plantingType}
+                                </Badge>
                             </div>
                             <div className="text-right">
                                 <p className="text-sm">Plant count</p>
