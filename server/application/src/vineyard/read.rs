@@ -173,7 +173,6 @@ pub fn read_vineyards(
                                         hv_variety.id,
                                         hv_variety.weight,
                                         hv_variety.grape_variety_id,
-                                        hv_variety.harvest_id,
                                     )
                                 })
                                 .collect(),

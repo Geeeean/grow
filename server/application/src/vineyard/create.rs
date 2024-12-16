@@ -272,7 +272,7 @@ pub fn create_harvest(
             .grape_varieties
             .into_iter()
             .map(|harvest_grape_variety| NewHarvestGrapeVariety {
-                harvest_id: harvest_grape_variety.harvest_id,
+                harvest_id: vineyard_harvest.id,
                 grape_variety_id: harvest_grape_variety.grape_variety_id,
                 weight: harvest_grape_variety.weight,
             })
@@ -301,7 +301,6 @@ pub fn create_harvest(
                         gv_grape_variety.id,
                         gv_grape_variety.weight,
                         gv_grape_variety.grape_variety_id,
-                        gv_grape_variety.harvest_id,
                     )
                 })
                 .collect(),

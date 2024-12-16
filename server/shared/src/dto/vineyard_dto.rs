@@ -153,9 +153,6 @@ pub struct NewHarvestGrapeVarietyRequest {
 
     #[serde(rename = "grapeVarietyId")]
     pub grape_variety_id: i32,
-
-    #[serde(rename = "harvestId")]
-    pub harvest_id: i32,
 }
 
 #[derive(Serialize)]
@@ -165,18 +162,14 @@ pub struct HarvestGrapeVarietyResponse {
 
     #[serde(rename = "grapeVarietyId")]
     grape_variety_id: i32,
-
-    #[serde(rename = "harvestId")]
-    harvest_id: i32,
 }
 
 impl HarvestGrapeVarietyResponse {
-    pub fn new(id: i32, weight: i32, grape_variety_id: i32, harvest_id: i32) -> Self {
+    pub fn new(id: i32, weight: i32, grape_variety_id: i32) -> Self {
         Self {
             id,
             weight,
             grape_variety_id,
-            harvest_id,
         }
     }
 }
@@ -191,7 +184,7 @@ pub struct NewVineyardHarvestRequest {
     #[serde(rename = "numberOfWorkers")]
     pub number_of_workers: i32,
 
-    #[serde(rename = "grapeVarietyIds")]
+    #[serde(rename = "varieties")]
     pub grape_varieties: Vec<NewHarvestGrapeVarietyRequest>,
 }
 
