@@ -1,8 +1,13 @@
 import { apiClient } from '@/services/api/client';
-import { NewVineyard, NewVineyardCut, NewVineyardTrim, NewVineyardPlanting } from '@/types/vineyard';
+import { NewVineyard, NewVineyardCut, NewVineyardTrim, NewVineyardPlanting, VineyardId } from '@/types/vineyard';
 
 export const getAll = async () => {
     const response = await apiClient.get('/vineyard');
+    return response.data;
+};
+
+export const getById = async (id: VineyardId) => {
+    const response = await apiClient.get(`/vineyard/${id}`);
     return response.data;
 };
 

@@ -7,3 +7,9 @@ export type BasicFormProps = {
 
 export const actionStr = ['edit', 'delete'] as const;
 export type action = (typeof actionStr)[number];
+
+export type ApiResponse<T> = {
+    data: T;
+    message: string;
+    status: number;
+};

@@ -1,10 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/services/react-query/client';
-import { Vineyard } from '@/types/vineyard';
-import { getAll } from '@/services/api/vineyard';
+import { Vineyard, VineyardId } from '@/types/vineyard';
+import { getAll, getById } from '@/services/api/vineyard';
 
 export const vineyardsFn = async (): Promise<Vineyard[]> => {
     const result = await getAll();
+    return result.data;
+};
+
+const vineyardFn = async (vineyardId: VineyardId): Promise<Vineyard> => {
+    const result = await getById(vineyardId);
     return result.data;
 };
 
@@ -25,7 +30,7 @@ export const useVineyards = () => {
     return { vineyards, isLoading, error };
 };
 
-export const useVineyardById = (vineyardId: number) => {
+export const useVineyardById = (vineyardId: VineyardId) => {
     const {
         isLoading,
         error,

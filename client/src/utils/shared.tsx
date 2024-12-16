@@ -5,6 +5,8 @@ import { action } from '@/types/shared';
 
 import { Trash, Pen } from 'lucide-react';
 
+export const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }

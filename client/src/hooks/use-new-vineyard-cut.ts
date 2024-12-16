@@ -1,10 +1,12 @@
 import { newVineyardCut } from '@/services/api/vineyard';
-import { NewVineyardCut } from '@/types/vineyard';
+import { QUERY_KEY } from '@/services/react-query/client';
+import { ApiResponse } from '@/types/shared';
+import { NewVineyardCut, Vineyard, VineyardCut } from '@/types/vineyard';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const newVineyardCutFn = async (cut: NewVineyardCut) => {
-    const result = await newVineyardCut(cut);
-    return result;
+    const result: ApiResponse<VineyardCut> = await newVineyardCut(cut);
+    return result.data;
 };
 
 export const useNewVineyardCut = () => {
@@ -18,8 +20,24 @@ export const useNewVineyardCut = () => {
         reset,
     } = useMutation({
         mutationFn: newVineyardCutFn,
-        onSuccess: () => {
-            //client.invalidateQueries({ queryKey: [QUERY_KEY.vineyards] });
+        onSuccess: (newCutData) => {
+            client.setQueryData([QUERY_KEY.vineyards], (oldData: Vineyard[]) => {
+                if (!oldData) {
+                    return [];
+                }
+
+                const vineyardId = newCutData.vineyardId;
+
+                return oldData.map((vineyard) => {
+                    if (vineyard.id === vineyardId) {
+                        return {
+                            ...vineyard,
+                            cuts: [...(vineyard.cuts || []), newCutData],
+                        };
+                    }
+                    return vineyard;
+                });
+            });
         },
         retry: false,
     });

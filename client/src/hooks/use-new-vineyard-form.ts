@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useState } from 'react';
 
-import { Soil, NewVineyard, Variety } from '@/types/vineyard';
+import { Soil, NewVineyard, NewVariety } from '@/types/vineyard';
 import { useNewVineyard } from './use-new-vineyard';
 
 type step = 'informations' | 'varieties' | 'review';
@@ -11,7 +11,7 @@ export type NewVineyardAction =
     | { type: 'SET_ALTITUDE'; payload: number | null }
     | { type: 'SET_PLANTS'; payload: number | null }
     | { type: 'APPEND_VARIETY' }
-    | { type: 'UPDATE_VARIETY'; payload: { index: number; variety: Variety } }
+    | { type: 'UPDATE_VARIETY'; payload: { index: number; variety: NewVariety } }
     | { type: 'REMOVE_VARIETY'; payload: number }
     | { type: 'RESET' };
 

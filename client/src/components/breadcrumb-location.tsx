@@ -6,6 +6,7 @@ import {
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { capitalize } from '@/utils/shared';
 import { Link } from '@tanstack/react-router';
 
 import { Fragment } from 'react';
@@ -26,8 +27,6 @@ function splitPath(path: string): { parts: string[]; lastPart: string } {
         lastPart: lastPart,
     };
 }
-
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const BreadcrumbLocation = ({ location, bcLast }: Props) => {
     const isDesktop = useMediaQuery('(min-width: 768px)');
