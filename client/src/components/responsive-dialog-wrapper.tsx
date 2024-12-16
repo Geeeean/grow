@@ -137,6 +137,7 @@ const DialogWrapper = ({
                                                 initial={{ x: '110%', opacity: 0 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 exit={{ x: '-110%', opacity: 0 }}
+                                                transition={{ duration: 0.3, type: 'spring', bounce: 0 }}
                                             >
                                                 {children}
                                             </motion.div>
