@@ -34,15 +34,11 @@ pub fn read_vineyard(
 
     let grape_vars_response: Vec<GrapeVarietyResponse> = grape_vars
         .into_iter()
-        .map(|gv| GrapeVarietyResponse::new(gv.id, gv.name, gv.rows, gv.age))
+        .map(|gv| GrapeVarietyResponse::new(gv))
         .collect();
 
     Ok(VineyardResponse::new(
-        vineyard.id,
-        vineyard.name,
-        vineyard.altitude,
-        vineyard.plants,
-        vineyard.soil,
+        vineyard,
         grape_vars_response,
         Vec::new(),
         Vec::new(),
@@ -123,28 +119,27 @@ pub fn read_vineyards(
             let mut trim_responses: Vec<VineyardActionResponse> = Vec::new();
 
             for action in actions.into_iter() {
-                let action_response = VineyardActionResponse::new(
-                    action.id,
-                    action.vineyard_id,
-                    action.action_type.clone(),
-                    action.action_date,
-                );
+                let action_type = action.action_type.clone();
 
-                match action.action_type {
-                    ActionTypeEnum::Trim => trim_responses.push(action_response),
-                    ActionTypeEnum::Cut => cut_responses.push(action_response),
+                match action_type {
+                    ActionTypeEnum::Trim => {
+                        let action_response = VineyardActionResponse::new(action);
+                        trim_responses.push(action_response);
+                    }
+                    ActionTypeEnum::Cut => {
+                        let action_response = VineyardActionResponse::new(action);
+                        cut_responses.push(action_response);
+                    }
                     ActionTypeEnum::Planting => {
                         let planting = match plantings_map.remove(&action.id) {
                             Some(planting) => planting,
                             None => todo!(),
                         };
 
-                        planting_responses.push(VineyardPlantingResponse::new(
-                            action_response,
-                            planting.id,
-                            planting.planting_type,
-                            planting.plant_count,
-                        ));
+                        let action_response = VineyardActionResponse::new(action);
+
+                        planting_responses
+                            .push(VineyardPlantingResponse::new(action_response, planting));
                     }
                     ActionTypeEnum::Treatment => {
                         let treatment = match treatments_map.remove(&action.id) {
@@ -152,12 +147,10 @@ pub fn read_vineyards(
                             None => todo!(),
                         };
 
-                        treatment_responses.push(VineyardTreatmentResponse::new(
-                            action_response,
-                            treatment.id,
-                            treatment.treatment_type,
-                            treatment.product,
-                        ));
+                        let action_response = VineyardActionResponse::new(action);
+
+                        treatment_responses
+                            .push(VineyardTreatmentResponse::new(action_response, treatment));
                     }
                     ActionTypeEnum::Harvest => {
                         let harvest = match harvests_map.remove(&action.id) {
@@ -168,45 +161,30 @@ pub fn read_vineyards(
                         let grape_variety_ids = match hv_grape_varieties_per_harvest_iter.next() {
                             Some(varieties) => varieties
                                 .into_iter()
-                                .map(|hv_variety| {
-                                    HarvestGrapeVarietyResponse::new(
-                                        hv_variety.id,
-                                        hv_variety.weight,
-                                        hv_variety.grape_variety_id,
-                                    )
-                                })
+                                .map(|hv_variety| HarvestGrapeVarietyResponse::new(hv_variety))
                                 .collect(),
                             None => todo!(),
                         };
 
+                        let action_response = VineyardActionResponse::new(action);
+
                         harvest_responses.push(VineyardHarvestResponse::new(
                             action_response,
-                            harvest.id,
-                            harvest.quality_notes,
-                            harvest.number_of_workers,
+                            harvest,
                             grape_variety_ids,
                         ));
                     }
                 };
             }
 
+            let varieties_response = varieties
+                .into_iter()
+                .map(|variety| GrapeVarietyResponse::new(variety))
+                .collect();
+
             VineyardResponse::new(
-                vineyard.id,
-                vineyard.name,
-                vineyard.altitude,
-                vineyard.plants,
-                vineyard.soil,
-                varieties
-                    .into_iter()
-                    .map(|variety| {
-                        GrapeVarietyResponse::new(
-                            variety.id,
-                            variety.name,
-                            variety.rows,
-                            variety.age,
-                        )
-                    })
-                    .collect(),
+                vineyard,
+                varieties_response,
                 trim_responses,
                 cut_responses,
                 planting_responses,

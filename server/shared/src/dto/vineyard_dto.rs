@@ -1,6 +1,10 @@
 use ::serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
-use domain::models::{ActionTypeEnum, PlantingTypeEnum, SoilTypeEnum, TreatmentTypeEnum};
+use domain::models::{
+    ActionTypeEnum, GrapeVariety, HarvestGrapeVariety, PlantingTypeEnum, SoilTypeEnum,
+    TreatmentTypeEnum, Vineyard, VineyardAction, VineyardHarvest, VineyardPlanting,
+    VineyardTreatment,
+};
 use rocket::FromForm;
 
 /*** VARIETY ***/
@@ -20,12 +24,12 @@ pub struct GrapeVarietyResponse {
 }
 
 impl GrapeVarietyResponse {
-    pub fn new(id: i32, name: String, rows: i32, age: i32) -> Self {
+    pub fn new(grape_variety: GrapeVariety) -> Self {
         Self {
-            id,
-            name,
-            rows,
-            age,
+            id: grape_variety.id,
+            name: grape_variety.name,
+            rows: grape_variety.rows,
+            age: grape_variety.age,
         }
     }
 }
@@ -55,17 +59,12 @@ pub struct VineyardActionResponse {
 }
 
 impl VineyardActionResponse {
-    pub fn new(
-        id: i32,
-        vineyard_id: i32,
-        action_type: ActionTypeEnum,
-        action_date: DateTime<Utc>,
-    ) -> Self {
+    pub fn new(vineyard_action: VineyardAction) -> Self {
         Self {
-            id,
-            vineyard_id,
-            action_type,
-            action_date,
+            id: vineyard_action.id,
+            vineyard_id: vineyard_action.vineyard_id,
+            action_type: vineyard_action.action_type,
+            action_date: vineyard_action.action_date,
         }
     }
 }
@@ -95,17 +94,12 @@ pub struct VineyardPlantingResponse {
 }
 
 impl VineyardPlantingResponse {
-    pub fn new(
-        action: VineyardActionResponse,
-        id: i32,
-        planting_type: PlantingTypeEnum,
-        plant_count: i32,
-    ) -> Self {
+    pub fn new(action: VineyardActionResponse, planting: VineyardPlanting) -> Self {
         Self {
             action,
-            id,
-            planting_type,
-            plant_count,
+            id: planting.id,
+            planting_type: planting.planting_type,
+            plant_count: planting.plant_count,
         }
     }
 }
@@ -131,17 +125,12 @@ pub struct VineyardTreatmentResponse {
 }
 
 impl VineyardTreatmentResponse {
-    pub fn new(
-        action: VineyardActionResponse,
-        id: i32,
-        treatment_type: TreatmentTypeEnum,
-        product: String,
-    ) -> Self {
+    pub fn new(action: VineyardActionResponse, treatment: VineyardTreatment) -> Self {
         Self {
             action,
-            id,
-            treatment_type,
-            product,
+            id: treatment.id,
+            treatment_type: treatment.treatment_type,
+            product: treatment.product,
         }
     }
 }
@@ -165,11 +154,11 @@ pub struct HarvestGrapeVarietyResponse {
 }
 
 impl HarvestGrapeVarietyResponse {
-    pub fn new(id: i32, weight: i32, grape_variety_id: i32) -> Self {
+    pub fn new(harvest_grape_variety: HarvestGrapeVariety) -> Self {
         Self {
-            id,
-            weight,
-            grape_variety_id,
+            id: harvest_grape_variety.id,
+            weight: harvest_grape_variety.weight,
+            grape_variety_id: harvest_grape_variety.grape_variety_id,
         }
     }
 }
@@ -206,16 +195,14 @@ pub struct VineyardHarvestResponse {
 impl VineyardHarvestResponse {
     pub fn new(
         action: VineyardActionResponse,
-        id: i32,
-        quality_notes: String,
-        number_of_workers: i32,
+        vineyard_harvest: VineyardHarvest,
         grape_varieties: Vec<HarvestGrapeVarietyResponse>,
     ) -> Self {
         Self {
             action,
-            id,
-            quality_notes,
-            number_of_workers,
+            id: vineyard_harvest.id,
+            quality_notes: vineyard_harvest.quality_notes,
+            number_of_workers: vineyard_harvest.number_of_workers,
             grape_varieties,
         }
     }
@@ -248,11 +235,7 @@ pub struct VineyardResponse {
 
 impl VineyardResponse {
     pub fn new(
-        id: i32,
-        name: String,
-        altitude: i32,
-        plants: i32,
-        soil: SoilTypeEnum,
+        vineyard: Vineyard,
         varieties: Vec<GrapeVarietyResponse>,
         trims: Vec<VineyardActionResponse>,
         cuts: Vec<VineyardActionResponse>,
@@ -261,11 +244,11 @@ impl VineyardResponse {
         harvests: Vec<VineyardActionResponse>,
     ) -> Self {
         Self {
-            id,
-            name,
-            altitude,
-            plants,
-            soil,
+            id: vineyard.id,
+            name: vineyard.name,
+            altitude: vineyard.altitude,
+            plants: vineyard.plants,
+            soil: vineyard.soil,
             varieties,
             trims,
             cuts,

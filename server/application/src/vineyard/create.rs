@@ -22,7 +22,7 @@ pub fn create_vineyard(
     user: AuthenticatedUser,
 ) -> Result<VineyardResponse, Error> {
     use domain::schema::grape_varieties::dsl::*;
-    use domain::schema::vineyards::dsl::*;
+    use domain::schema::vineyards::dsl::vineyards;
 
     let new_vineyard = NewVineyard {
         name: vineyard_req.name,
@@ -37,12 +37,10 @@ pub fn create_vineyard(
             .values(&new_vineyard)
             .get_result::<Vineyard>(tx_connection)?;
 
+        let created_vineyard_id = vineyard.id;
+
         let mut vineyard_response = VineyardResponse::new(
-            vineyard.id,
-            vineyard.name,
-            vineyard.altitude,
-            vineyard.plants,
-            vineyard.soil,
+            vineyard,
             Vec::new(),
             Vec::new(),
             Vec::new(),
@@ -56,7 +54,7 @@ pub fn create_vineyard(
                 name: variety_req.name,
                 rows: variety_req.rows,
                 age: variety_req.age,
-                vineyard_id: vineyard.id,
+                vineyard_id: created_vineyard_id,
                 user_id: user.id,
             };
 
@@ -64,8 +62,7 @@ pub fn create_vineyard(
                 .values(&new_variety)
                 .get_result::<GrapeVariety>(tx_connection)?;
 
-            let variety_response =
-                GrapeVarietyResponse::new(variety.id, variety.name, variety.rows, variety.age);
+            let variety_response = GrapeVarietyResponse::new(variety);
 
             vineyard_response.add_variety(variety_response);
         }
@@ -94,12 +91,7 @@ pub fn create_trim(
         .values(&new_trim)
         .get_result::<VineyardAction>(connection)?;
 
-    Ok(VineyardActionResponse::new(
-        vineyard_action.id,
-        vineyard_action.vineyard_id,
-        vineyard_action.action_type,
-        vineyard_action.action_date,
-    ))
+    Ok(VineyardActionResponse::new(vineyard_action))
 }
 
 pub fn create_cut(
@@ -122,12 +114,7 @@ pub fn create_cut(
         .values(&new_cut)
         .get_result::<VineyardAction>(connection)?;
 
-    Ok(VineyardActionResponse::new(
-        vineyard_action.id,
-        vineyard_action.vineyard_id,
-        vineyard_action.action_type,
-        vineyard_action.action_date,
-    ))
+    Ok(VineyardActionResponse::new(vineyard_action))
 }
 
 pub fn create_planting(
@@ -162,19 +149,10 @@ pub fn create_planting(
             .values(new_vineyard_planting)
             .get_result::<VineyardPlanting>(tx_connection)?;
 
-        let vineyard_action_response = VineyardActionResponse::new(
-            vineyard_action.id,
-            vineyard_action.vineyard_id,
-            vineyard_action.action_type,
-            vineyard_action.action_date,
-        );
+        let vineyard_action_response = VineyardActionResponse::new(vineyard_action);
 
-        let vineyard_planting_response = VineyardPlantingResponse::new(
-            vineyard_action_response,
-            vineyard_planting.id,
-            vineyard_planting.planting_type,
-            vineyard_planting.plant_count,
-        );
+        let vineyard_planting_response =
+            VineyardPlantingResponse::new(vineyard_action_response, vineyard_planting);
 
         Ok(vineyard_planting_response)
     })
@@ -212,19 +190,10 @@ pub fn create_treatment(
             .values(new_vineyard_treatment)
             .get_result::<VineyardTreatment>(tx_connection)?;
 
-        let vineyard_action_response = VineyardActionResponse::new(
-            vineyard_action.id,
-            vineyard_action.vineyard_id,
-            vineyard_action.action_type,
-            vineyard_action.action_date,
-        );
+        let vineyard_action_response = VineyardActionResponse::new(vineyard_action);
 
-        let vineyard_treatment_response = VineyardTreatmentResponse::new(
-            vineyard_action_response,
-            vineyard_treatment.id,
-            vineyard_treatment.treatment_type,
-            vineyard_treatment.product,
-        );
+        let vineyard_treatment_response =
+            VineyardTreatmentResponse::new(vineyard_action_response, vineyard_treatment);
 
         Ok(vineyard_treatment_response)
     })
@@ -282,27 +251,14 @@ pub fn create_harvest(
             .values(new_harvest_grape_varieties)
             .get_results::<HarvestGrapeVariety>(tx_connection)?;
 
-        let vineyard_action_response = VineyardActionResponse::new(
-            vineyard_action.id,
-            vineyard_action.vineyard_id,
-            vineyard_action.action_type,
-            vineyard_action.action_date,
-        );
+        let vineyard_action_response = VineyardActionResponse::new(vineyard_action);
 
         let vineyard_harvest_response = VineyardHarvestResponse::new(
             vineyard_action_response,
-            vineyard_harvest.id,
-            vineyard_harvest.quality_notes,
-            vineyard_harvest.number_of_workers,
+            vineyard_harvest,
             hv_grape_varieties
                 .into_iter()
-                .map(|gv_grape_variety| {
-                    HarvestGrapeVarietyResponse::new(
-                        gv_grape_variety.id,
-                        gv_grape_variety.weight,
-                        gv_grape_variety.grape_variety_id,
-                    )
-                })
+                .map(|gv_grape_variety| HarvestGrapeVarietyResponse::new(gv_grape_variety))
                 .collect(),
         );
 
