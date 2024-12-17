@@ -1,12 +1,12 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/utils/shared';
-import { Variety } from '@/types/vineyard';
+import { NewVariety, Variety } from '@/types/vineyard';
 
 import { Info } from 'lucide-react';
 import { Fragment } from 'react/jsx-runtime';
 
 type Props = {
-    varieties: Variety[];
+    varieties: Variety[] | NewVariety[];
     full: boolean;
 };
 
@@ -27,7 +27,7 @@ const VineyardVarietiesTooltip = ({ varieties, full = false }: Props) => {
                     <p className="font-medium text-primary/70">Variety</p>
                     <p className="font-medium text-primary/70">Age</p>
                     <p className="font-medium text-primary/70">Rows</p>
-                    {varieties.map((variety: Variety, index: number) => (
+                    {varieties.map((variety, index: number) => (
                         <Fragment key={index}>
                             <p className="text-primary text-sm mr-6 font-medium">{variety.name}</p>
                             <p className="text-primary text-sm w-10 truncate">{variety.age}</p>

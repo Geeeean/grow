@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Label } from '@/components/ui/label';
 import { DatePicker } from '../ui/date-picker';
-import { NewVineyardPlanting, planting, plantingValues } from '@/types/vineyard';
+import { NewVineyardPlanting, plantingValues, PlantingType } from '@/types/vineyard';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
@@ -17,14 +17,14 @@ const NewPlantingInformationsForm = ({ planting, setPlanting }: Props) => {
                 <Label htmlFor="date">Planting type</Label>
                 <Select
                     onValueChange={(plantingType) => {
-                        setPlanting((old) => ({ ...old, plantingType: plantingType as planting }));
+                        setPlanting((old) => ({ ...old, plantingType: plantingType as PlantingType }));
                     }}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Select the operation" />
                     </SelectTrigger>
                     <SelectContent>
-                        {plantingValues.map((val: planting, index: number) => (
+                        {plantingValues.map((val: PlantingType, index: number) => (
                             <SelectItem key={index} value={val}>
                                 {val}
                             </SelectItem>

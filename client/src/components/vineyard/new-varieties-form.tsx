@@ -4,11 +4,11 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
 import { Plus, X } from 'lucide-react';
-import { Variety } from '@/types/vineyard';
+import { NewVariety } from '@/types/vineyard';
 
 type Props = {
     dispatch: Dispatch<NewVineyardAction>;
-    varieties: Variety[];
+    varieties: NewVariety[];
 };
 
 const NewVineyardVarietiesForm = ({ varieties, dispatch }: Props) => {
@@ -25,7 +25,7 @@ const NewVineyardVarietiesForm = ({ varieties, dispatch }: Props) => {
                                 <Label className="">Rows</Label>
                                 <Label className="">Age</Label>
                             </div>
-                            {varieties.map((variety: Variety, index: number) => (
+                            {varieties.map((variety: NewVariety, index: number) => (
                                 <div key={index} className="grid items-center grid-cols-[1fr_60px_60px_30px] gap-1">
                                     <Input
                                         value={variety.name}

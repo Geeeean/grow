@@ -3,10 +3,11 @@ import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Credentials } from '@/types/auth';
 import { useSignIn } from '@/hooks/use-signin';
+import AnimatedButton from '@/components/ui/animated-button';
+import { Loader } from 'lucide-react';
 
 export const Route = createFileRoute('/(auth)/_layout/signin')({
     validateSearch: (search: Record<string, string>): { redirect: string } => {
@@ -19,7 +20,7 @@ export const Route = createFileRoute('/(auth)/_layout/signin')({
 
 const SignIn = () => {
     const [credentials, setCredentials] = useState<Credentials>({ email: '', password: '' });
-    const { signIn, isPending, isSuccess, error } = useSignIn();
+    const { signIn, isPending, isSuccess, error: _ } = useSignIn();
 
     const { redirect } = Route.useSearch();
 
@@ -51,14 +52,15 @@ const SignIn = () => {
                 </div>
             </CardContent>
             <CardFooter>
-                <Button
+                <AnimatedButton
                     className="w-full"
                     onClick={async () => {
                         signIn(credentials);
                     }}
+                    disabled={isPending}
                 >
-                    Signin
-                </Button>
+                    {isPending ? <Loader className="animate-spin" /> : <span>Signin</span>}
+                </AnimatedButton>
             </CardFooter>
         </Card>
     );
