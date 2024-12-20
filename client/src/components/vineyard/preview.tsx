@@ -1,8 +1,8 @@
 import { NewVineyard } from '@/types/vineyard';
-import { Card, CardContent, CardHeader } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Mountain, Sprout } from 'lucide-react';
-import VineyardVarietiesTooltip from './varieties-tooltip';
+import { Grape, Mountain, Sprout } from 'lucide-react';
+import { DetailCard, DetailCardContent, DetailCardHeader, DetailCardTitle } from '../ui/detail-card';
+import { getPlantsNumber } from '@/utils/vineyard';
 
 type Props = {
     vineyard: NewVineyard;
@@ -10,38 +10,42 @@ type Props = {
 
 const VineyardPreview = ({ vineyard }: Props) => {
     return (
-        <Card className="relative hover:border-ring transition-colors">
-            <CardHeader className="flex flex-row justify-between items-center">
-                <Badge variant="outline">{vineyard.soil}</Badge>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-2">
-                <div className="truncate">
-                    <p className="text-xs text-muted-foreground font-bold">Name</p>
-                    <p className="font-medium text-lg truncate">{vineyard.name}</p>
-                </div>
-                <div className="w-full h-20 bg-muted rounded-md" />
+        <DetailCard>
+            <DetailCardHeader className="h-fit ml-1">
+                <DetailCardTitle>
+                    <span className="truncate font-semibold py-2">{vineyard.name}</span>
+                </DetailCardTitle>
+                <Badge variant="secondary">{vineyard.soil}</Badge>
+            </DetailCardHeader>
 
-                <div className="rounded-md p-3 bg-muted flex flex-col gap-3 items-end">
-                    <div className="flex justify-between w-full">
-                        <div>
-                            <p className="text-xs text-muted-foreground font-bold">Plants</p>
-                            <p className="font-medium flex gap-1 items-center">
-                                <Sprout />
-                                {vineyard.plants}
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-xs text-muted-foreground font-bold">Altitude</p>
-                            <p className="font-medium flex items-center gap-1">
-                                <Mountain />
-                                {vineyard.altitude}m
-                            </p>
-                        </div>
+            <div className="flex flex-col gap-1">
+                <DetailCardContent className="grid gap-1 grid-cols-[auto_1fr] items-center">
+                    <span className="text-muted-foreground/70 text-sm pr-4 flex items-center">
+                        <Mountain className="mr-1" />
+                        Altitude
+                    </span>
+                    <span className="font-medium">
+                        {vineyard.altitude} <span className="text-sm">meter</span>
+                    </span>
+                    <span className="text-muted-foreground/70 text-sm pr-4 flex items-center">
+                        <Sprout className="mr-1" />
+                        Plants
+                    </span>
+                    <span className="font-medium">{getPlantsNumber(vineyard.plants ?? 0, [])}</span>
+                    <span className="text-muted-foreground/70 text-sm pr-4 flex items-center">
+                        <Grape className="mr-1" />
+                        Varieties
+                    </span>
+                    <div className="flex overflow-x-auto scrollbar-hide gap-1 w-full line-clamp-1">
+                        {vineyard.varieties.map((variety, key) => (
+                            <span className="whitespace-nowrap px-2 rounded-sm bg-background border text-sm" key={key}>
+                                {variety.name}
+                            </span>
+                        ))}
                     </div>
-                </div>
-                <VineyardVarietiesTooltip varieties={vineyard.varieties} full />
-            </CardContent>
-        </Card>
+                </DetailCardContent>
+            </div>
+        </DetailCard>
     );
 };
 

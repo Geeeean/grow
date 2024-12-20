@@ -29,10 +29,10 @@ const NewVineyardCutForm = ({ vineyardId, open, setOpen }: Props) => {
             case 'review':
                 return (
                     <div className="p-2 bg-card ring-1 ring-border rounded-lg">
-                        <div className="bg-secondary/30 ring-1 p-2 rounded-md flex items-center justify-between">
+                        <div className="bg-muted ring-primary ring-1 p-2 rounded-md flex items-center justify-between">
                             <div>
-                                <p className="text-sm">Cut date</p>
-                                <p className="text-secondary-foreground font-medium">{format(cutDate, 'PPP')}</p>
+                                <p className="text-sm text-muted-foreground">Cut date</p>
+                                <p className="font-medium">{format(cutDate, 'PPP')}</p>
                             </div>
                             {getVineyardActionIcon(action, '!w-6 !h-6')}
                         </div>

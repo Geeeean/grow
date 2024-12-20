@@ -1,28 +1,19 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/utils/shared';
 import { NewVariety, Variety } from '@/types/vineyard';
 
-import { Info } from 'lucide-react';
 import { Fragment } from 'react/jsx-runtime';
+import { ReactNode } from 'react';
 
 type Props = {
     varieties: Variety[] | NewVariety[];
-    full: boolean;
+    children: ReactNode;
 };
 
-const VineyardVarietiesTooltip = ({ varieties, full = false }: Props) => {
+const VineyardVarietiesTooltip = ({ varieties, children }: Props) => {
     return (
         <TooltipProvider>
             <Tooltip delayDuration={0}>
-                <TooltipTrigger
-                    className={cn(
-                        'z-20 flex items-center gap-2 bg-secondary text-secondary-foreground px-2 py-1 rounded-sm',
-                        full && 'justify-center w-full',
-                    )}
-                >
-                    {varieties.length} variet{varieties.length > 1 ? 'ies' : 'y'}
-                    <Info />
-                </TooltipTrigger>
+                <TooltipTrigger>{children}</TooltipTrigger>
                 <TooltipContent className="z-20 grid grid-cols-[repeat(3,auto)] bg-background-dark border items-start">
                     <p className="font-medium text-primary/70">Variety</p>
                     <p className="font-medium text-primary/70">Age</p>

@@ -33,7 +33,7 @@ const Vineyards = () => {
 
     if (vineyards != undefined)
         return (
-            <>
+            <main className="p-4 overflow-hidden grow">
                 {vineyards.length > 0 ? (
                     <div className="h-full flex flex-col gap-2 md:gap-4">
                         <div>
@@ -42,7 +42,7 @@ const Vineyards = () => {
                         </div>
                         <VineyardControls setOpen={setAddOpen} view={view} setView={setView} />
 
-                        <div className="flex-1 overflow-y-auto scrollbar-hide">
+                        <div className="grow overflow-y-auto scrollbar-hide">
                             {view === 'grid' ? (
                                 <VineyardsGrid
                                     vineyards={vineyards}
@@ -89,7 +89,7 @@ const Vineyards = () => {
                     setOpen={getVineyardActionSetter('planting')}
                     vineyardId={selectedVineyard}
                 />
-            </>
+            </main>
         );
 
     return <p>loading...</p>;

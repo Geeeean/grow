@@ -17,7 +17,7 @@ const NewVineyardVarietiesForm = ({ varieties, dispatch }: Props) => {
             <div className="space-y-1">
                 <Label htmlFor="name">Varieties</Label>
 
-                <div className="bg-secondary/30 ring-1 p-2 rounded-md space-y-2 relative">
+                <div className="bg-muted ring-1 ring-primary p-2 rounded-md space-y-2 relative">
                     {varieties.length > 0 && (
                         <div className="p-1 max-h-52 overflow-auto space-y-1">
                             <div className="backdrop-blur-lg grid items-center grid-cols-[1fr_60px_60px_30px] gap-1 sticky top-0 py-2 rounded-md">

@@ -37,8 +37,8 @@ const VineyardActionsDropdown = ({
             <DropdownMenuTrigger asChild>
                 <Button
                     aria-haspopup="true"
-                    size={primary ? 'default' : 'sm'}
-                    variant={primary ? 'default' : 'outline'}
+                    size={primary ? 'default' : 'icon'}
+                    variant={primary ? 'default' : 'ghost'}
                     className={cn('z-20 flex items-center gap-2', className)}
                 >
                     {primary ? (

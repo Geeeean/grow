@@ -32,22 +32,20 @@ const NewVineyardPlantingForm = ({ vineyardId, open, setOpen }: Props) => {
                     <div className="p-2 ring-1 ring-border bg-card rounded-lg space-y-3">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-sm">Operation</p>
+                                <p className="text-sm text-muted-foreground">Operation</p>
                                 <Badge variant={planting.plantingType == 'Removal' ? 'destructive' : 'default'}>
                                     {planting.plantingType}
                                 </Badge>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm">Plant count</p>
-                                <p className="text-secondary-foreground font-medium">{planting.plantCount}</p>
+                                <p className="text-sm text-muted-foreground">Plant count</p>
+                                <p className=" font-medium">{planting.plantCount}</p>
                             </div>
                         </div>
-                        <div className="bg-secondary/30 ring-1 p-2 rounded-md flex gap-10 items-center justify-between">
+                        <div className="bg-muted ring-primary ring-1 p-2 rounded-md flex gap-10 items-center justify-between">
                             <div>
-                                <p className="text-sm">Planting date</p>
-                                <p className="text-secondary-foreground font-medium">
-                                    {format(planting.action.date, 'PPP')}
-                                </p>
+                                <p className="text-sm text-muted-foreground">Planting date</p>
+                                <p className="font-medium">{format(planting.action.date, 'PPP')}</p>
                             </div>
                             {getVineyardActionIcon(action, '!w-6 !h-6')}
                         </div>

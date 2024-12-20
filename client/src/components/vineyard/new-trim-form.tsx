@@ -29,10 +29,10 @@ const NewVineyardTrimForm = ({ vineyardId, open, setOpen }: Props) => {
             case 'review':
                 return (
                     <div className="p-2 bg-card ring-1 ring-border rounded-lg">
-                        <div className="bg-secondary/30 ring-1 p-2 rounded-md flex items-center justify-between">
+                        <div className="bg-muted ring-1 ring-primary p-2 rounded-md flex items-center justify-between">
                             <div>
-                                <p className="text-sm">Trim date</p>
-                                <p className="text-secondary-foreground font-medium">{format(trimDate, 'PPP')}</p>
+                                <p className="text-sm text-muted-foreground">Trim date</p>
+                                <p className="font-medium">{format(trimDate, 'PPP')}</p>
                             </div>
                             {getVineyardActionIcon(action, '!w-6 !h-6')}
                         </div>

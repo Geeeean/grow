@@ -20,6 +20,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from './button';
+import { ChevronDown, Trash } from 'lucide-react';
 
 export type Filter = { placeholder: string; column: string };
 
@@ -65,7 +66,7 @@ export function DataTable<TData, TValue>({
 
     return (
         <>
-            <div className="flex items-center justify-between gap-1">
+            <div className="flex items-center justify-between gap-2">
                 {filter && (
                     <Input
                         placeholder={filter.placeholder}
@@ -77,8 +78,9 @@ export function DataTable<TData, TValue>({
                 {columnSelector && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="ml-auto">
+                            <Button variant="outline" className="ml-auto flex items-center gap-1">
                                 Columns
+                                <ChevronDown />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -101,7 +103,9 @@ export function DataTable<TData, TValue>({
                     </DropdownMenu>
                 )}
                 {(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
-                    <Button variant="destructive">Delete</Button>
+                    <Button variant="destructive" className="flex items-center gap-1">
+                        Delete <Trash />
+                    </Button>
                 )}
             </div>
             <BodyWrapper>

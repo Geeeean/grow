@@ -38,13 +38,13 @@ const VineyardToolbar = ({ setOpen, view, setView }: Props) => {
                 </Tabs>
                 <div className="border-r h-10 hidden md:block" />
                 <div className="flex items-center gap-2">
-                    <Button disabled variant="outline" className="font-normal flex items-center gap-2">
+                    <Button variant="outline" className="font-normal flex items-center gap-2">
                         <FileOutput className="h-[1.2rem] w-[1.2rem]" />
-                        Export
+                        <span className="hidden md:block">Export</span>
                     </Button>
-                    <Button disabled variant="outline" className="font-normal flex items-center gap-2">
+                    <Button variant="outline" className="font-normal flex items-center gap-2">
                         <ListFilter className="h-[1.2rem] w-[1.2rem]" />
-                        Filter
+                        <span className="hidden md:block">Filter</span>
                     </Button>
                 </div>
                 <AddButton setOpen={setOpen} className="hidden md:flex" />

@@ -20,7 +20,7 @@ type Props = {
 
 const VineyardCard = ({ vineyard, setSelectedVineyard, getVineyardActionSetter, getActionSetter }: Props) => {
     return (
-        <Card className="relative hover:border-ring transition-colors">
+        <Card className="relative hover:bg-secondary/30 transition-colors">
             <CardHeader className="flex flex-row justify-between items-center">
                 <Badge variant="outline">{vineyard.soil}</Badge>
                 <VineyardActionsDropdown

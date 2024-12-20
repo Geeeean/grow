@@ -3,13 +3,12 @@ import * as React from 'react';
 import { cn } from '@/utils/shared';
 
 import { cva, type VariantProps } from 'class-variance-authority';
-import { DialogOverlay } from './dialog';
 
-const detailCardContentVariant = cva('h-full bg-secondary/20 dark:bg-secondary/50 p-2 rounded-sm', {
+const detailCardContentVariant = cva('h-full bg-muted/45 dark:bg-muted/50 p-2 rounded-sm', {
     variants: {
         variant: {
-            default: 'p-2 ring-1 ring-secondary dark:ring-primary/35',
-            empty: 'py-5 border border-dashed border-secondary dark:border-primary/35 flex flex-col items-center text-center justify-center gap-3',
+            default: 'p-2 ring-1 ring-primary/15 dark:ring-primary/35',
+            empty: 'py-5 border border-dashed border-primary/15 dark:border-primary/35 flex flex-col items-center text-center justify-center gap-3',
         },
         size: {
             default: '',
@@ -31,7 +30,7 @@ const DetailCard = React.forwardRef<
         <div
             ref={ref}
             className={cn(
-                'p-1 rounded-md border bg-background-dark dark:bg-card text-card-foreground shadow flex flex-col',
+                'relative p-1 rounded-md border bg-background-dark dark:bg-card text-card-foreground shadow flex flex-col',
                 className,
             )}
             {...props}
@@ -72,7 +71,7 @@ const DetailCardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttribu
     ({ className, ...props }, ref) => (
         <h3
             ref={ref}
-            className={cn('font-medium leading-none tracking-tight flex gap-2 items-center', className)}
+            className={cn('font-medium line-clamp-1 flex gap-2 items-center', className)}
             {...props}
         />
     ),

@@ -98,12 +98,12 @@ const DialogWrapper = ({
                                     initial={{ y: -42, opacity: 0, filter: 'blur(4px)', height: height }}
                                     animate={{ y: 0, opacity: 1, filter: 'blur(0px)', height: 250 }}
                                     transition={{ type: 'spring', duration: 0.6, bounce: 0 }}
-                                    className="w-full z-40 bg-secondary/30 p-6 flex flex-col items-center justify-center text-center"
+                                    className="w-full z-40 bg-muted p-6 flex flex-col items-center justify-center text-center"
                                 >
                                     {formState == 'success' ? (
                                         <>
-                                            <CircleCheck className="text-secondary-foreground !h-10 !w-10" />
-                                            <p className="text-lg font-semibold mt-2 text-secondary-foreground">
+                                            <CircleCheck className="text-primary !h-10 !w-10" />
+                                            <p className="text-lg font-semibold mt-2 text-primary">
                                                 {successCopy.title}
                                             </p>
                                             <p className="px-10 font-medium">{successCopy.desc}</p>
@@ -171,8 +171,8 @@ const DialogWrapper = ({
                             >
                                 {formState == 'success' ? (
                                     <>
-                                        <CircleCheck className="text-secondary-foreground !h-10 !w-10" />
-                                        <p className="text-lg font-semibold mt-2 text-secondary-foreground">
+                                        <CircleCheck className="text-primary !h-10 !w-10" />
+                                        <p className="text-lg font-semibold mt-2 text-primary">
                                             {successCopy.title}
                                         </p>
                                         <p className="px-10 font-medium">{successCopy.desc}</p>

@@ -52,16 +52,11 @@ const Layout = () => {
     const location = useLocation();
 
     return (
-        <div className="grid h-screen w-full md:grid-cols-[220px_1fr] grid-rows-[3.5rem_1fr] lg:grid-cols-[280px_1fr]">
-            <div className="hidden md:flex items-center border-b px-4 lg:px-6 bg-background-dark border-r">
-                <Link href="/" className="flex items-center gap-2 font-semibold">
-                    <span className="text-lg font-bold">grow.</span>
-                </Link>
-            </div>
-            <header className="flex items-center gap-4 border-b bg-background-dark px-4 lg:px-6">
+        <div className="flex flex-col h-screen w-full">
+            <header className="flex items-center gap-4 border-b bg-background-dark px-4 w-full py-3 h-fit">
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+                        <Button variant="outline" size="icon" className="shrink-0 h-fit w-fit p-[5px]">
                             <Menu />
                             <span className="sr-only">Toggle navigation menu</span>
                         </Button>
@@ -69,33 +64,26 @@ const Layout = () => {
                     <SheetContent side="left" className="flex flex-col p-2 py-4">
                         <SheetHeader>
                             <SheetTitle>
-                                <div className="w-full flex items-center justify-between px-4">
-                                    <span className="text-lg font-bold">grow.</span>
+                                <div className="w-full flex items-center justify-between px-2">
+                                    <span className="ml-2 text-lg font-bold">grow.</span>
                                     <SheetClose>
-                                        <X />
+                                        <Button variant="ghost" size="icon">
+                                            <X />
+                                        </Button>
                                     </SheetClose>
                                 </div>
                             </SheetTitle>
                             <SheetDescription className="hidden"></SheetDescription>
                         </SheetHeader>
-                        <Nav className="pt-0" />
+                        <Nav />
                     </SheetContent>
                 </Sheet>
-                <div className="w-full flex-1">
-                    <BreadcrumbLocation location={location.pathname} bcLast={location.search.bcLast} />
-                </div>
+                <BreadcrumbLocation location={location.pathname} bcLast={location.search.bcLast} />
                 <div className="flex items-center gap-2">
                     <ModeToggle />
-                    <Button variant="outline" size="icon">
-                        <Settings2 className="h-[1.2rem] w-[1.2rem]" />
-                        <span className="sr-only">Settings</span>
-                    </Button>
                 </div>
             </header>
-            <Nav className="hidden md:flex border-r bg-background-dark" />
-            <main className="flex-1 p-4 overflow-hidden">
-                <Outlet />
-            </main>
+            <Outlet />
             <Toaster />
         </div>
     );
